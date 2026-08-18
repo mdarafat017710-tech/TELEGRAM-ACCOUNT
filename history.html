@@ -1,0 +1,925 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Phone & Gmail Account - iOS White Minimal</title>
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  <style>
+    :root {
+      --bg-color: #f2f2f7;
+      --card-bg: #ffffff;
+      --search-bg: #e3e3e8;
+      --accent-blue: #007aff;
+      --accent-green: #34c759;
+      --accent-red: #ff3b30;
+      --text-main: #000000;
+      --text-muted: #8e8e93;
+      --border-color: #e5e5ea;
+      --divider-color: #f0f0f3;
+      --font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display", "Helvetica Neue", Arial, sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: var(--font-family);
+      -webkit-tap-highlight-color: transparent;
+      user-select: none;
+      -webkit-user-select: none;
+      -moz-user-select: none;
+      -ms-user-select: none;
+    }
+
+    body {
+      background-color: var(--bg-color);
+      color: var(--text-main);
+      padding: 20px 14px 40px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-height: 100vh;
+    }
+
+    #toast {
+      position: fixed;
+      top: -60px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(0, 0, 0, 0.85);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      color: #ffffff;
+      padding: 7px 14px;
+      border-radius: 20px;
+      font-size: 13px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      box-shadow: 0 6px 18px rgba(0, 0, 0, 0.2);
+      transition: top 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.3s ease;
+      opacity: 0;
+      z-index: 9999;
+      white-space: nowrap;
+    }
+
+    #toast.show {
+      top: 18px;
+      opacity: 1;
+    }
+
+    #toast .toast-icon {
+      background: var(--accent-green);
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .header {
+      width: 100%;
+      max-width: 440px;
+      text-align: center;
+      margin-bottom: 14px;
+    }
+
+    .header h1 {
+      font-size: 22px;
+      font-weight: 700;
+      letter-spacing: -0.4px;
+    }
+
+    .search-container {
+      width: 100%;
+      max-width: 440px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      margin-bottom: 8px;
+    }
+
+    .search-box {
+      position: relative;
+      flex: 1;
+      display: flex;
+      align-items: center;
+    }
+
+    .search-box .search-icon {
+      position: absolute;
+      left: 10px;
+      color: var(--text-muted);
+      pointer-events: none;
+    }
+
+    .search-box input {
+      width: 100%;
+      padding: 8px 30px 8px 32px;
+      background: var(--search-bg);
+      border: none;
+      border-radius: 10px;
+      font-size: 13px;
+      color: var(--text-main);
+      outline: none;
+      user-select: text;
+      -webkit-user-select: text;
+    }
+
+    .search-box input::placeholder {
+      color: var(--text-muted);
+    }
+
+    .clear-btn {
+      position: absolute;
+      right: 8px;
+      background: #8e8e93;
+      color: #ffffff;
+      border: none;
+      width: 17px;
+      height: 17px;
+      border-radius: 50%;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+    }
+
+    .search-btn {
+      background: var(--accent-blue);
+      color: #ffffff;
+      border: none;
+      padding: 8px 12px;
+      border-radius: 10px;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+      flex-shrink: 0;
+      min-width: 60px;
+      height: 33px;
+    }
+
+    .ios-spinner {
+      display: none;
+      width: 14px;
+      height: 14px;
+      animation: iosRotate 0.8s steps(8, end) infinite;
+    }
+
+    @keyframes iosRotate {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    .total-bar {
+      width: 100%;
+      max-width: 440px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      margin-bottom: 12px;
+      padding-left: 2px;
+    }
+
+    .total-title {
+      color: var(--accent-blue);
+      font-size: 13px;
+      font-weight: 600;
+    }
+
+    .total-badge {
+      background: rgba(0, 122, 255, 0.12);
+      color: var(--accent-blue);
+      padding: 2px 8px;
+      border-radius: 12px;
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    #container {
+      width: 100%;
+      max-width: 440px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .account-card {
+      background: var(--card-bg);
+      border-radius: 14px;
+      border: 1px solid var(--border-color);
+      padding: 4px 12px 8px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.02);
+      display: flex;
+      flex-direction: column;
+    }
+
+    .field-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 0;
+      border-bottom: 0.5px solid var(--divider-color);
+    }
+
+    .field-item:last-child {
+      border-bottom: none;
+    }
+
+    .field-left {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--text-main);
+      white-space: nowrap;
+    }
+
+    .field-right-group {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 10px;
+      flex: 1;
+    }
+
+    .field-right {
+      font-size: 12px;
+      font-family: monospace, var(--font-family);
+      color: #3a3a3c;
+      text-align: right;
+      word-break: break-all;
+      line-height: 1.35;
+    }
+
+    .copy-btn {
+      background: #e5e5ea;
+      color: var(--accent-blue);
+      border: none;
+      width: 26px;
+      height: 26px;
+      border-radius: 50%;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      flex-shrink: 0;
+    }
+
+    .copy-btn.copied {
+      background: var(--accent-green) !important;
+      color: #ffffff !important;
+    }
+
+    .card-actions {
+      display: flex;
+      justify-content: flex-end;
+      align-items: center;
+      gap: 8px;
+      padding-top: 8px;
+      margin-top: 4px;
+      border-top: 0.5px solid var(--divider-color);
+    }
+
+    .action-btn {
+      border: none;
+      padding: 5px 10px;
+      border-radius: 8px;
+      font-size: 11px;
+      font-weight: 600;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .action-btn-edit { background: rgba(0, 122, 255, 0.1); color: var(--accent-blue); }
+    .action-btn-delete { background: rgba(255, 59, 48, 0.1); color: var(--accent-red); }
+
+    .empty-state {
+      text-align: center;
+      padding: 24px 16px;
+      color: var(--text-muted);
+      font-size: 13px;
+      font-weight: 600;
+      background: var(--card-bg);
+      border-radius: 14px;
+      border: 1px solid var(--border-color);
+    }
+
+    .modal-overlay {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0, 0, 0, 0.4);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 10000;
+      padding: 16px;
+    }
+
+    .modal-overlay.active { display: flex; }
+
+    .modal-box {
+      background: var(--card-bg);
+      width: 100%;
+      max-width: 350px;
+      border-radius: 18px;
+      padding: 18px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.25);
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      animation: modalPop 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+
+    @keyframes modalPop {
+      0% { transform: scale(0.9); opacity: 0; }
+      100% { transform: scale(1); opacity: 1; }
+    }
+
+    .modal-title {
+      font-size: 15px;
+      font-weight: 700;
+      text-align: center;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+    }
+
+    .modal-title.text-red { color: var(--accent-red); }
+    .modal-title.text-blue { color: var(--accent-blue); }
+
+    .delete-target-info {
+      text-align: center;
+      margin-top: -4px;
+    }
+
+    .delete-target-phone {
+      color: var(--accent-blue);
+      font-weight: 700;
+      font-size: 14px;
+      word-break: break-all;
+    }
+
+    .delete-subtext {
+      font-size: 11px;
+      color: var(--text-muted);
+      margin-top: 3px;
+      font-weight: 500;
+    }
+
+    .modal-input-group {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+    }
+
+    .modal-label {
+      font-size: 12px;
+      font-weight: 600;
+      color: #3a3a3c;
+    }
+
+    .input-wrapper {
+      position: relative;
+      display: flex;
+      align-items: center;
+      width: 100%;
+    }
+
+    .modal-input {
+      width: 100%;
+      padding: 9px 34px 9px 10px;
+      background: #ffffff;
+      border: 1.5px solid var(--accent-blue);
+      box-shadow: 0 0 6px rgba(0, 122, 255, 0.3);
+      border-radius: 10px;
+      font-size: 13px;
+      color: var(--text-main);
+      outline: none;
+      transition: all 0.25s ease;
+      user-select: text;
+      -webkit-user-select: text;
+    }
+
+    .modal-input.blue-glow {
+      border-color: var(--accent-blue) !important;
+      box-shadow: 0 0 8px rgba(0, 122, 255, 0.35) !important;
+    }
+
+    .modal-input.valid-glow {
+      border-color: var(--accent-green) !important;
+      box-shadow: 0 0 8px rgba(52, 199, 89, 0.45) !important;
+    }
+
+    .modal-input.invalid-glow {
+      border-color: var(--accent-red) !important;
+      box-shadow: 0 0 8px rgba(255, 59, 48, 0.45) !important;
+    }
+
+    .valid-check-badge {
+      position: absolute;
+      right: 10px;
+      background: var(--accent-green);
+      width: 15px;
+      height: 15px;
+      border-radius: 50%;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      pointer-events: none;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.15);
+    }
+
+    .valid-check-badge.show {
+      display: flex;
+    }
+
+    .modal-buttons {
+      display: flex;
+      gap: 8px;
+      margin-top: 6px;
+    }
+
+    .modal-cancel-btn {
+      flex: 1;
+      background: #e5e5ea;
+      color: var(--text-main);
+      border: none;
+      padding: 9px;
+      border-radius: 10px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    .modal-submit-btn {
+      flex: 1;
+      background: var(--accent-blue);
+      color: #ffffff;
+      border: none;
+      padding: 9px;
+      border-radius: 10px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+    }
+
+    .modal-submit-btn.delete-theme { background: var(--accent-red); }
+
+    .modal-submit-btn:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+    }
+  </style>
+</head>
+<body>
+
+  <div id="toast">
+    <div class="toast-icon">
+      <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round">
+        <polyline points="20 6 9 17 4 12"></polyline>
+      </svg>
+    </div>
+    <span>Copied Successfully!</span>
+  </div>
+
+  <div class="header">
+    <h1>Gmail Account</h1>
+  </div>
+
+  <div class="search-container">
+    <div class="search-box">
+      <svg class="search-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+      <input type="text" id="search-input" placeholder="Search by phone number..." oninput="handleInputText()">
+      <button class="clear-btn" id="clear-btn" onclick="clearSearchInput()">
+        <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+      </button>
+    </div>
+    <button class="search-btn" id="search-btn" onclick="handleSearch()">
+      <span id="btn-text">Search</span>
+      <svg id="btn-spinner" class="ios-spinner" viewBox="0 0 24 24">
+        <line x1="12" y1="3" x2="12" y2="6" stroke="#ffffff" stroke-width="2.5" stroke-linecap="round" opacity="1"/>
+        <line x1="18.36" y1="5.64" x2="16.24" y2="7.76" stroke="#ffffff" stroke-width="2.5" stroke-linecap="round" opacity="0.875"/>
+        <line x1="21" y1="12" x2="18" y2="12" stroke="#ffffff" stroke-width="2.5" stroke-linecap="round" opacity="0.75"/>
+        <line x1="18.36" y1="18.36" x2="16.24" y2="16.24" stroke="#ffffff" stroke-width="2.5" stroke-linecap="round" opacity="0.625"/>
+        <line x1="12" y1="21" x2="12" y2="18" stroke="#ffffff" stroke-width="2.5" stroke-linecap="round" opacity="0.5"/>
+        <line x1="5.64" y1="18.36" x2="7.76" y2="16.24" stroke="#ffffff" stroke-width="2.5" stroke-linecap="round" opacity="0.375"/>
+        <line x1="3" y1="12" x2="6" y2="12" stroke="#ffffff" stroke-width="2.5" stroke-linecap="round" opacity="0.25"/>
+        <line x1="5.64" y1="5.64" x2="7.76" y2="7.76" stroke="#ffffff" stroke-width="2.5" stroke-linecap="round" opacity="0.125"/>
+      </svg>
+    </button>
+  </div>
+
+  <div class="total-bar">
+    <span class="total-title">Total Accounts:</span>
+    <span id="total-badge-count" class="total-badge">0</span>
+  </div>
+
+  <div id="container"></div>
+
+  <!-- Delete Modal -->
+  <div class="modal-overlay" id="delete-modal">
+    <div class="modal-box">
+      <div class="modal-title text-red">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+        <span>Delete Account</span>
+      </div>
+      
+      <div class="delete-target-info">
+        <div id="delete-target-phone" class="delete-target-phone"></div>
+        <p class="delete-subtext">Are you sure you want to delete this account?</p>
+      </div>
+
+      <div class="modal-input-group">
+        <label class="modal-label">Your Confirm Password</label>
+        <div class="input-wrapper">
+          <input type="password" id="delete-pass-input" class="modal-input blue-glow" placeholder="Enter confirm password..." oninput="validateDeleteForm()">
+          <div class="valid-check-badge" id="delete-check-badge">
+            <svg width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+          </div>
+        </div>
+      </div>
+      <div class="modal-buttons">
+        <button class="modal-cancel-btn" onclick="closeDeleteModal()">Cancel</button>
+        <button class="modal-submit-btn delete-theme" id="confirm-delete-btn" disabled onclick="executeDelete()">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+          <span>Delete Account</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Edit Modal -->
+  <div class="modal-overlay" id="edit-modal">
+    <div class="modal-box">
+      <div class="modal-title text-blue">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
+        <span>Edit Account</span>
+      </div>
+      
+      <!-- Only Field 1: Gmail Edit -->
+      <div class="modal-input-group">
+        <label class="modal-label">Your Gmail Address</label>
+        <div class="input-wrapper">
+          <input type="email" id="edit-new-gmail" class="modal-input blue-glow" placeholder="Enter new gmail address..." oninput="validateEditForm()">
+          <div class="valid-check-badge" id="edit-gmail-check">
+            <svg width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+          </div>
+        </div>
+      </div>
+
+      <!-- Field 2: Confirm Password -->
+      <div class="modal-input-group">
+        <label class="modal-label">Your Confirm Password</label>
+        <div class="input-wrapper">
+          <input type="password" id="edit-pass-input" class="modal-input blue-glow" placeholder="Enter confirm password..." oninput="validateEditForm()">
+          <div class="valid-check-badge" id="edit-pass-check">
+            <svg width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-buttons">
+        <button class="modal-cancel-btn" onclick="closeEditModal()">Cancel</button>
+        <button class="modal-submit-btn" id="confirm-edit-btn" disabled onclick="executeEdit()">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
+          <span>Save Changes</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const SECRET_AUTH_PASS = "Srsohan99";
+    const copyIconSVG = `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>`;
+    const checkIconSVG = `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>`;
+    const editIconSVG = `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>`;
+    const deleteIconSVG = `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>`;
+
+    let activeTargetPhone = "";
+    let toastTimer;
+    let loadedAccountsData = [];
+
+    function showToast() {
+      const toast = document.getElementById('toast');
+      toast.classList.add('show');
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => { toast.classList.remove('show'); }, 2000);
+    }
+
+    function copyToClipboard(text, btnElement) {
+      if (!text) return;
+      navigator.clipboard.writeText(text).then(() => {
+        btnElement.classList.add('copied');
+        btnElement.innerHTML = checkIconSVG;
+        showToast();
+        setTimeout(() => {
+          btnElement.classList.remove('copied');
+          btnElement.innerHTML = copyIconSVG;
+        }, 2000);
+      });
+    }
+
+    function renderAccounts(accounts) {
+      const container = document.getElementById('container');
+      const totalBadge = document.getElementById('total-badge-count');
+      
+      container.innerHTML = '';
+      totalBadge.innerText = accounts.length;
+
+      if (!accounts || accounts.length === 0) {
+        container.innerHTML = `<div class="empty-state">No accounts found!</div>`;
+        return;
+      }
+
+      accounts.forEach((acc) => {
+        const card = document.createElement('div');
+        card.className = 'account-card';
+
+        const phoneVal = acc.phone || "";
+        const gmailVal = acc.gmail || acc.email || "";
+
+        card.innerHTML = `
+          ${phoneVal ? `
+            <div class="field-item">
+              <span class="field-left">Phone</span>
+              <div class="field-right-group">
+                <span class="field-right">${escapeHtml(phoneVal)}</span>
+                <button class="copy-btn" onclick="copyToClipboard('${escapeJs(phoneVal)}', this)">${copyIconSVG}</button>
+              </div>
+            </div>
+          ` : ''}
+
+          ${gmailVal ? `
+            <div class="field-item">
+              <span class="field-left">Gmail</span>
+              <div class="field-right-group">
+                <span class="field-right">${escapeHtml(gmailVal)}</span>
+                <button class="copy-btn" onclick="copyToClipboard('${escapeJs(gmailVal)}', this)">${copyIconSVG}</button>
+              </div>
+            </div>
+          ` : ''}
+
+          <div class="card-actions">
+            <button class="action-btn action-btn-edit" onclick="openEditModal('${escapeJs(phoneVal)}', '${escapeJs(gmailVal)}')">
+              ${editIconSVG} Edit
+            </button>
+            <button class="action-btn action-btn-delete" onclick="openDeleteModal('${escapeJs(phoneVal)}')">
+              ${deleteIconSVG} Delete
+            </button>
+          </div>
+        `;
+
+        container.appendChild(card);
+      });
+    }
+
+    function handleInputText() {
+      const input = document.getElementById('search-input');
+      const clearBtn = document.getElementById('clear-btn');
+      clearBtn.style.display = input.value.trim().length > 0 ? 'flex' : 'none';
+    }
+
+    function clearSearchInput() {
+      const input = document.getElementById('search-input');
+      const clearBtn = document.getElementById('clear-btn');
+      input.value = '';
+      clearBtn.style.display = 'none';
+      renderAccounts(loadedAccountsData);
+    }
+
+    // Phone Normalizer function for Country Code Search
+    function getPhoneDigits(str) {
+      if (!str) return "";
+      return String(str).replace(/\D/g, ''); // Removes +, spaces, etc.
+    }
+
+    function isPhoneMatch(accPhone, searchVal) {
+      if (!accPhone || !searchVal) return false;
+
+      const rawAcc = String(accPhone).trim();
+      const rawSearch = String(searchVal).trim();
+
+      // 1. Direct exact match
+      if (rawAcc === rawSearch) return true;
+
+      // 2. Digits-only match (with and without country code)
+      const accDigits = getPhoneDigits(rawAcc);
+      const searchDigits = getPhoneDigits(rawSearch);
+
+      if (!accDigits || !searchDigits) return false;
+      if (accDigits === searchDigits) return true;
+
+      // Format Variants Handling (Bangladesh Country Code 880 & 0)
+      let accVariants = [accDigits];
+      if (accDigits.startsWith('880')) {
+        accVariants.push('0' + accDigits.substring(3));
+      } else if (accDigits.startsWith('0')) {
+        accVariants.push('880' + accDigits.substring(1));
+      }
+
+      let searchVariants = [searchDigits];
+      if (searchDigits.startsWith('880')) {
+        searchVariants.push('0' + searchDigits.substring(3));
+      } else if (searchDigits.startsWith('0')) {
+        searchVariants.push('880' + searchDigits.substring(1));
+      }
+
+      return accVariants.some(aV => searchVariants.some(sV => aV.includes(sV)));
+    }
+
+    function handleSearch() {
+      const btnText = document.getElementById('btn-text');
+      const btnSpinner = document.getElementById('btn-spinner');
+      btnText.style.display = 'none';
+      btnSpinner.style.display = 'inline-block';
+
+      setTimeout(() => {
+        const query = document.getElementById('search-input').value.trim();
+        if (!query) {
+          renderAccounts(loadedAccountsData);
+        } else {
+          const filtered = loadedAccountsData.filter(acc => isPhoneMatch(acc.phone, query));
+          renderAccounts(filtered);
+        }
+        btnSpinner.style.display = 'none';
+        btnText.style.display = 'inline';
+      }, 400);
+    }
+
+    function openDeleteModal(phone) {
+      activeTargetPhone = phone;
+      document.getElementById('delete-target-phone').innerText = phone || 'N/A';
+      const modal = document.getElementById('delete-modal');
+      const passInput = document.getElementById('delete-pass-input');
+      passInput.value = '';
+      validateDeleteForm();
+      modal.classList.add('active');
+    }
+
+    function closeDeleteModal() {
+      document.getElementById('delete-modal').classList.remove('active');
+    }
+
+    function validateDeleteForm() {
+      const input = document.getElementById('delete-pass-input');
+      const checkBadge = document.getElementById('delete-check-badge');
+      const deleteBtn = document.getElementById('confirm-delete-btn');
+      const val = input.value;
+
+      if (val.length === 0) {
+        input.className = 'modal-input blue-glow';
+        checkBadge.classList.remove('show');
+        deleteBtn.disabled = true;
+      } else if (val.length >= 8 && val === SECRET_AUTH_PASS) {
+        input.className = 'modal-input valid-glow';
+        checkBadge.classList.add('show');
+        deleteBtn.disabled = false;
+      } else {
+        input.className = 'modal-input invalid-glow';
+        checkBadge.classList.remove('show');
+        deleteBtn.disabled = true;
+      }
+    }
+
+    function executeDelete() {
+      const payload = {
+        action: "delete_account",
+        phone: activeTargetPhone
+      };
+      sendDataToTelegram(payload);
+      closeDeleteModal();
+    }
+
+    function openEditModal(phone, currentGmail) {
+      activeTargetPhone = phone;
+      const modal = document.getElementById('edit-modal');
+      const gmailInput = document.getElementById('edit-new-gmail');
+      const passInput = document.getElementById('edit-pass-input');
+
+      gmailInput.value = currentGmail || "";
+      passInput.value = '';
+
+      validateEditForm();
+      modal.classList.add('active');
+    }
+
+    function closeEditModal() {
+      document.getElementById('edit-modal').classList.remove('active');
+    }
+
+    function validateEditForm() {
+      const gmailInput = document.getElementById('edit-new-gmail');
+      const passInput = document.getElementById('edit-pass-input');
+
+      const gmailCheck = document.getElementById('edit-gmail-check');
+      const passCheck = document.getElementById('edit-pass-check');
+
+      const confirmBtn = document.getElementById('confirm-edit-btn');
+
+      // 1. Gmail Email Validation
+      let isGmailValid = false;
+      const gmailVal = gmailInput.value.trim();
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+      if (gmailVal.length === 0) {
+        gmailInput.className = 'modal-input blue-glow';
+        gmailCheck.classList.remove('show');
+      } else if (emailRegex.test(gmailVal)) {
+        gmailInput.className = 'modal-input valid-glow';
+        gmailCheck.classList.add('show');
+        isGmailValid = true;
+      } else {
+        gmailInput.className = 'modal-input invalid-glow';
+        gmailCheck.classList.remove('show');
+      }
+
+      // 2. Confirm Password Check (Must match SECRET_AUTH_PASS)
+      let isPassValid = false;
+      const passVal = passInput.value;
+      if (passVal.length === 0) {
+        passInput.className = 'modal-input blue-glow';
+        passCheck.classList.remove('show');
+      } else if (passVal.length >= 8 && passVal === SECRET_AUTH_PASS) {
+        passInput.className = 'modal-input valid-glow';
+        passCheck.classList.add('show');
+        isPassValid = true;
+      } else {
+        passInput.className = 'modal-input invalid-glow';
+        passCheck.classList.remove('show');
+      }
+
+      confirmBtn.disabled = !(isGmailValid && isPassValid);
+    }
+
+    function executeEdit() {
+      const gmailVal = document.getElementById('edit-new-gmail').value.trim();
+
+      const payload = {
+        action: "edit_account",
+        phone: activeTargetPhone,
+        gmail: gmailVal,
+        email: gmailVal
+      };
+
+      sendDataToTelegram(payload);
+      closeEditModal();
+    }
+
+    function sendDataToTelegram(payload) {
+      const jsonString = JSON.stringify(payload);
+      if (window.Telegram && window.Telegram.WebApp) {
+        window.Telegram.WebApp.sendData(jsonString);
+      } else {
+        alert("Telegram WebApp sendData:\n" + jsonString);
+      }
+    }
+
+    function loadData() {
+      const urlParams = new URLSearchParams(window.location.search);
+      const rawData = urlParams.get('data');
+      const container = document.getElementById('container');
+
+      if (!rawData) {
+        container.innerHTML = `<div class="empty-state">No accounts found!</div>`;
+        return;
+      }
+
+      try {
+        loadedAccountsData = JSON.parse(decodeURIComponent(rawData));
+        if (!Array.isArray(loadedAccountsData)) loadedAccountsData = [];
+        renderAccounts(loadedAccountsData);
+      } catch (e) {
+        container.innerHTML = `<div class="empty-state">No accounts found!</div>`;
+      }
+    }
+
+    function escapeHtml(str) {
+      return String(str).replace(/[&<>"']/g, function(m) {
+        return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' }[m];
+      });
+    }
+
+    function escapeJs(str) {
+      return String(str).replace(/\\/g, '\\\\').replace(/'/g, "\\'").replace(/"/g, '\\"');
+    }
+
+    window.onload = loadData;
+  </script>
+</body>
+</html>
