@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="bn">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>Account Setup - iOS Style</title>
+  <title>Telegram Account Setup - iOS Style</title>
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
   <style>
     :root {
@@ -15,7 +15,7 @@
       --text-main: #000000;
       --text-muted: #8e8e93;
       --border-color: #c6c6c8;
-      --divider-color: #f0f0f3;
+      --divider-color: #e5e5ea;
       --font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display", "Helvetica Neue", Arial, sans-serif;
     }
 
@@ -37,7 +37,6 @@
       flex-direction: column;
       align-items: center;
       min-height: 100vh;
-      position: relative;
     }
 
     .top-nav {
@@ -96,70 +95,133 @@
     .info-box-group {
       display: flex;
       flex-direction: column;
-      gap: 6px;
+      gap: 8px;
       width: 100%;
     }
 
     .box-label {
       font-size: 13px;
-      font-weight: 600;
-      color: var(--text-main);
+      font-weight: 500;
+      color: #6c6c70;
       letter-spacing: -0.2px;
-      padding-left: 2px;
+      padding-left: 4px;
     }
 
-    .input-wrapper {
-      position: relative;
-      display: flex;
-      align-items: center;
+    /* Selector Field */
+    .country-selector-btn {
       width: 100%;
-    }
-
-    .phone-input-group {
-      display: flex;
-      gap: 8px;
-      width: 100%;
-    }
-
-    .country-select-box {
-      width: 42%;
-      padding: 12px 10px;
-      background: var(--card-bg);
-      border: 1.5px solid var(--border-color);
-      border-radius: 12px;
-      font-size: 14px;
-      color: var(--text-main);
-      outline: none;
-      transition: all 0.3s ease;
-      cursor: pointer;
-      text-overflow: ellipsis;
-      white-space: nowrap;
-      overflow: hidden;
-    }
-
-    .country-select-box:focus {
-      border-color: var(--accent-blue);
-      box-shadow: 0 0 10px rgba(0, 122, 255, 0.25), 0 2px 6px rgba(0, 122, 255, 0.1);
-    }
-
-    .country-select-box.valid {
-      border-color: var(--accent-green) !important;
-    }
-
-    .phone-input-wrapper {
-      position: relative;
-      display: flex;
-      align-items: center;
-      flex: 1;
-    }
-
-    .ios-box {
-      width: 100%;
-      padding: 12px 42px 12px 14px;
+      height: 48px;
+      padding: 0 14px;
       background: var(--card-bg);
       border: 1.5px solid var(--border-color);
       border-radius: 12px;
       font-size: 15px;
+      color: var(--text-main);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .country-selector-btn:active {
+      background: #f8f8f9;
+    }
+
+    .selector-text {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-weight: 400;
+      color: var(--text-main);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .selector-text.placeholder {
+      color: var(--text-muted);
+    }
+
+    /* Unified Phone Input Box */
+    .unified-phone-wrapper {
+      position: relative;
+      width: 100%;
+    }
+
+    .unified-phone-box {
+      display: flex;
+      align-items: center;
+      background: var(--card-bg);
+      border: 1.5px solid var(--border-color);
+      border-radius: 12px;
+      padding: 0 40px 0 0;
+      height: 48px;
+      transition: all 0.3s ease;
+      overflow: hidden;
+    }
+
+    .unified-phone-box:focus-within {
+      border-color: var(--accent-blue);
+      box-shadow: 0 0 10px rgba(0, 122, 255, 0.25);
+    }
+
+    .unified-phone-box.valid {
+      border-color: var(--accent-green) !important;
+      box-shadow: 0 0 10px rgba(52, 199, 89, 0.25) !important;
+    }
+
+    .unified-phone-box.invalid {
+      border-color: var(--accent-red) !important;
+      box-shadow: 0 0 10px rgba(255, 59, 48, 0.25) !important;
+    }
+
+    .code-input {
+      width: 72px;
+      height: 100%;
+      border: none;
+      outline: none;
+      padding: 0 8px;
+      font-size: 15px;
+      font-weight: 500;
+      color: var(--text-main);
+      background: transparent;
+      text-align: center;
+      user-select: text;
+      -webkit-user-select: text;
+    }
+
+    .v-divider {
+      width: 1px;
+      height: 24px;
+      background-color: var(--border-color);
+      flex-shrink: 0;
+    }
+
+    .number-input {
+      flex: 1;
+      height: 100%;
+      border: none;
+      outline: none;
+      padding: 0 12px;
+      font-size: 15px;
+      font-weight: 400;
+      color: var(--text-main);
+      background: transparent;
+      user-select: text;
+      -webkit-user-select: text;
+    }
+
+    /* Standard Box */
+    .ios-box {
+      width: 100%;
+      height: 48px;
+      padding: 0 42px 0 14px;
+      background: var(--card-bg);
+      border: 1.5px solid var(--border-color);
+      border-radius: 12px;
+      font-size: 15px;
+      font-weight: 400;
       color: var(--text-main);
       outline: none;
       transition: all 0.3s ease;
@@ -169,24 +231,26 @@
 
     .ios-box:focus {
       border-color: var(--accent-blue);
-      box-shadow: 0 0 10px rgba(0, 122, 255, 0.25), 0 2px 6px rgba(0, 122, 255, 0.1);
+      box-shadow: 0 0 10px rgba(0, 122, 255, 0.25);
     }
 
     .ios-box.valid {
       border-color: var(--accent-green) !important;
-      box-shadow: 0 0 10px rgba(52, 199, 89, 0.25), 0 2px 6px rgba(52, 199, 89, 0.1) !important;
+      box-shadow: 0 0 10px rgba(52, 199, 89, 0.25) !important;
     }
 
     .ios-box.invalid {
       border-color: var(--accent-red) !important;
-      box-shadow: 0 0 10px rgba(255, 59, 48, 0.25), 0 2px 6px rgba(255, 59, 48, 0.1) !important;
+      box-shadow: 0 0 10px rgba(255, 59, 48, 0.25) !important;
     }
 
     .input-indicator {
       position: absolute;
-      right: 12px;
-      width: 16px;
-      height: 16px;
+      right: 14px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 20px;
+      height: 20px;
       background: var(--accent-green);
       border-radius: 50%;
       display: none;
@@ -196,21 +260,6 @@
     }
 
     .input-indicator.show {
-      display: flex;
-    }
-
-    .field-error-msg {
-      display: none;
-      align-items: center;
-      gap: 6px;
-      font-size: 12px;
-      font-weight: 600;
-      color: var(--accent-red);
-      padding-left: 4px;
-      margin-top: 4px;
-    }
-
-    .field-error-msg.show {
       display: flex;
     }
 
@@ -225,16 +274,16 @@
       color: #ffffff;
       border: none;
       width: 100%;
-      padding: 11px 16px;
+      height: 48px;
       border-radius: 12px;
-      font-size: 15px;
+      font-size: 16px;
       font-weight: 600;
       cursor: pointer;
       display: flex;
       align-items: center;
       justify-content: center;
       gap: 8px;
-      box-shadow: 0 4px 12px rgba(0, 122, 255, 0.2);
+      box-shadow: 0 4px 12px rgba(0, 122, 255, 0.25);
       transition: all 0.2s ease;
     }
 
@@ -248,8 +297,8 @@
 
     .ios-spinner {
       display: none;
-      width: 18px;
-      height: 18px;
+      width: 20px;
+      height: 20px;
       animation: iosRotate 0.8s steps(8, end) infinite;
     }
 
@@ -261,22 +310,22 @@
     /* Confirmation Card */
     .account-card {
       background: var(--card-bg);
-      border-radius: 14px;
+      border-radius: 16px;
       border: 1px solid var(--border-color);
-      padding: 4px 12px 12px;
-      box-shadow: 0 1px 3px rgba(0,0,0,0.02);
+      padding: 8px 16px 16px;
       display: flex;
       flex-direction: column;
       width: 100%;
       max-width: 420px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.03);
     }
 
     .field-item {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      gap: 8px;
-      padding: 12px 0;
+      gap: 12px;
+      padding: 14px 0;
       border-bottom: 0.5px solid var(--divider-color);
     }
 
@@ -285,78 +334,30 @@
     }
 
     .field-left {
-      font-size: 13px;
-      font-weight: 700;
+      font-size: 15px;
+      font-weight: 600;
       color: var(--text-main);
-      white-space: nowrap;
-    }
-
-    .label-blue {
-      color: var(--accent-blue) !important;
     }
 
     .field-right-group {
       display: flex;
       align-items: center;
-      justify-content: flex-end;
-      gap: 10px;
-      flex: 1;
+      gap: 8px;
     }
 
     .field-right {
-      font-size: 13px;
-      font-family: monospace, var(--font-family);
+      font-size: 14px;
+      font-family: -apple-system, monospace;
       color: #3a3a3c;
-      text-align: right;
       word-break: break-all;
-      line-height: 1.35;
     }
 
-    .totp-value {
-      font-size: 15px;
-      font-weight: 700;
-      color: var(--accent-blue) !important;
-      letter-spacing: 1.5px;
-    }
-
-    .auth-timer-wrapper {
-      position: relative;
-      width: 24px;
-      height: 24px;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      flex-shrink: 0;
-    }
-
-    .auth-timer-wrapper svg {
-      transform: rotate(-90deg);
-      width: 24px;
-      height: 24px;
-    }
-
-    .auth-timer-bg { stroke: #c6c6c8; }
-    .auth-timer-progress {
-      stroke: var(--accent-blue);
-      stroke-dasharray: 56.55;
-      stroke-dashoffset: 0;
-      transition: stroke-dashoffset 1s linear;
-    }
-
-    .auth-timer-text {
-      position: absolute;
-      font-size: 9px;
-      font-weight: 700;
-      color: var(--accent-blue);
-    }
-
-    /* Copy Button Style */
     .copy-btn {
       background: #f0f0f5;
       color: var(--accent-blue);
       border: none;
-      width: 28px;
-      height: 28px;
+      width: 32px;
+      height: 32px;
       border-radius: 50%;
       display: inline-flex;
       align-items: center;
@@ -375,89 +376,194 @@
       display: flex;
       flex-direction: column;
       gap: 8px;
-      padding-top: 14px;
+      padding-top: 16px;
       margin-top: 4px;
       border-top: 0.5px solid var(--divider-color);
     }
 
-    /* Account Saved Button: Blue Background */
     .action-btn-confirm {
       background: var(--accent-blue);
       color: #ffffff;
       width: 100%;
       border: none;
-      padding: 12px;
+      height: 48px;
       border-radius: 12px;
-      font-size: 15px;
-      font-weight: 700;
+      font-size: 16px;
+      font-weight: 600;
       cursor: pointer;
       display: inline-flex;
       align-items: center;
       justify-content: center;
       gap: 8px;
-      box-shadow: 0 4px 12px rgba(0, 122, 255, 0.2);
+      box-shadow: 0 4px 12px rgba(0, 122, 255, 0.25);
     }
 
-    /* Rounded Green Background for Checkmark Icon inside the button */
-    .check-icon-circle {
-      width: 20px;
-      height: 20px;
-      background: var(--accent-green);
+    /* Country Search Modal */
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.4);
+      backdrop-filter: blur(5px);
+      -webkit-backdrop-filter: blur(5px);
+      z-index: 1000;
+      display: none;
+      align-items: flex-end;
+      justify-content: center;
+    }
+
+    .modal-overlay.active {
+      display: flex;
+    }
+
+    .modal-content {
+      background: #ffffff;
+      width: 100%;
+      max-width: 440px;
+      height: 88vh;
+      border-top-left-radius: 20px;
+      border-top-right-radius: 20px;
+      display: flex;
+      flex-direction: column;
+      animation: slideUp 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+      overflow: hidden;
+    }
+
+    @keyframes slideUp {
+      from { transform: translateY(100%); }
+      to { transform: translateY(0); }
+    }
+
+    .modal-header {
+      padding: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 0.5px solid var(--divider-color);
+    }
+
+    .modal-title {
+      font-size: 17px;
+      font-weight: 600;
+    }
+
+    .modal-close-btn {
+      background: #e5e5ea;
+      border: none;
+      width: 28px;
+      height: 28px;
       border-radius: 50%;
-      display: inline-flex;
+      display: flex;
       align-items: center;
       justify-content: center;
-      flex-shrink: 0;
+      cursor: pointer;
+      color: #8e8e93;
+      font-weight: bold;
     }
 
-    /* Toast Popup */
+    .search-box-wrapper {
+      padding: 10px 16px;
+      background: #f2f2f7;
+    }
+
+    .search-input-container {
+      position: relative;
+    }
+
+    .search-input {
+      width: 100%;
+      padding: 10px 14px 10px 36px;
+      background: #e3e3e8;
+      border: none;
+      border-radius: 10px;
+      font-size: 15px;
+      outline: none;
+      user-select: text;
+      -webkit-user-select: text;
+    }
+
+    .search-icon {
+      position: absolute;
+      left: 10px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--text-muted);
+      pointer-events: none;
+    }
+
+    .country-list {
+      flex: 1;
+      overflow-y: auto;
+      padding: 0 16px;
+    }
+
+    .country-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 0;
+      border-bottom: 0.5px solid var(--divider-color);
+      cursor: pointer;
+    }
+
+    .country-item:active {
+      background: #f8f8f9;
+    }
+
+    .country-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 15px;
+    }
+
+    .country-code-text {
+      font-size: 15px;
+      font-weight: 500;
+      color: var(--text-muted);
+    }
+
+    /* iOS Toast Popup */
     #copy-toast {
       position: fixed;
       top: -70px;
       left: 50%;
       transform: translateX(-50%);
-      background: #000000;
+      background: rgba(0, 0, 0, 0.85);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
       color: #ffffff;
-      padding: 10px 18px;
-      border-radius: 24px;
-      font-size: 13px;
-      font-weight: 600;
+      padding: 10px 20px;
+      border-radius: 30px;
+      font-size: 14px;
+      font-weight: 500;
       z-index: 9999;
       display: flex;
       align-items: center;
-      white-space: nowrap;
       gap: 8px;
-      box-shadow: 0 6px 16px rgba(0,0,0,0.25);
+      box-shadow: 0 8px 24px rgba(0,0,0,0.2);
       transition: top 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275);
       pointer-events: none;
     }
 
     #copy-toast.show {
-      top: 16px;
-    }
-
-    .toast-icon-wrapper {
-      width: 16px;
-      height: 16px;
-      background: var(--accent-green);
-      border-radius: 50%;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      flex-shrink: 0;
+      top: 20px;
     }
   </style>
 </head>
 <body>
 
-  <!-- Toast Notification Popup -->
+  <!-- Toast Popup -->
   <div id="copy-toast">
-    <div class="toast-icon-wrapper">
+    <div style="width:18px; height:18px; background:var(--accent-green); border-radius:50%; display:inline-flex; align-items:center; justify-content:center;">
       <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
     </div>
     <span>Copied successfully!</span>
   </div>
 
+  <!-- Top Bar -->
   <div class="top-nav">
     <button class="back-btn" id="back-btn-elem" onclick="goBackStep()">
       <svg width="24" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
@@ -465,24 +571,33 @@
         <polyline points="12 19 5 12 12 5"></polyline>
       </svg>
     </button>
-    <h1 class="header-title" id="main-title">Submit Account</h1>
+    <h1 class="header-title" id="main-title">Submit Telegram Account</h1>
   </div>
 
-  <!-- Step 1: Email Address -->
+  <!-- Step 1: Phone Number -->
   <div id="step-1" class="step-container active">
     <div class="info-box-group">
-      <label class="box-label">Your Email Address</label>
-      <div class="input-wrapper">
-        <input type="email" id="input-email" class="ios-box" placeholder="Enter email address" oninput="validateGmailField('email', 1)">
-        <div class="input-indicator" id="email-indicator">
-          <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
-        </div>
-      </div>
-      <div class="field-error-msg" id="email-error-msg">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
-        <span>Email already submitted!</span>
+      <label class="box-label">Select Country Code</label>
+      <div class="country-selector-btn" onclick="openCountryModal()">
+        <span class="selector-text placeholder" id="selected-country-text">Select Country Code</span>
+        <svg width="12" height="12" viewBox="0 0 292.4 292.4" fill="#8e8e93"><path d="M287 69.4a17.6 17.6 0 0 0-13-5.4H18.4c-5 0-9.3 1.8-12.9 5.4A17.6 17.6 0 0 0 0 82.2c0 5 1.8 9.3 5.4 12.9l128 127.9c3.6 3.6 7.8 5.4 12.8 5.4s9.2-1.8 12.8-5.4L287 95c3.5-3.5 5.4-7.8 5.4-12.8 0-5-1.9-9.2-5.5-12.8z"/></svg>
       </div>
     </div>
+
+    <div class="info-box-group">
+      <label class="box-label">Phone Number</label>
+      <div class="unified-phone-wrapper">
+        <div class="unified-phone-box" id="phone-box-container">
+          <input type="tel" inputmode="numeric" id="input-code" class="code-input" placeholder="Code" maxlength="5" oninput="handleCodeTyping()" onpaste="handlePhonePaste(event)">
+          <div class="v-divider"></div>
+          <input type="tel" inputmode="numeric" id="input-number" class="number-input" placeholder="Phone Number" oninput="handleNumberInput()" onkeydown="handleNumberKeyDown(event)" onpaste="handlePhonePaste(event)">
+        </div>
+        <div class="input-indicator" id="phone-indicator">
+          <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+        </div>
+      </div>
+    </div>
+
     <div class="action-container">
       <button class="btn-proceed" id="btn-1" disabled onclick="nextStep(1)">
         <span id="btn-text-1">Proceed</span>
@@ -500,14 +615,14 @@
     </div>
   </div>
 
-  <!-- Step 2: Password -->
+  <!-- Step 2: Email -->
   <div id="step-2" class="step-container">
     <div class="info-box-group">
-      <label class="box-label">Your Account Password</label>
-      <div class="input-wrapper">
-        <input type="text" id="input-password" class="ios-box" placeholder="Enter account password" oninput="validateStandardField('password', 8, 2)">
-        <div class="input-indicator" id="password-indicator">
-          <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+      <label class="box-label">Your Email Address</label>
+      <div style="position: relative; width: 100%;">
+        <input type="email" id="input-email" class="ios-box" placeholder="Enter email address" oninput="validateEmailStep()">
+        <div class="input-indicator" id="email-indicator">
+          <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
         </div>
       </div>
     </div>
@@ -528,396 +643,284 @@
     </div>
   </div>
 
-  <!-- Step 3: Recovery Email -->
+  <!-- Step 3: Confirmation -->
   <div id="step-3" class="step-container">
-    <div class="info-box-group">
-      <label class="box-label">Your Recovery Email</label>
-      <div class="input-wrapper">
-        <input type="email" id="input-recovery" class="ios-box" placeholder="Enter recovery email" oninput="validateGmailField('recovery', 3)">
-        <div class="input-indicator" id="recovery-indicator">
-          <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
-        </div>
-      </div>
-      <div class="field-error-msg" id="recovery-error-msg">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
-        <span>Email already submitted</span>
-      </div>
-    </div>
-    <div class="action-container">
-      <button class="btn-proceed" id="btn-3" disabled onclick="nextStep(3)">
-        <span id="btn-text-3">Proceed</span>
-        <svg class="ios-spinner" id="spinner-3" viewBox="0 0 24 24">
-          <line x1="12" y1="3" x2="12" y2="6" stroke="#ffffff" stroke-width="2.5" stroke-linecap="round" opacity="1"/>
-          <line x1="18.36" y1="5.64" x2="16.24" y2="7.76" stroke="#ffffff" stroke-width="2.5" stroke-linecap="round" opacity="0.875"/>
-          <line x1="21" y1="12" x2="18" y2="12" stroke="#ffffff" stroke-width="2.5" stroke-linecap="round" opacity="0.75"/>
-          <line x1="18.36" y1="18.36" x2="16.24" y2="16.24" stroke="#ffffff" stroke-width="2.5" stroke-linecap="round" opacity="0.625"/>
-          <line x1="12" y1="21" x2="12" y2="18" stroke="#ffffff" stroke-width="2.5" stroke-linecap="round" opacity="0.5"/>
-          <line x1="5.64" y1="18.36" x2="7.76" y2="16.24" stroke="#ffffff" stroke-width="2.5" stroke-linecap="round" opacity="0.375"/>
-          <line x1="3" y1="12" x2="6" y2="12" stroke="#ffffff" stroke-width="2.5" stroke-linecap="round" opacity="0.25"/>
-          <line x1="5.64" y1="5.64" x2="7.76" y2="7.76" stroke="#ffffff" stroke-width="2.5" stroke-linecap="round" opacity="0.125"/>
-        </svg>
-      </button>
-    </div>
-  </div>
-
-  <!-- Step 4: Phone Number with Country Code Select -->
-  <div id="step-4" class="step-container">
-    <div class="info-box-group">
-      <label class="box-label">Your Phone Number</label>
-      <div class="phone-input-group">
-        <select id="select-country" class="country-select-box" onchange="handleCountryChange()">
-          <option value="">Select Country</option>
-        </select>
-        <div class="phone-input-wrapper">
-          <input type="tel" inputmode="numeric" pattern="[0-9]*" id="input-phone" class="ios-box" placeholder="Phone number" oninput="validatePhoneField()">
-          <div class="input-indicator" id="phone-indicator">
-            <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
-          </div>
-        </div>
-      </div>
-    </div>
-    <div class="action-container">
-      <button class="btn-proceed" id="btn-4" disabled onclick="nextStep(4)">
-        <span id="btn-text-4">Proceed</span>
-        <svg class="ios-spinner" id="spinner-4" viewBox="0 0 24 24">
-          <line x1="12" y1="3" x2="12" y2="6" stroke="#ffffff" stroke-width="2.5" stroke-linecap="round" opacity="1"/>
-          <line x1="18.36" y1="5.64" x2="16.24" y2="7.76" stroke="#ffffff" stroke-width="2.5" stroke-linecap="round" opacity="0.875"/>
-          <line x1="21" y1="12" x2="18" y2="12" stroke="#ffffff" stroke-width="2.5" stroke-linecap="round" opacity="0.75"/>
-          <line x1="18.36" y1="18.36" x2="16.24" y2="16.24" stroke="#ffffff" stroke-width="2.5" stroke-linecap="round" opacity="0.625"/>
-          <line x1="12" y1="21" x2="12" y2="18" stroke="#ffffff" stroke-width="2.5" stroke-linecap="round" opacity="0.5"/>
-          <line x1="5.64" y1="18.36" x2="7.76" y2="16.24" stroke="#ffffff" stroke-width="2.5" stroke-linecap="round" opacity="0.375"/>
-          <line x1="3" y1="12" x2="6" y2="12" stroke="#ffffff" stroke-width="2.5" stroke-linecap="round" opacity="0.25"/>
-          <line x1="5.64" y1="5.64" x2="7.76" y2="7.76" stroke="#ffffff" stroke-width="2.5" stroke-linecap="round" opacity="0.125"/>
-        </svg>
-      </button>
-    </div>
-  </div>
-
-  <!-- Step 5: 2FA Secret Key -->
-  <div id="step-5" class="step-container">
-    <div class="info-box-group">
-      <label class="box-label">Your 2FA Secret Key</label>
-      <div class="input-wrapper">
-        <input type="text" id="input-2fa" class="ios-box" placeholder="Enter 2FA Secret Key" oninput="validate2FAField()">
-        <div class="input-indicator" id="2fa-indicator">
-          <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
-        </div>
-      </div>
-    </div>
-    <div class="action-container">
-      <button class="btn-proceed" id="btn-5" disabled onclick="nextStep(5)">
-        <span id="btn-text-5">Proceed</span>
-        <svg class="ios-spinner" id="spinner-5" viewBox="0 0 24 24">
-          <line x1="12" y1="3" x2="12" y2="6" stroke="#ffffff" stroke-width="2.5" stroke-linecap="round" opacity="1"/>
-          <line x1="18.36" y1="5.64" x2="16.24" y2="7.76" stroke="#ffffff" stroke-width="2.5" stroke-linecap="round" opacity="0.875"/>
-          <line x1="21" y1="12" x2="18" y2="12" stroke="#ffffff" stroke-width="2.5" stroke-linecap="round" opacity="0.75"/>
-          <line x1="18.36" y1="18.36" x2="16.24" y2="16.24" stroke="#ffffff" stroke-width="2.5" stroke-linecap="round" opacity="0.625"/>
-          <line x1="12" y1="21" x2="12" y2="18" stroke="#ffffff" stroke-width="2.5" stroke-linecap="round" opacity="0.5"/>
-          <line x1="5.64" y1="18.36" x2="7.76" y2="16.24" stroke="#ffffff" stroke-width="2.5" stroke-linecap="round" opacity="0.375"/>
-          <line x1="3" y1="12" x2="6" y2="12" stroke="#ffffff" stroke-width="2.5" stroke-linecap="round" opacity="0.25"/>
-          <line x1="5.64" y1="5.64" x2="7.76" y2="7.76" stroke="#ffffff" stroke-width="2.5" stroke-linecap="round" opacity="0.125"/>
-        </svg>
-      </button>
-    </div>
-  </div>
-
-  <!-- Step 6: Final Confirmation Page -->
-  <div id="step-6" class="step-container">
     <div class="account-card" id="confirmation-card-content"></div>
   </div>
 
-  <script>
-    const copyIconSVG = `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>`;
-    const checkIconSVG = `<svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>`;
+  <!-- Modal -->
+  <div class="modal-overlay" id="country-modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <span class="modal-title">Select Country</span>
+        <button class="modal-close-btn" onclick="closeCountryModal()">✕</button>
+      </div>
+      <div class="search-box-wrapper">
+        <div class="search-input-container">
+          <svg class="search-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+          <input type="text" id="modal-search-input" class="search-input" placeholder="Search country or code..." oninput="filterCountryList()">
+        </div>
+      </div>
+      <div class="country-list" id="modal-country-list"></div>
+    </div>
+  </div>
 
-    // 300+ World Countries Database
-    const worldCountries = [
-      { name: "Afghanistan", code: "+93", flag: "🇦🇫" },
-      { name: "Albania", code: "+355", flag: "🇦🇱" },
-      { name: "Algeria", code: "+213", flag: "🇩🇿" },
-      { name: "American Samoa", code: "+1-684", flag: "🇦🇸" },
-      { name: "Andorra", code: "+376", flag: "🇦🇩" },
-      { name: "Angola", code: "+244", flag: "🇦🇴" },
-      { name: "Anguilla", code: "+1-264", flag: "🇦🇮" },
-      { name: "Antarctica", code: "+672", flag: "🇦🇶" },
-      { name: "Antigua & Barbuda", code: "+1-268", flag: "🇦🇬" },
-      { name: "Argentina", code: "+54", flag: "🇦🇷" },
-      { name: "Armenia", code: "+374", flag: "🇦🇲" },
-      { name: "Aruba", code: "+297", flag: "🇦🇼" },
-      { name: "Australia", code: "+61", flag: "🇦🇺" },
-      { name: "Austria", code: "+43", flag: "🇦🇹" },
-      { name: "Azerbaijan", code: "+994", flag: "🇦🇿" },
-      { name: "Bahamas", code: "+1-242", flag: "🇧🇸" },
-      { name: "Bahrain", code: "+973", flag: "🇧🇭" },
-      { name: "Bangladesh", code: "+880", flag: "🇧🇩" },
-      { name: "Barbados", code: "+1-246", flag: "🇧🇧" },
-      { name: "Belarus", code: "+375", flag: "🇧🇾" },
-      { name: "Belgium", code: "+32", flag: "🇧🇪" },
-      { name: "Belize", code: "+501", flag: "🇧🇿" },
-      { name: "Benin", code: "+229", flag: "🇧🇯" },
-      { name: "Bermuda", code: "+1-441", flag: "🇧🇲" },
-      { name: "Bhutan", code: "+975", flag: "🇧🇹" },
-      { name: "Bolivia", code: "+591", flag: "🇧🇴" },
-      { name: "Bosnia & Herzegovina", code: "+387", flag: "🇧🇦" },
-      { name: "Botswana", code: "+267", flag: "🇧🇼" },
-      { name: "Brazil", code: "+55", flag: "🇧🇷" },
-      { name: "British Indian Ocean Territory", code: "+246", flag: "🇮🇴" },
-      { name: "British Virgin Islands", code: "+1-284", flag: "🇻🇬" },
-      { name: "Brunei", code: "+673", flag: "🇧🇳" },
-      { name: "Bulgaria", code: "+359", flag: "🇧🇬" },
-      { name: "Burkina Faso", code: "+226", flag: "🇧🇫" },
-      { name: "Burundi", code: "+257", flag: "🇧🇮" },
-      { name: "Cambodia", code: "+855", flag: "🇰🇭" },
-      { name: "Cameroon", code: "+237", flag: "🇨🇲" },
-      { name: "Canada", code: "+1", flag: "🇨🇦" },
-      { name: "Cape Verde", code: "+238", flag: "🇨🇻" },
-      { name: "Caribbean Netherlands", code: "+599", flag: "🇧🇶" },
-      { name: "Cayman Islands", code: "+1-345", flag: "🇰🇾" },
-      { name: "Central African Republic", code: "+236", flag: "🇨🇫" },
-      { name: "Chad", code: "+235", flag: "🇹🇩" },
-      { name: "Chile", code: "+56", flag: "🇨🇱" },
-      { name: "China", code: "+86", flag: "🇨🇳" },
-      { name: "Christmas Island", code: "+61", flag: "🇨🇽" },
-      { name: "Cocos (Keeling) Islands", code: "+61", flag: "🇨🇨" },
-      { name: "Colombia", code: "+57", flag: "🇨🇴" },
-      { name: "Comoros", code: "+269", flag: "🇰🇲" },
-      { name: "Congo - Brazzaville", code: "+242", flag: "🇨🇬" },
-      { name: "Congo - Kinshasa", code: "+243", flag: "🇨🇩" },
-      { name: "Cook Islands", code: "+682", flag: "🇨🇰" },
-      { name: "Costa Rica", code: "+506", flag: "🇨🇷" },
-      { name: "Croatia", code: "+385", flag: "🇭🇷" },
-      { name: "Cuba", code: "+53", flag: "🇨🇺" },
-      { name: "Curaçao", code: "+599", flag: "🇨🇼" },
-      { name: "Cyprus", code: "+357", flag: "🇨🇾" },
-      { name: "Czech Republic", code: "+420", flag: "🇨🇿" },
-      { name: "Denmark", code: "+45", flag: "🇩🇰" },
-      { name: "Djibouti", code: "+253", flag: "🇩🇯" },
-      { name: "Dominica", code: "+1-767", flag: "🇩🇲" },
-      { name: "Dominican Republic", code: "+1-809", flag: "🇩🇴" },
-      { name: "Ecuador", code: "+593", flag: "🇪🇨" },
-      { name: "Egypt", code: "+20", flag: "🇪🇬" },
-      { name: "El Salvador", code: "+503", flag: "🇸🇻" },
-      { name: "Equatorial Guinea", code: "+240", flag: "🇬🇶" },
-      { name: "Eritrea", code: "+291", flag: "🇪🇷" },
-      { name: "Estonia", code: "+372", flag: "🇪🇪" },
-      { name: "Eswatini", code: "+268", flag: "🇸🇿" },
-      { name: "Ethiopia", code: "+251", flag: "🇪🇹" },
-      { name: "Falkland Islands", code: "+500", flag: "🇫🇰" },
-      { name: "Faroe Islands", code: "+298", flag: "🇫🇴" },
-      { name: "Fiji", code: "+679", flag: "🇫🇯" },
-      { name: "Finland", code: "+358", flag: "🇫🇮" },
-      { name: "France", code: "+33", flag: "🇫🇷" },
-      { name: "French Guiana", code: "+594", flag: "🇬🇫" },
-      { name: "French Polynesia", code: "+689", flag: "🇵🇫" },
-      { name: "Gabon", code: "+241", flag: "🇬🇦" },
-      { name: "Gambia", code: "+220", flag: "🇬🇲" },
-      { name: "Georgia", code: "+995", flag: "🇬🇪" },
-      { name: "Germany", code: "+49", flag: "🇩🇪" },
-      { name: "Ghana", code: "+233", flag: "🇬🇭" },
-      { name: "Gibraltar", code: "+350", flag: "🇬🇮" },
-      { name: "Greece", code: "+30", flag: "🇬🇷" },
-      { name: "Greenland", code: "+299", flag: "🇬🇱" },
-      { name: "Grenada", code: "+1-473", flag: "🇬🇩" },
-      { name: "Guadeloupe", code: "+590", flag: "🇬🇵" },
-      { name: "Guam", code: "+1-671", flag: "🇬🇺" },
-      { name: "Guatemala", code: "+502", flag: "🇬🇹" },
-      { name: "Guernsey", code: "+44-1481", flag: "🇬🇬" },
-      { name: "Guinea", code: "+224", flag: "🇬🇳" },
-      { name: "Guinea-Bissau", code: "+245", flag: "🇬🇼" },
-      { name: "Guyana", code: "+592", flag: "🇬🇾" },
-      { name: "Haiti", code: "+509", flag: "🇭🇹" },
-      { name: "Honduras", code: "+504", flag: "🇭🇳" },
-      { name: "Hong Kong SAR China", code: "+852", flag: "🇭🇰" },
-      { name: "Hungary", code: "+36", flag: "🇭🇺" },
-      { name: "Iceland", code: "+354", flag: "🇮🇸" },
-      { name: "India", code: "+91", flag: "🇮🇳" },
-      { name: "Indonesia", code: "+62", flag: "🇮🇩" },
-      { name: "Iran", code: "+98", flag: "🇮🇷" },
-      { name: "Iraq", code: "+964", flag: "🇮🇶" },
-      { name: "Ireland", code: "+353", flag: "🇮🇪" },
-      { name: "Isle of Man", code: "+44-1624", flag: "🇮🇲" },
-      { name: "Israel", code: "+972", flag: "🇮🇱" },
-      { name: "Italy", code: "+39", flag: "🇮🇹" },
-      { name: "Ivory Coast", code: "+225", flag: "🇨🇮" },
-      { name: "Jamaica", code: "+1-876", flag: "🇯🇲" },
-      { name: "Japan", code: "+81", flag: "🇯🇵" },
-      { name: "Jersey", code: "+44-1534", flag: "🇯🇪" },
-      { name: "Jordan", code: "+962", flag: "🇯🇴" },
-      { name: "Kazakhstan", code: "+7", flag: "🇰🇿" },
-      { name: "Kenya", code: "+254", flag: "🇰🇪" },
-      { name: "Kiribati", code: "+686", flag: "🇰🇮" },
-      { name: "Kosovo", code: "+383", flag: "🇽🇰" },
-      { name: "Kuwait", code: "+965", flag: "🇰🇼" },
-      { name: "Kyrgyzstan", code: "+996", flag: "🇰🇬" },
-      { name: "Laos", code: "+856", flag: "🇱🇦" },
-      { name: "Latvia", code: "+371", flag: "🇱🇻" },
-      { name: "Lebanon", code: "+961", flag: "🇱🇧" },
-      { name: "Lesotho", code: "+266", flag: "🇱🇸" },
-      { name: "Liberia", code: "+231", flag: "🇱🇷" },
-      { name: "Libya", code: "+218", flag: "🇱🇾" },
-      { name: "Liechtenstein", code: "+423", flag: "🇱🇮" },
-      { name: "Lithuania", code: "+370", flag: "🇱🇹" },
-      { name: "Luxembourg", code: "+352", flag: "🇱🇺" },
-      { name: "Macao SAR China", code: "+853", flag: "🇲🇴" },
-      { name: "Madagascar", code: "+261", flag: "🇲🇬" },
-      { name: "Malawi", code: "+265", flag: "🇲🇼" },
-      { name: "Malaysia", code: "+60", flag: "🇲🇾" },
-      { name: "Maldives", code: "+960", flag: "🇲🇻" },
-      { name: "Mali", code: "+223", flag: "🇲🇱" },
-      { name: "Malta", code: "+356", flag: "🇲🇹" },
-      { name: "Marshall Islands", code: "+692", flag: "🇲🇭" },
-      { name: "Martinique", code: "+596", flag: "🇲🇶" },
-      { name: "Mauritania", code: "+222", flag: "🇲🇷" },
-      { name: "Mauritius", code: "+230", flag: "🇲🇺" },
-      { name: "Mayotte", code: "+262", flag: "🇾🇹" },
-      { name: "Mexico", code: "+52", flag: "🇲🇽" },
-      { name: "Micronesia", code: "+691", flag: "🇫🇲" },
-      { name: "Moldova", code: "+373", flag: "🇲🇩" },
-      { name: "Monaco", code: "+377", flag: "🇲🇨" },
-      { name: "Mongolia", code: "+976", flag: "🇲🇳" },
-      { name: "Montenegro", code: "+382", flag: "🇲🇪" },
-      { name: "Montserrat", code: "+1-664", flag: "🇲🇸" },
-      { name: "Morocco", code: "+212", flag: "🇲🇦" },
-      { name: "Mozambique", code: "+258", flag: "🇲🇿" },
-      { name: "Myanmar (Burma)", code: "+95", flag: "🇲🇲" },
-      { name: "Namibia", code: "+264", flag: "🇳🇦" },
-      { name: "Nauru", code: "+674", flag: "🇳🇷" },
-      { name: "Nepal", code: "+977", flag: "🇳🇵" },
-      { name: "Netherlands", code: "+31", flag: "🇳🇱" },
-      { name: "New Caledonia", code: "+687", flag: "🇳🇨" },
-      { name: "New Zealand", code: "+64", flag: "🇳🇿" },
-      { name: "Nicaragua", code: "+505", flag: "🇳🇮" },
-      { name: "Niger", code: "+227", flag: "🇳🇪" },
-      { name: "Nigeria", code: "+234", flag: "🇳🇬" },
-      { name: "Niue", code: "+683", flag: "🇳🇺" },
-      { name: "Norfolk Island", code: "+672", flag: "🇳🇫" },
-      { name: "North Korea", code: "+850", flag: "🇰🇵" },
-      { name: "North Macedonia", code: "+389", flag: "🇲🇰" },
-      { name: "Northern Mariana Islands", code: "+1-670", flag: "🇲🇵" },
-      { name: "Norway", code: "+47", flag: "🇳🇴" },
-      { name: "Oman", code: "+968", flag: "🇴🇲" },
-      { name: "Pakistan", code: "+92", flag: "🇵🇰" },
-      { name: "Palau", code: "+680", flag: "🇵🇼" },
-      { name: "Palestinian Territories", code: "+970", flag: "🇵🇸" },
-      { name: "Panama", code: "+507", flag: "🇵🇦" },
-      { name: "Papua New Guinea", code: "+675", flag: "🇵🇬" },
-      { name: "Paraguay", code: "+595", flag: "🇵🇾" },
-      { name: "Peru", code: "+51", flag: "🇵🇪" },
-      { name: "Philippines", code: "+63", flag: "🇵🇭" },
-      { name: "Poland", code: "+48", flag: "🇵🇱" },
-      { name: "Portugal", code: "+351", flag: "🇵🇹" },
-      { name: "Puerto Rico", code: "+1-787", flag: "🇵🇷" },
-      { name: "Qatar", code: "+974", flag: "🇶🇦" },
-      { name: "Réunion", code: "+262", flag: "🇷🇪" },
-      { name: "Romania", code: "+40", flag: "🇷🇴" },
-      { name: "Russia", code: "+7", flag: "🇷🇺" },
-      { name: "Rwanda", code: "+250", flag: "🇷🇼" },
-      { name: "Samoa", code: "+685", flag: "🇼🇸" },
-      { name: "San Marino", code: "+378", flag: "🇸🇲" },
-      { name: "São Tomé & Príncipe", code: "+239", flag: "🇸🇹" },
-      { name: "Saudi Arabia", code: "+966", flag: "🇸🇦" },
-      { name: "Senegal", code: "+221", flag: "🇸🇳" },
-      { name: "Serbia", code: "+381", flag: "🇷🇸" },
-      { name: "Seychelles", code: "+248", flag: "🇸🇨" },
-      { name: "Sierra Leone", code: "+232", flag: "🇸🇱" },
-      { name: "Singapore", code: "+65", flag: "🇸🇬" },
-      { name: "Sint Maarten", code: "+1-721", flag: "🇸🇽" },
-      { name: "Slovakia", code: "+421", flag: "🇸🇰" },
-      { name: "Slovenia", code: "+386", flag: "🇸🇮" },
-      { name: "Solomon Islands", code: "+677", flag: "🇸🇧" },
-      { name: "Somalia", code: "+252", flag: "🇸🇴" },
-      { name: "South Africa", code: "+27", flag: "🇿🇦" },
-      { name: "South Korea", code: "+82", flag: "🇰🇷" },
-      { name: "South Sudan", code: "+211", flag: "🇸🇸" },
-      { name: "Spain", code: "+34", flag: "🇪🇸" },
-      { name: "Sri Lanka", code: "+94", flag: "🇱🇰" },
-      { name: "St. Barthélemy", code: "+590", flag: "🇧🇱" },
-      { name: "St. Helena", code: "+290", flag: "🇸🇭" },
-      { name: "St. Kitts & Nevis", code: "+1-869", flag: "🇰🇳" },
-      { name: "St. Lucia", code: "+1-758", flag: "🇱🇨" },
-      { name: "St. Martin", code: "+590", flag: "🇲🇫" },
-      { name: "St. Pierre & Miquelon", code: "+508", flag: "🇵🇲" },
-      { name: "St. Vincent & Grenadines", code: "+1-784", flag: "🇻🇨" },
-      { name: "Sudan", code: "+249", flag: "🇸🇩" },
-      { name: "Suriname", code: "+597", flag: "🇸🇷" },
-      { name: "Svalbard & Jan Mayen", code: "+47", flag: "🇸🇯" },
-      { name: "Sweden", code: "+46", flag: "🇸🇪" },
-      { name: "Switzerland", code: "+41", flag: "🇨🇭" },
-      { name: "Syria", code: "+963", flag: "🇸🇾" },
-      { name: "Taiwan", code: "+886", flag: "🇹🇼" },
-      { name: "Tajikistan", code: "+992", flag: "🇹🇯" },
-      { name: "Tanzania", code: "+255", flag: "🇹🇿" },
-      { name: "Thailand", code: "+66", flag: "🇹🇭" },
-      { name: "Timor-Leste", code: "+670", flag: "🇹🇱" },
-      { name: "Togo", code: "+228", flag: "🇹🇬" },
-      { name: "Tokelau", code: "+690", flag: "🇹🇰" },
-      { name: "Tonga", code: "+676", flag: "🇹🇴" },
-      { name: "Trinidad & Tobago", code: "+1-868", flag: "🇹🇹" },
-      { name: "Tunisia", code: "+216", flag: "🇹🇳" },
-      { name: "Turkey", code: "+90", flag: "🇹🇷" },
-      { name: "Turkmenistan", code: "+993", flag: "🇹🇲" },
-      { name: "Turks & Caicos Islands", code: "+1-649", flag: "🇹🇨" },
-      { name: "Tuvalu", code: "+688", flag: "🇹🇻" },
-      { name: "U.S. Virgin Islands", code: "+1-340", flag: "🇻🇮" },
-      { name: "Uganda", code: "+256", flag: "🇺🇬" },
-      { name: "Ukraine", code: "+380", flag: "🇺🇦" },
-      { name: "United Arab Emirates", code: "+971", flag: "🇦🇪" },
-      { name: "United Kingdom", code: "+44", flag: "🇬🇧" },
-      { name: "United States", code: "+1", flag: "🇺🇸" },
-      { name: "Uruguay", code: "+598", flag: "🇺🇾" },
-      { name: "Uzbekistan", code: "+998", flag: "🇺🇿" },
-      { name: "Vanuatu", code: "+678", flag: "🇻🇺" },
-      { name: "Vatican City", code: "+379", flag: "🇻🇦" },
-      { name: "Venezuela", code: "+58", flag: "🇻🇪" },
-      { name: "Vietnam", code: "+84", flag: "🇻🇳" },
-      { name: "Wallis & Futuna", code: "+681", flag: "🇼🇫" },
-      { name: "Western Sahara", code: "+212", flag: "🇪🇭" },
-      { name: "Yemen", code: "+967", flag: "🇾🇪" },
-      { name: "Zambia", code: "+260", flag: "🇿🇲" },
-      { name: "Zimbabwe", code: "+263", flag: "🇿🇼" }
+  <script>
+    const copyIconSVG = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>`;
+
+    const countries = [
+      { flag: "🇦🇫", name: "Afghanistan", code: "+93", minDigits: 9, maxDigits: 9 },
+      { flag: "🇦🇱", name: "Albania", code: "+355", minDigits: 8, maxDigits: 9 },
+      { flag: "🇩🇿", name: "Algeria", code: "+213", minDigits: 9, maxDigits: 9 },
+      { flag: "🇦🇸", name: "American Samoa", code: "+1684", minDigits: 7, maxDigits: 7 },
+      { flag: "🇦🇩", name: "Andorra", code: "+376", minDigits: 6, maxDigits: 6 },
+      { flag: "🇦🇴", name: "Angola", code: "+244", minDigits: 9, maxDigits: 9 },
+      { flag: "🇦🇮", name: "Anguilla", code: "+1264", minDigits: 7, maxDigits: 7 },
+      { flag: "🇦🇬", name: "Antigua and Barbuda", code: "+1268", minDigits: 7, maxDigits: 7 },
+      { flag: "🇦🇷", name: "Argentina", code: "+54", minDigits: 10, maxDigits: 10 },
+      { flag: "🇦🇲", name: "Armenia", code: "+374", minDigits: 8, maxDigits: 8 },
+      { flag: "🇦🇼", name: "Aruba", code: "+297", minDigits: 7, maxDigits: 7 },
+      { flag: "🇦🇨", name: "Ascension Island", code: "+247", minDigits: 4, maxDigits: 4 },
+      { flag: "🇦🇺", name: "Australia", code: "+61", minDigits: 9, maxDigits: 9 },
+      { flag: "🇦🇹", name: "Austria", code: "+43", minDigits: 10, maxDigits: 11 },
+      { flag: "🇦🇿", name: "Azerbaijan", code: "+994", minDigits: 9, maxDigits: 9 },
+      { flag: "🇧🇸", name: "Bahamas", code: "+1242", minDigits: 7, maxDigits: 7 },
+      { flag: "🇧🇭", name: "Bahrain", code: "+973", minDigits: 8, maxDigits: 8 },
+      { flag: "🇧🇩", name: "Bangladesh", code: "+880", minDigits: 10, maxDigits: 10 },
+      { flag: "🇧🇧", name: "Barbados", code: "+1246", minDigits: 7, maxDigits: 7 },
+      { flag: "🇧🇾", name: "Belarus", code: "+375", minDigits: 9, maxDigits: 9 },
+      { flag: "🇧🇪", name: "Belgium", code: "+32", minDigits: 9, maxDigits: 9 },
+      { flag: "🇧🇿", name: "Belize", code: "+501", minDigits: 7, maxDigits: 7 },
+      { flag: "🇧🇯", name: "Benin", code: "+229", minDigits: 8, maxDigits: 8 },
+      { flag: "🇧🇲", name: "Bermuda", code: "+1441", minDigits: 7, maxDigits: 7 },
+      { flag: "🇧🇹", name: "Bhutan", code: "+975", minDigits: 8, maxDigits: 8 },
+      { flag: "🇧🇴", name: "Bolivia", code: "+591", minDigits: 8, maxDigits: 8 },
+      { flag: "🇧🇦", name: "Bosnia and Herzegovina", code: "+387", minDigits: 8, maxDigits: 8 },
+      { flag: "🇧🇼", name: "Botswana", code: "+267", minDigits: 8, maxDigits: 8 },
+      { flag: "🇧🇷", name: "Brazil", code: "+55", minDigits: 10, maxDigits: 11 },
+      { flag: "🇮🇴", name: "British Indian Ocean Territory", code: "+246", minDigits: 7, maxDigits: 7 },
+      { flag: "🇻🇬", name: "British Virgin Islands", code: "+1284", minDigits: 7, maxDigits: 7 },
+      { flag: "🇧🇳", name: "Brunei", code: "+673", minDigits: 7, maxDigits: 7 },
+      { flag: "🇧🇬", name: "Bulgaria", code: "+359", minDigits: 8, maxDigits: 9 },
+      { flag: "🇧🇫", name: "Burkina Faso", code: "+226", minDigits: 8, maxDigits: 8 },
+      { flag: "🇧🇮", name: "Burundi", code: "+257", minDigits: 8, maxDigits: 8 },
+      { flag: "🇰🇭", name: "Cambodia", code: "+855", minDigits: 8, maxDigits: 9 },
+      { flag: "🇨🇲", name: "Cameroon", code: "+237", minDigits: 9, maxDigits: 9 },
+      { flag: "🇨🇦", name: "Canada", code: "+1", minDigits: 10, maxDigits: 10 },
+      { flag: "🇨🇻", name: "Cape Verde", code: "+238", minDigits: 7, maxDigits: 7 },
+      { flag: "🇰🇾", name: "Cayman Islands", code: "+1345", minDigits: 7, maxDigits: 7 },
+      { flag: "🇨🇫", name: "Central African Republic", code: "+236", minDigits: 8, maxDigits: 8 },
+      { flag: "🇹🇩", name: "Chad", code: "+235", minDigits: 8, maxDigits: 8 },
+      { flag: "🇨🇱", name: "Chile", code: "+56", minDigits: 9, maxDigits: 9 },
+      { flag: "🇨🇳", name: "China", code: "+86", minDigits: 11, maxDigits: 11 },
+      { flag: "🇨🇽", name: "Christmas Island", code: "+61", minDigits: 9, maxDigits: 9 },
+      { flag: "🇨🇨", name: "Cocos (Keeling) Islands", code: "+61", minDigits: 9, maxDigits: 9 },
+      { flag: "🇨🇴", name: "Colombia", code: "+57", minDigits: 10, maxDigits: 10 },
+      { flag: "🇰🇲", name: "Comoros", code: "+269", minDigits: 7, maxDigits: 7 },
+      { flag: "🇨🇬", name: "Congo", code: "+242", minDigits: 9, maxDigits: 9 },
+      { flag: "🇨🇩", name: "Congo (DRC)", code: "+243", minDigits: 9, maxDigits: 9 },
+      { flag: "🇨🇰", name: "Cook Islands", code: "+682", minDigits: 5, maxDigits: 5 },
+      { flag: "🇨🇷", name: "Costa Rica", code: "+506", minDigits: 8, maxDigits: 8 },
+      { flag: "🇭🇷", name: "Croatia", code: "+385", minDigits: 8, maxDigits: 9 },
+      { flag: "🇨🇺", name: "Cuba", code: "+53", minDigits: 8, maxDigits: 8 },
+      { flag: "🇨🇼", name: "Curaçao", code: "+599", minDigits: 8, maxDigits: 8 },
+      { flag: "🇨🇾", name: "Cyprus", code: "+357", minDigits: 8, maxDigits: 8 },
+      { flag: "🇨🇿", name: "Czech Republic", code: "+420", minDigits: 9, maxDigits: 9 },
+      { flag: "🇩🇰", name: "Denmark", code: "+45", minDigits: 8, maxDigits: 8 },
+      { flag: "🇩🇯", name: "Djibouti", code: "+253", minDigits: 8, maxDigits: 8 },
+      { flag: "🇩🇲", name: "Dominica", code: "+1767", minDigits: 7, maxDigits: 7 },
+      { flag: "🇩🇴", name: "Dominican Republic", code: "+1809", minDigits: 7, maxDigits: 7 },
+      { flag: "🇪🇨", name: "Ecuador", code: "+593", minDigits: 9, maxDigits: 9 },
+      { flag: "🇪🇬", name: "Egypt", code: "+20", minDigits: 10, maxDigits: 10 },
+      { flag: "🇸🇻", name: "El Salvador", code: "+503", minDigits: 8, maxDigits: 8 },
+      { flag: "🇬🇶", name: "Equatorial Guinea", code: "+240", minDigits: 9, maxDigits: 9 },
+      { flag: "🇪🇷", name: "Eritrea", code: "+291", minDigits: 7, maxDigits: 7 },
+      { flag: "🇪🇪", name: "Estonia", code: "+372", minDigits: 7, maxDigits: 8 },
+      { flag: "🇸🇿", name: "Eswatini", code: "+268", minDigits: 8, maxDigits: 8 },
+      { flag: "🇪🇹", name: "Ethiopia", code: "+251", minDigits: 9, maxDigits: 9 },
+      { flag: "🇫🇰", name: "Falkland Islands", code: "+500", minDigits: 5, maxDigits: 5 },
+      { flag: "🇫🇴", name: "Faroe Islands", code: "+298", minDigits: 6, maxDigits: 6 },
+      { flag: "🇫🇯", name: "Fiji", code: "+679", minDigits: 7, maxDigits: 7 },
+      { flag: "🇫🇮", name: "Finland", code: "+358", minDigits: 9, maxDigits: 10 },
+      { flag: "🇫🇷", name: "France", code: "+33", minDigits: 9, maxDigits: 9 },
+      { flag: "🇬🇫", name: "French Guiana", code: "+594", minDigits: 9, maxDigits: 9 },
+      { flag: "🇵🇫", name: "French Polynesia", code: "+689", minDigits: 6, maxDigits: 6 },
+      { flag: "🇬🇦", name: "Gabon", code: "+241", minDigits: 7, maxDigits: 8 },
+      { flag: "🇬🇲", name: "Gambia", code: "+220", minDigits: 7, maxDigits: 7 },
+      { flag: "🇬🇪", name: "Georgia", code: "+995", minDigits: 9, maxDigits: 9 },
+      { flag: "🇩🇪", name: "Germany", code: "+49", minDigits: 10, maxDigits: 11 },
+      { flag: "🇬🇭", name: "Ghana", code: "+233", minDigits: 9, maxDigits: 9 },
+      { flag: "🇬🇮", name: "Gibraltar", code: "+350", minDigits: 8, maxDigits: 8 },
+      { flag: "🇬🇷", name: "Greece", code: "+30", minDigits: 10, maxDigits: 10 },
+      { flag: "🇬🇱", name: "Greenland", code: "+299", minDigits: 6, maxDigits: 6 },
+      { flag: "🇬🇩", name: "Grenada", code: "+1473", minDigits: 7, maxDigits: 7 },
+      { flag: "🇬🇵", name: "Guadeloupe", code: "+590", minDigits: 9, maxDigits: 9 },
+      { flag: "🇬🇺", name: "Guam", code: "+1671", minDigits: 7, maxDigits: 7 },
+      { flag: "🇬🇹", name: "Guatemala", code: "+502", minDigits: 8, maxDigits: 8 },
+      { flag: "🇬🇬", name: "Guernsey", code: "+44", minDigits: 10, maxDigits: 10 },
+      { flag: "🇬🇳", name: "Guinea", code: "+224", minDigits: 9, maxDigits: 9 },
+      { flag: "🇬🇼", name: "Guinea-Bissau", code: "+245", minDigits: 7, maxDigits: 7 },
+      { flag: "🇬🇾", name: "Guyana", code: "+592", minDigits: 7, maxDigits: 7 },
+      { flag: "🇭🇹", name: "Haiti", code: "+509", minDigits: 8, maxDigits: 8 },
+      { flag: "🇭🇳", name: "Honduras", code: "+504", minDigits: 8, maxDigits: 8 },
+      { flag: "🇭🇰", name: "Hong Kong", code: "+852", minDigits: 8, maxDigits: 8 },
+      { flag: "🇭🇺", name: "Hungary", code: "+36", minDigits: 9, maxDigits: 9 },
+      { flag: "🇮🇸", name: "Iceland", code: "+354", minDigits: 7, maxDigits: 7 },
+      { flag: "🇮🇳", name: "India", code: "+91", minDigits: 10, maxDigits: 10 },
+      { flag: "🇮🇩", name: "Indonesia", code: "+62", minDigits: 9, maxDigits: 12 },
+      { flag: "🇮🇷", name: "Iran", code: "+98", minDigits: 10, maxDigits: 10 },
+      { flag: "🇮🇶", name: "Iraq", code: "+964", minDigits: 10, maxDigits: 10 },
+      { flag: "🇮🇪", name: "Ireland", code: "+353", minDigits: 9, maxDigits: 9 },
+      { flag: "🇮🇲", name: "Isle of Man", code: "+44", minDigits: 10, maxDigits: 10 },
+      { flag: "🇮🇱", name: "Israel", code: "+972", minDigits: 9, maxDigits: 9 },
+      { flag: "🇮🇹", name: "Italy", code: "+39", minDigits: 9, maxDigits: 10 },
+      { flag: "🇨🇮", name: "Ivory Coast", code: "+225", minDigits: 10, maxDigits: 10 },
+      { flag: "🇯🇲", name: "Jamaica", code: "+1876", minDigits: 7, maxDigits: 7 },
+      { flag: "🇯🇵", name: "Japan", code: "+81", minDigits: 10, maxDigits: 10 },
+      { flag: "🇯🇪", name: "Jersey", code: "+44", minDigits: 10, maxDigits: 10 },
+      { flag: "🇯🇴", name: "Jordan", code: "+962", minDigits: 8, maxDigits: 9 },
+      { flag: "🇰🇿", name: "Kazakhstan", code: "+7", minDigits: 10, maxDigits: 10 },
+      { flag: "🇰🇪", name: "Kenya", code: "+254", minDigits: 9, maxDigits: 9 },
+      { flag: "🇰🇮", name: "Kiribati", code: "+686", minDigits: 8, maxDigits: 8 },
+      { flag: "🇽🇰", name: "Kosovo", code: "+383", minDigits: 8, maxDigits: 8 },
+      { flag: "🇰🇼", name: "Kuwait", code: "+965", minDigits: 8, maxDigits: 8 },
+      { flag: "🇰🇬", name: "Kyrgyzstan", code: "+996", minDigits: 9, maxDigits: 9 },
+      { flag: "🇱🇦", name: "Laos", code: "+856", minDigits: 9, maxDigits: 10 },
+      { flag: "🇱🇻", name: "Latvia", code: "+371", minDigits: 8, maxDigits: 8 },
+      { flag: "🇱🇧", name: "Lebanon", code: "+961", minDigits: 7, maxDigits: 8 },
+      { flag: "🇱🇸", name: "Lesotho", code: "+266", minDigits: 8, maxDigits: 8 },
+      { flag: "🇱🇷", name: "Liberia", code: "+231", minDigits: 8, maxDigits: 8 },
+      { flag: "🇱🇾", name: "Libya", code: "+218", minDigits: 9, maxDigits: 9 },
+      { flag: "🇱🇮", name: "Liechtenstein", code: "+423", minDigits: 7, maxDigits: 7 },
+      { flag: "🇱🇹", name: "Lithuania", code: "+370", minDigits: 8, maxDigits: 8 },
+      { flag: "🇱🇺", name: "Luxembourg", code: "+352", minDigits: 9, maxDigits: 9 },
+      { flag: "🇲🇴", name: "Macau", code: "+853", minDigits: 8, maxDigits: 8 },
+      { flag: "🇲🇰", name: "North Macedonia", code: "+389", minDigits: 8, maxDigits: 8 },
+      { flag: "🇲🇬", name: "Madagascar", code: "+261", minDigits: 9, maxDigits: 9 },
+      { flag: "🇲🇼", name: "Malawi", code: "+265", minDigits: 9, maxDigits: 9 },
+      { flag: "🇲🇾", name: "Malaysia", code: "+60", minDigits: 9, maxDigits: 10 },
+      { flag: "🇲🇻", name: "Maldives", code: "+960", minDigits: 7, maxDigits: 7 },
+      { flag: "🇲🇱", name: "Mali", code: "+223", minDigits: 8, maxDigits: 8 },
+      { flag: "🇲🇹", name: "Malta", code: "+356", minDigits: 8, maxDigits: 8 },
+      { flag: "🇲🇭", name: "Marshall Islands", code: "+692", minDigits: 7, maxDigits: 7 },
+      { flag: "🇲🇶", name: "Martinique", code: "+596", minDigits: 9, maxDigits: 9 },
+      { flag: "🇲🇷", name: "Mauritania", code: "+222", minDigits: 8, maxDigits: 8 },
+      { flag: "🇲🇺", name: "Mauritius", code: "+230", minDigits: 7, maxDigits: 8 },
+      { flag: "🇾🇹", name: "Mayotte", code: "+262", minDigits: 9, maxDigits: 9 },
+      { flag: "🇲🇽", name: "Mexico", code: "+52", minDigits: 10, maxDigits: 10 },
+      { flag: "🇫🇲", name: "Micronesia", code: "+691", minDigits: 7, maxDigits: 7 },
+      { flag: "🇲🇩", name: "Moldova", code: "+373", minDigits: 8, maxDigits: 8 },
+      { flag: "🇲🇨", name: "Monaco", code: "+377", minDigits: 8, maxDigits: 9 },
+      { flag: "🇲🇳", name: "Mongolia", code: "+976", minDigits: 8, maxDigits: 8 },
+      { flag: "🇲🇪", name: "Montenegro", code: "+382", minDigits: 8, maxDigits: 8 },
+      { flag: "🇲🇸", name: "Montserrat", code: "+1664", minDigits: 7, maxDigits: 7 },
+      { flag: "🇲🇦", name: "Morocco", code: "+212", minDigits: 9, maxDigits: 9 },
+      { flag: "🇲🇿", name: "Mozambique", code: "+258", minDigits: 9, maxDigits: 9 },
+      { flag: "🇲🇲", name: "Myanmar", code: "+95", minDigits: 8, maxDigits: 10 },
+      { flag: "🇳🇦", name: "Namibia", code: "+264", minDigits: 9, maxDigits: 9 },
+      { flag: "🇳🇷", name: "Nauru", code: "+674", minDigits: 7, maxDigits: 7 },
+      { flag: "🇳🇵", name: "Nepal", code: "+977", minDigits: 10, maxDigits: 10 },
+      { flag: "🇳🇱", name: "Netherlands", code: "+31", minDigits: 9, maxDigits: 9 },
+      { flag: "🇳🇨", name: "New Caledonia", code: "+687", minDigits: 6, maxDigits: 6 },
+      { flag: "🇳🇿", name: "New Zealand", code: "+64", minDigits: 8, maxDigits: 10 },
+      { flag: "🇳🇮", name: "Nicaragua", code: "+505", minDigits: 8, maxDigits: 8 },
+      { flag: "🇳🇪", name: "Niger", code: "+227", minDigits: 8, maxDigits: 8 },
+      { flag: "🇳🇬", name: "Nigeria", code: "+234", minDigits: 10, maxDigits: 10 },
+      { flag: "🇳🇺", name: "Niue", code: "+683", minDigits: 4, maxDigits: 4 },
+      { flag: "🇳🇫", name: "Norfolk Island", code: "+672", minDigits: 6, maxDigits: 6 },
+      { flag: "🇰🇵", name: "North Korea", code: "+850", minDigits: 8, maxDigits: 10 },
+      { flag: "🇲🇵", name: "Northern Mariana Islands", code: "+1670", minDigits: 7, maxDigits: 7 },
+      { flag: "🇳🇴", name: "Norway", code: "+47", minDigits: 8, maxDigits: 8 },
+      { flag: "🇴🇲", name: "Oman", code: "+968", minDigits: 8, maxDigits: 8 },
+      { flag: "🇵🇰", name: "Pakistan", code: "+92", minDigits: 10, maxDigits: 10 },
+      { flag: "🇵🇼", name: "Palau", code: "+680", minDigits: 7, maxDigits: 7 },
+      { flag: "🇵🇸", name: "Palestine", code: "+970", minDigits: 9, maxDigits: 9 },
+      { flag: "🇵🇦", name: "Panama", code: "+507", minDigits: 8, maxDigits: 8 },
+      { flag: "🇵🇬", name: "Papua New Guinea", code: "+675", minDigits: 8, maxDigits: 8 },
+      { flag: "🇵🇾", name: "Paraguay", code: "+595", minDigits: 9, maxDigits: 9 },
+      { flag: "🇵🇪", name: "Peru", code: "+51", minDigits: 9, maxDigits: 9 },
+      { flag: "🇵🇭", name: "Philippines", code: "+63", minDigits: 10, maxDigits: 10 },
+      { flag: "🇵🇳", name: "Pitcairn Islands", code: "+64", minDigits: 8, maxDigits: 8 },
+      { flag: "🇵🇱", name: "Poland", code: "+48", minDigits: 9, maxDigits: 9 },
+      { flag: "🇵🇹", name: "Portugal", code: "+351", minDigits: 9, maxDigits: 9 },
+      { flag: "🇵🇷", name: "Puerto Rico", code: "+1787", minDigits: 7, maxDigits: 7 },
+      { flag: "🇶🇦", name: "Qatar", code: "+974", minDigits: 8, maxDigits: 8 },
+      { flag: "🇷🇪", name: "Réunion", code: "+262", minDigits: 9, maxDigits: 9 },
+      { flag: "🇷🇴", name: "Romania", code: "+40", minDigits: 9, maxDigits: 9 },
+      { flag: "🇷🇺", name: "Russia", code: "+7", minDigits: 10, maxDigits: 10 },
+      { flag: "🇷🇼", name: "Rwanda", code: "+250", minDigits: 9, maxDigits: 9 },
+      { flag: "🇧🇱", name: "Saint Barthélemy", code: "+590", minDigits: 9, maxDigits: 9 },
+      { flag: "🇸🇭", name: "Saint Helena", code: "+290", minDigits: 4, maxDigits: 4 },
+      { flag: "🇰🇳", name: "Saint Kitts and Nevis", code: "+1869", minDigits: 7, maxDigits: 7 },
+      { flag: "🇱🇨", name: "Saint Lucia", code: "+1758", minDigits: 7, maxDigits: 7 },
+      { flag: "🇲🇫", name: "Saint Martin", code: "+590", minDigits: 9, maxDigits: 9 },
+      { flag: "🇵🇲", name: "Saint Pierre and Miquelon", code: "+508", minDigits: 6, maxDigits: 6 },
+      { flag: "🇻🇨", name: "Saint Vincent and the Grenadines", code: "+1784", minDigits: 7, maxDigits: 7 },
+      { flag: "🇼🇸", name: "Samoa", code: "+685", minDigits: 5, maxDigits: 7 },
+      { flag: "🇸🇲", name: "San Marino", code: "+378", minDigits: 10, maxDigits: 10 },
+      { flag: "🇸🇹", name: "São Tomé and Príncipe", code: "+239", minDigits: 7, maxDigits: 7 },
+      { flag: "🇸🇦", name: "Saudi Arabia", code: "+966", minDigits: 9, maxDigits: 9 },
+      { flag: "🇸🇳", name: "Senegal", code: "+221", minDigits: 9, maxDigits: 9 },
+      { flag: "🇷🇸", name: "Serbia", code: "+381", minDigits: 8, maxDigits: 9 },
+      { flag: "🇸🇨", name: "Seychelles", code: "+248", minDigits: 7, maxDigits: 7 },
+      { flag: "🇸🇱", name: "Sierra Leone", code: "+232", minDigits: 8, maxDigits: 8 },
+      { flag: "🇸🇬", name: "Singapore", code: "+65", minDigits: 8, maxDigits: 8 },
+      { flag: "🇸🇽", name: "Sint Maarten", code: "+1721", minDigits: 7, maxDigits: 7 },
+      { flag: "🇸🇰", name: "Slovakia", code: "+421", minDigits: 9, maxDigits: 9 },
+      { flag: "🇸🇮", name: "Slovenia", code: "+386", minDigits: 8, maxDigits: 8 },
+      { flag: "🇸🇧", name: "Solomon Islands", code: "+677", minDigits: 7, maxDigits: 7 },
+      { flag: "🇸🇴", name: "Somalia", code: "+252", minDigits: 8, maxDigits: 9 },
+      { flag: "🇿🇦", name: "South Africa", code: "+27", minDigits: 9, maxDigits: 9 },
+      { flag: "🇰🇷", name: "South Korea", code: "+82", minDigits: 9, maxDigits: 10 },
+      { flag: "🇸🇸", name: "South Sudan", code: "+211", minDigits: 9, maxDigits: 9 },
+      { flag: "🇪🇸", name: "Spain", code: "+34", minDigits: 9, maxDigits: 9 },
+      { flag: "🇱🇰", name: "Sri Lanka", code: "+94", minDigits: 9, maxDigits: 9 },
+      { flag: "🇸🇩", name: "Sudan", code: "+249", minDigits: 9, maxDigits: 9 },
+      { flag: "🇸🇷", name: "Suriname", code: "+597", minDigits: 7, maxDigits: 7 },
+      { flag: "🇸🇯", name: "Svalbard and Jan Mayen", code: "+47", minDigits: 8, maxDigits: 8 },
+      { flag: "🇸🇪", name: "Sweden", code: "+46", minDigits: 9, maxDigits: 9 },
+      { flag: "🇨🇭", name: "Switzerland", code: "+41", minDigits: 9, maxDigits: 9 },
+      { flag: "🇸🇾", name: "Syria", code: "+963", minDigits: 9, maxDigits: 9 },
+      { flag: "🇹🇼", name: "Taiwan", code: "+886", minDigits: 9, maxDigits: 9 },
+      { flag: "🇹🇯", name: "Tajikistan", code: "+992", minDigits: 9, maxDigits: 9 },
+      { flag: "🇹🇿", name: "Tanzania", code: "+255", minDigits: 9, maxDigits: 9 },
+      { flag: "🇹🇭", name: "Thailand", code: "+66", minDigits: 9, maxDigits: 9 },
+      { flag: "🇹🇱", name: "Timor-Leste", code: "+670", minDigits: 7, maxDigits: 8 },
+      { flag: "🇹🇬", name: "Togo", code: "+228", minDigits: 8, maxDigits: 8 },
+      { flag: "🇹🇰", name: "Tokelau", code: "+690", minDigits: 4, maxDigits: 4 },
+      { flag: "🇹🇴", name: "Tonga", code: "+676", minDigits: 5, maxDigits: 7 },
+      { flag: "🇹🇹", name: "Trinidad and Tobago", code: "+1868", minDigits: 7, maxDigits: 7 },
+      { flag: "🇸🇭", name: "Tristan da Cunha", code: "+2908", minDigits: 4, maxDigits: 4 },
+      { flag: "🇹🇳", name: "Tunisia", code: "+216", minDigits: 8, maxDigits: 8 },
+      { flag: "🇹🇷", name: "Turkey", code: "+90", minDigits: 10, maxDigits: 10 },
+      { flag: "🇹🇲", name: "Turkmenistan", code: "+993", minDigits: 8, maxDigits: 8 },
+      { flag: "🇹🇨", name: "Turks and Caicos Islands", code: "+1649", minDigits: 7, maxDigits: 7 },
+      { flag: "🇹🇻", name: "Tuvalu", code: "+688", minDigits: 5, maxDigits: 5 },
+      { flag: "🇺🇬", name: "Uganda", code: "+256", minDigits: 9, maxDigits: 9 },
+      { flag: "🇺🇦", name: "Ukraine", code: "+380", minDigits: 9, maxDigits: 9 },
+      { flag: "🇦🇪", name: "United Arab Emirates", code: "+971", minDigits: 9, maxDigits: 9 },
+      { flag: "🇬🇧", name: "United Kingdom", code: "+44", minDigits: 10, maxDigits: 10 },
+      { flag: "🇺🇸", name: "United States", code: "+1", minDigits: 10, maxDigits: 10 },
+      { flag: "🇺🇾", name: "Uruguay", code: "+598", minDigits: 8, maxDigits: 8 },
+      { flag: "🇻🇮", name: "US Virgin Islands", code: "+1340", minDigits: 7, maxDigits: 7 },
+      { flag: "🇺🇿", name: "Uzbekistan", code: "+998", minDigits: 9, maxDigits: 9 },
+      { flag: "🇻🇺", name: "Vanuatu", code: "+678", minDigits: 7, maxDigits: 7 },
+      { flag: "🇻🇦", name: "Vatican City", code: "+39", minDigits: 10, maxDigits: 10 },
+      { flag: "🇻🇪", name: "Venezuela", code: "+58", minDigits: 10, maxDigits: 10 },
+      { flag: "🇻🇳", name: "Vietnam", code: "+84", minDigits: 9, maxDigits: 10 },
+      { flag: "🇼🇫", name: "Wallis and Futuna", code: "+681", minDigits: 6, maxDigits: 6 },
+      { flag: "🇾🇪", name: "Yemen", code: "+967", minDigits: 9, maxDigits: 9 },
+      { flag: "🇿🇲", name: "Zambia", code: "+260", minDigits: 9, maxDigits: 9 },
+      { flag: "🇿🇼", name: "Zimbabwe", code: "+263", minDigits: 9, maxDigits: 9 },
+      { flag: "🇦🇽", name: "Åland Islands", code: "+358", minDigits: 9, maxDigits: 10 }
     ];
 
-    let existingSavedEmails = [];
-    try {
-      const urlParams = new URLSearchParams(window.location.search);
-      const dataParam = urlParams.get('data');
-      if (dataParam) {
-        const parsedData = JSON.parse(decodeURIComponent(dataParam));
-        if (Array.isArray(parsedData)) {
-          existingSavedEmails = parsedData.map(item => typeof item === 'string' ? item.trim().toLowerCase() : (item.email ? item.email.trim().toLowerCase() : ""));
-        }
-      }
-    } catch (e) {
-      console.error("Error parsing URL data:", e);
-    }
-
     let currentStep = 1;
-    let formData = { email: "", password: "", recovery: "", countryCode: "", countryFlag: "", phone: "", twofa: "" };
-    let active2FASlots = [];
-
-    // Initialize country dropdown
-    window.addEventListener('DOMContentLoaded', () => {
-      populateCountries();
-    });
-
-    function populateCountries() {
-      const select = document.getElementById('select-country');
-      if (!select) return;
-      select.innerHTML = `<option value="">Select Country</option>`;
-      worldCountries.forEach(c => {
-        const opt = document.createElement('option');
-        opt.value = c.code;
-        opt.dataset.flag = c.flag;
-        opt.dataset.name = c.name;
-        opt.textContent = `${c.flag} ${c.name} (${c.code})`;
-        select.appendChild(opt);
-      });
-    }
+    let formData = { phone: "", email: "" };
 
     function updateNavHeader() {
-      document.getElementById('main-title').innerText = "Submit Account";
       const backBtn = document.getElementById('back-btn-elem');
-      if (currentStep > 1 && currentStep <= 6) {
+      if (currentStep > 1 && currentStep <= 3) {
         backBtn.classList.add('show');
       } else {
         backBtn.classList.remove('show');
@@ -927,16 +930,14 @@
     function showToast() {
       const toast = document.getElementById('copy-toast');
       toast.classList.add('show');
-      setTimeout(() => {
-        toast.classList.remove('show');
-      }, 2000);
+      setTimeout(() => { toast.classList.remove('show'); }, 2000);
     }
 
     function copyToClipboard(text, btnElement) {
       if (!text) return;
       navigator.clipboard.writeText(text).then(() => {
         btnElement.classList.add('copied');
-        btnElement.innerHTML = `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>`;
+        btnElement.innerHTML = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>`;
         showToast();
         setTimeout(() => {
           btnElement.classList.remove('copied');
@@ -945,126 +946,222 @@
       });
     }
 
-    function validateGmailField(fieldName, stepNum) {
-      const input = document.getElementById(`input-${fieldName}`);
-      const indicator = document.getElementById(`${fieldName}-indicator`);
-      const errorMsg = document.getElementById(`${fieldName}-error-msg`);
-      const btn = document.getElementById(`btn-${stepNum}`);
-      const val = input.value.trim().toLowerCase();
+    function openCountryModal() {
+      document.getElementById('country-modal').classList.add('active');
+      document.getElementById('modal-search-input').value = "";
+      renderCountryList(countries);
+    }
 
-      if (val.endsWith("@gmail.com") && val.length > 10) {
-        if (fieldName === 'email' || fieldName === 'recovery') {
-          if (fieldName === 'email' && existingSavedEmails.includes(val)) {
-            input.classList.remove('valid');
-            input.classList.add('invalid');
-            indicator.classList.remove('show');
-            errorMsg.classList.add('show');
-            btn.disabled = true;
-            return;
+    function closeCountryModal() {
+      document.getElementById('country-modal').classList.remove('active');
+    }
+
+    function renderCountryList(list) {
+      const container = document.getElementById('modal-country-list');
+      container.innerHTML = '';
+      list.forEach(c => {
+        const div = document.createElement('div');
+        div.className = 'country-item';
+        div.onclick = () => selectCountry(c);
+        div.innerHTML = `
+          <div class="country-left">
+            <span>${c.flag}</span>
+            <span>${c.name}</span>
+          </div>
+          <span class="country-code-text">${c.code}</span>
+        `;
+        container.appendChild(div);
+      });
+    }
+
+    function filterCountryList() {
+      const query = document.getElementById('modal-search-input').value.toLowerCase().trim();
+      const filtered = countries.filter(c => 
+        c.name.toLowerCase().includes(query) || c.code.toLowerCase().includes(query)
+      );
+      renderCountryList(filtered);
+    }
+
+    function selectCountry(c) {
+      const label = document.getElementById('selected-country-text');
+      // ব্র্যাকেট ছাড়া সরাসরি পতাকা, কান্ট্রি নেম এবং কোড প্রদর্শনী
+      label.textContent = `${c.flag} ${c.name} ${c.code}`;
+      label.classList.remove('placeholder');
+
+      const codeInput = document.getElementById('input-code');
+      codeInput.value = c.code;
+
+      closeCountryModal();
+      document.getElementById('input-number').focus();
+      validatePhoneStep();
+    }
+
+    function resetCountrySelection() {
+      const label = document.getElementById('selected-country-text');
+      label.textContent = "Select Country Code";
+      label.classList.add('placeholder');
+
+      const codeInput = document.getElementById('input-code');
+      codeInput.value = "";
+    }
+
+    function handleCodeTyping() {
+      const codeInput = document.getElementById('input-code');
+      let val = codeInput.value.trim();
+
+      // কোড ফিল্ডে কেবল প্লাস ও সংখ্যা ফিল্টারিং
+      if (val !== "" && !val.startsWith("+")) {
+        val = "+" + val.replace(/[^\d]/g, '');
+      } else if (val.startsWith("+")) {
+        val = "+" + val.slice(1).replace(/[^\d]/g, '');
+      }
+      codeInput.value = val;
+
+      if (val === "" || val === "+") {
+        resetCountrySelection();
+      } else {
+        const match = countries.find(c => c.code === val);
+        if (match) {
+          const label = document.getElementById('selected-country-text');
+          label.textContent = `${match.flag} ${match.name} ${match.code}`;
+          label.classList.remove('placeholder');
+        } else {
+          const label = document.getElementById('selected-country-text');
+          label.textContent = "Select Country Code";
+          label.classList.add('placeholder');
+        }
+      }
+
+      validatePhoneStep();
+    }
+
+    function handleNumberInput() {
+      const numInput = document.getElementById('input-number');
+      let val = numInput.value;
+
+      // শুধুমাত্র সংখ্যা বাদে বাকি সব অক্ষর বাদ দেওয়া
+      val = val.replace(/[^\d]/g, '');
+
+      // শুরুতে জিরো (0) থাকলে স্বয়ংক্রিয়ভাবে ফিল্টার করে রিমুভ করা
+      if (val.startsWith('0')) {
+        val = val.replace(/^0+/, '');
+      }
+
+      numInput.value = val;
+
+      // নম্বর পুরোপুরি কেটে দিলে কান্ট্রি কোড রিসেট হবে
+      if (val === "") {
+        resetCountrySelection();
+      }
+
+      validatePhoneStep();
+    }
+
+    function handleNumberKeyDown(e) {
+      const numInput = document.getElementById('input-number');
+      const codeInput = document.getElementById('input-code');
+      if (e.key === "Backspace" && numInput.value === "") {
+        resetCountrySelection();
+        codeInput.focus();
+      }
+    }
+
+    function handlePhonePaste(e) {
+      const clipboardData = e.clipboardData || window.clipboardData;
+      if (!clipboardData) return;
+      const pastedText = clipboardData.getData('text').trim();
+
+      if (pastedText.startsWith("+") || /\d{6,}/.test(pastedText)) {
+        e.preventDefault();
+        let matchedCode = "";
+        let remainingNum = pastedText;
+
+        const sortedCountries = [...countries].sort((a, b) => b.code.length - a.code.length);
+        for (let c of sortedCountries) {
+          if (pastedText.startsWith(c.code)) {
+            matchedCode = c.code;
+            remainingNum = pastedText.slice(c.code.length).trim();
+            break;
           }
         }
-        input.classList.remove('invalid');
-        input.classList.add('valid');
-        indicator.classList.add('show');
-        errorMsg.classList.remove('show');
-        btn.disabled = false;
-      } else {
-        if (val.length > 0) {
-          input.classList.remove('valid');
-          input.classList.add('invalid');
-        } else {
-          input.classList.remove('valid', 'invalid');
+
+        if (!matchedCode && pastedText.startsWith("+")) {
+          const match = pastedText.match(/^(\+\d{1,4})(.*)$/);
+          if (match) {
+            matchedCode = match[1];
+            remainingNum = match[2].trim();
+          }
         }
-        indicator.classList.remove('show');
-        errorMsg.classList.remove('show');
-        btn.disabled = true;
-      }
-    }
 
-    function validateStandardField(fieldName, minLength, stepNum) {
-      const input = document.getElementById(`input-${fieldName}`);
-      const indicator = document.getElementById(`${fieldName}-indicator`);
-      const btn = document.getElementById(`btn-${stepNum}`);
-      const val = input.value.trim();
+        const codeInput = document.getElementById('input-code');
+        const numInput = document.getElementById('input-number');
 
-      if (val.length >= minLength) {
-        input.classList.remove('invalid');
-        input.classList.add('valid');
-        indicator.classList.add('show');
-        btn.disabled = false;
-      } else {
-        if (val.length > 0) {
-          input.classList.remove('valid');
-          input.classList.add('invalid');
-        } else {
-          input.classList.remove('valid', 'invalid');
+        if (matchedCode) {
+          codeInput.value = matchedCode;
+          const selectMatch = countries.find(c => c.code === matchedCode);
+          if (selectMatch) {
+            const label = document.getElementById('selected-country-text');
+            label.textContent = `${selectMatch.flag} ${selectMatch.name} ${selectMatch.code}`;
+            label.classList.remove('placeholder');
+          }
         }
-        indicator.classList.remove('show');
-        btn.disabled = true;
+
+        let cleanNum = remainingNum.replace(/[^\d]/g, '');
+        if (cleanNum.startsWith('0')) {
+          cleanNum = cleanNum.replace(/^0+/, '');
+        }
+
+        numInput.value = cleanNum;
+        numInput.focus();
+        validatePhoneStep();
       }
     }
 
-    function handleCountryChange() {
-      const countrySelect = document.getElementById('select-country');
-      if (countrySelect.value) {
-        countrySelect.classList.add('valid');
-      } else {
-        countrySelect.classList.remove('valid');
-      }
-      validatePhoneField();
-    }
-
-    function validatePhoneField() {
-      const countrySelect = document.getElementById('select-country');
-      const phoneInput = document.getElementById('input-phone');
+    function validatePhoneStep() {
+      const codeInput = document.getElementById('input-code');
+      const numInput = document.getElementById('input-number');
+      const box = document.getElementById('phone-box-container');
       const indicator = document.getElementById('phone-indicator');
-      const btn = document.getElementById('btn-4');
+      const btn = document.getElementById('btn-1');
 
-      let rawVal = phoneInput.value;
-      // Allow numbers only
-      let val = rawVal.replace(/[^0-9]/g, '');
+      let codeVal = codeInput.value.trim();
+      const numVal = numInput.value.trim().replace(/[^\d]/g, '');
 
-      // Rule: If country code is selected and phone number starts with 0, strip leading 0 automatically
-      if (countrySelect.value && val.startsWith('0')) {
-        val = val.substring(1);
+      if (codeVal !== "" && !codeVal.startsWith("+")) {
+        codeVal = "+" + codeVal;
       }
 
-      phoneInput.value = val;
+      const matchedCountry = countries.find(c => c.code === codeVal);
+      let minRequired = matchedCountry ? matchedCountry.minDigits : 4;
+      let maxRequired = matchedCountry ? matchedCountry.maxDigits : 15;
 
-      // Rule: If phone number is deleted/cleared completely, reset country code selector back to default ("Select Country")
-      if (val === '' && rawVal === '') {
-        countrySelect.value = '';
-        countrySelect.classList.remove('valid');
-      } else if (countrySelect.value) {
-        countrySelect.classList.add('valid');
-      }
+      const isCodeValid = codeVal.length >= 2;
+      const isNumValid = numVal.length >= minRequired && numVal.length <= maxRequired;
 
-      if (countrySelect.value && val.length >= 6 && val.length <= 15) {
-        phoneInput.classList.remove('invalid');
-        phoneInput.classList.add('valid');
+      if (isCodeValid && isNumValid) {
+        box.classList.remove('invalid');
+        box.classList.add('valid');
         indicator.classList.add('show');
         btn.disabled = false;
       } else {
-        if (val.length > 0) {
-          phoneInput.classList.remove('valid');
-          phoneInput.classList.add('invalid');
+        if (codeVal.length > 0 || numVal.length > 0) {
+          box.classList.remove('valid');
+          box.classList.add('invalid');
         } else {
-          phoneInput.classList.remove('valid', 'invalid');
+          box.classList.remove('valid', 'invalid');
         }
         indicator.classList.remove('show');
         btn.disabled = true;
       }
     }
 
-    function validate2FAField() {
-      const input = document.getElementById('input-2fa');
-      const indicator = document.getElementById('2fa-indicator');
-      const btn = document.getElementById('btn-5');
-      const val = input.value.trim().toUpperCase();
-      const cleanVal = val.replace(/[\s]/g, '');
-      const base32Regex = /^[A-Z2-7]+$/;
+    function validateEmailStep() {
+      const input = document.getElementById('input-email');
+      const indicator = document.getElementById('email-indicator');
+      const btn = document.getElementById('btn-2');
+      const val = input.value.trim().toLowerCase();
 
-      if (cleanVal.length >= 16 && base32Regex.test(cleanVal)) {
+      if (val.includes("@") && val.includes(".") && val.length > 5) {
         input.classList.remove('invalid');
         input.classList.add('valid');
         indicator.classList.add('show');
@@ -1082,33 +1179,15 @@
     }
 
     function nextStep(step) {
-      if (step === 1) formData.email = document.getElementById('input-email').value.trim();
-      if (step === 2) formData.password = document.getElementById('input-password').value.trim();
-      if (step === 3) formData.recovery = document.getElementById('input-recovery').value.trim();
-      if (step === 4) {
-        const countrySelect = document.getElementById('select-country');
-        const selectedOpt = countrySelect.options[countrySelect.selectedIndex];
-        formData.countryCode = countrySelect.value;
-        formData.countryFlag = selectedOpt ? selectedOpt.dataset.flag || "" : "";
-        formData.phone = document.getElementById('input-phone').value.trim();
+      if (step === 1) {
+        let code = document.getElementById('input-code').value.trim();
+        if (code !== "" && !code.startsWith("+")) code = "+" + code;
+        const num = document.getElementById('input-number').value.trim();
+        formData.phone = `${code}${num}`;
       }
-      if (step === 5) {
-        formData.twofa = document.getElementById('input-2fa').value.trim().toUpperCase();
-        
-        const btnText = document.getElementById(`btn-text-${step}`);
-        const spinner = document.getElementById(`spinner-${step}`);
-        const btn = document.getElementById(`btn-${step}`);
-
-        btnText.style.display = 'none';
-        spinner.style.display = 'inline-block';
-        btn.disabled = true;
-
-        setTimeout(() => {
-          spinner.style.display = 'none';
-          btnText.style.display = 'inline';
-          btn.disabled = false;
-          buildConfirmationCard();
-        }, 1000);
+      if (step === 2) {
+        formData.email = document.getElementById('input-email').value.trim();
+        buildConfirmationCard();
         return;
       }
 
@@ -1129,11 +1208,11 @@
         currentStep = step + 1;
         document.getElementById(`step-${currentStep}`).classList.add('active');
         updateNavHeader();
-      }, 1000);
+      }, 700);
     }
 
     function goBackStep() {
-      if (currentStep > 1 && currentStep <= 6) {
+      if (currentStep > 1 && currentStep <= 3) {
         document.getElementById(`step-${currentStep}`).classList.remove('active');
         currentStep--;
         document.getElementById(`step-${currentStep}`).classList.add('active');
@@ -1141,184 +1220,66 @@
       }
     }
 
-    async function generateTOTP(secretBase32) {
-      try {
-        if (!secretBase32) return "------";
-        const alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ234567";
-        let cleaned = secretBase32.replace(/[\s=]/g, "").toUpperCase();
-        let bits = "";
-        for (let i = 0; i < cleaned.length; i++) {
-          let val = alphabet.indexOf(cleaned[i]);
-          if (val === -1) continue;
-          bits += val.toString(2).padStart(5, '0');
-        }
-        let bytes = new Uint8Array(Math.floor(bits.length / 8));
-        for (let i = 0; i < bytes.length; i++) {
-          bytes[i] = parseInt(bits.substr(i * 8, 8), 2);
-        }
-        if (bytes.length === 0) return "------";
-        const epoch = Math.floor(Date.now() / 1000);
-        const counter = Math.floor(epoch / 30);
-        const buffer = new ArrayBuffer(8);
-        const view = new DataView(buffer);
-        view.setUint32(4, counter, false);
-        const cryptoKey = await window.crypto.subtle.importKey(
-          "raw", bytes, { name: "HMAC", hash: { name: "SHA-1" } }, false, ["sign"]
-        );
-        const signature = await window.crypto.subtle.sign("HMAC", cryptoKey, buffer);
-        const sigBytes = new Uint8Array(signature);
-        const offset = sigBytes[sigBytes.length - 1] & 0x0f;
-        const binary =
-          ((sigBytes[offset] & 0x7f) << 24) |
-          ((sigBytes[offset + 1] & 0xff) << 16) |
-          ((sigBytes[offset + 2] & 0xff) << 8) |
-          (sigBytes[offset + 3] & 0xff);
-        const otp = binary % 1000000;
-        return otp.toString().padStart(6, '0');
-      } catch (e) {
-        return "------";
-      }
-    }
-
-    async function updateAllTOTPCodes() {
-      const remainingSeconds = 30 - (Math.floor(Date.now() / 1000) % 30);
-      const circumference = 56.55;
-      const offset = circumference - (remainingSeconds / 30) * circumference;
-
-      for (let slot of active2FASlots) {
-        if (slot.timerEl) slot.timerEl.innerText = `${remainingSeconds}`;
-        if (slot.ringProgressEl) slot.ringProgressEl.style.strokeDashoffset = offset;
-
-        if (remainingSeconds === 30 || !slot.generated) {
-          const code = await generateTOTP(slot.secret);
-          slot.valueEl.innerText = code;
-          slot.btnEl.setAttribute("onclick", `copyToClipboard('${code}', this)`);
-          slot.generated = true;
-        }
-      }
-    }
-
-    setInterval(() => {
-      const remainingSeconds = 30 - (Math.floor(Date.now() / 1000) % 30);
-      if (remainingSeconds === 30) {
-        active2FASlots.forEach(s => s.generated = false);
-      }
-      updateAllTOTPCodes();
-    }, 1000);
-
     function buildConfirmationCard() {
-      currentStep = 6;
-      updateNavHeader();
-      document.getElementById('step-5').classList.remove('active');
-      document.getElementById('step-6').classList.add('active');
+      const btnText = document.getElementById(`btn-text-2`);
+      const spinner = document.getElementById(`spinner-2`);
+      const btn = document.getElementById(`btn-2`);
 
-      const container = document.getElementById('confirmation-card-content');
-      active2FASlots = [];
+      btnText.style.display = 'none';
+      spinner.style.display = 'inline-block';
+      btn.disabled = true;
 
-      const formattedPhone = `${formData.countryFlag} ${formData.countryCode} ${formData.phone}`.trim();
+      setTimeout(() => {
+        spinner.style.display = 'none';
+        btnText.style.display = 'inline';
+        btn.disabled = false;
 
-      let totpLiveHTML = '';
-      if (formData.twofa) {
-        totpLiveHTML = `
+        document.getElementById('step-2').classList.remove('active');
+        currentStep = 3;
+        document.getElementById('step-3').classList.add('active');
+        updateNavHeader();
+
+        const container = document.getElementById('confirmation-card-content');
+        container.innerHTML = `
           <div class="field-item">
-            <span class="field-left label-blue">2FA Verification Code</span>
+            <span class="field-left">Phone Number</span>
             <div class="field-right-group">
-              <div class="auth-timer-wrapper">
-                <svg viewBox="0 0 24 24">
-                  <circle class="auth-timer-bg" cx="12" cy="12" r="9" fill="none" stroke-width="2.5"/>
-                  <circle id="conf-ring" class="auth-timer-progress" cx="12" cy="12" r="9" fill="none" stroke-width="2.5" stroke-linecap="round"/>
-                </svg>
-                <span id="conf-timer" class="auth-timer-text">30</span>
-              </div>
-              <span id="conf-totp-val" class="field-right totp-value">------</span>
-              <button id="conf-totp-btn" class="copy-btn">${copyIconSVG}</button>
+              <span class="field-right">${escapeHtml(formData.phone)}</span>
+              <button class="copy-btn" onclick="copyToClipboard('${escapeJs(formData.phone)}', this)">${copyIconSVG}</button>
             </div>
           </div>
+
+          <div class="field-item">
+            <span class="field-left">Email</span>
+            <div class="field-right-group">
+              <span class="field-right">${escapeHtml(formData.email)}</span>
+              <button class="copy-btn" onclick="copyToClipboard('${escapeJs(formData.email)}', this)">${copyIconSVG}</button>
+            </div>
+          </div>
+
+          <div class="card-actions">
+            <button class="action-btn-confirm" onclick="submitFinalData()">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> Account Saved
+            </button>
+          </div>
         `;
-      }
-
-      container.innerHTML = `
-        <div class="field-item">
-          <span class="field-left">Email</span>
-          <div class="field-right-group">
-            <span class="field-right">${escapeHtml(formData.email)}</span>
-            <button class="copy-btn" onclick="copyToClipboard('${escapeJs(formData.email)}', this)">${copyIconSVG}</button>
-          </div>
-        </div>
-
-        <div class="field-item">
-          <span class="field-left">Password</span>
-          <div class="field-right-group">
-            <span class="field-right">${escapeHtml(formData.password)}</span>
-            <button class="copy-btn" onclick="copyToClipboard('${escapeJs(formData.password)}', this)">${copyIconSVG}</button>
-          </div>
-        </div>
-
-        <div class="field-item">
-          <span class="field-left">Recovery Email</span>
-          <div class="field-right-group">
-            <span class="field-right">${escapeHtml(formData.recovery)}</span>
-            <button class="copy-btn" onclick="copyToClipboard('${escapeJs(formData.recovery)}', this)">${copyIconSVG}</button>
-          </div>
-        </div>
-
-        <div class="field-item">
-          <span class="field-left">Phone Number</span>
-          <div class="field-right-group">
-            <span class="field-right">${escapeHtml(formattedPhone)}</span>
-            <button class="copy-btn" onclick="copyToClipboard('${escapeJs(formattedPhone)}', this)">${copyIconSVG}</button>
-          </div>
-        </div>
-
-        <div class="field-item">
-          <span class="field-left">2FA Secret Key</span>
-          <div class="field-right-group">
-            <span class="field-right">${escapeHtml(formData.twofa)}</span>
-            <button class="copy-btn" onclick="copyToClipboard('${escapeJs(formData.twofa)}', this)">${copyIconSVG}</button>
-          </div>
-        </div>
-
-        ${totpLiveHTML}
-
-        <div class="card-actions">
-          <button class="action-btn-confirm" onclick="submitFinalData()">
-            <span class="check-icon-circle">${checkIconSVG}</span> Account Saved
-          </button>
-        </div>
-      `;
-
-      if (formData.twofa) {
-        setTimeout(() => {
-          active2FASlots.push({
-            secret: formData.twofa,
-            value_el: document.getElementById('conf-totp-val'),
-            valueEl: document.getElementById('conf-totp-val'),
-            timerEl: document.getElementById('conf-timer'),
-            ringProgressEl: document.getElementById('conf-ring'),
-            btnEl: document.getElementById('conf-totp-btn'),
-            generated: false
-          });
-          updateAllTOTPCodes();
-        }, 50);
-      }
+      }, 700);
     }
 
     function submitFinalData() {
       const payload = {
-        action: "submit_account",
-        email: formData.email,
-        password: formData.password,
-        recovery: formData.recovery,
-        country_code: formData.countryCode,
+        action: "submit_telegram_account",
         phone: formData.phone,
-        tfa: formData.twofa
+        email: formData.email,
+        timestamp: new Date().toISOString()
       };
 
       const jsonString = JSON.stringify(payload);
       if (window.Telegram && window.Telegram.WebApp) {
         window.Telegram.WebApp.sendData(jsonString);
+        window.Telegram.WebApp.close();
       } else {
-        alert("Submitted successfully!");
+        alert("Account Saved Successfully!\n\nData:\n" + jsonString);
       }
     }
 
