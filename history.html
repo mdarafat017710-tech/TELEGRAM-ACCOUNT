@@ -1,22 +1,21 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="bn">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>Phone & Gmail Account - iOS White Minimal</title>
+  <title>Telegram Account Setup - iOS Style</title>
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
   <style>
     :root {
       --bg-color: #f2f2f7;
       --card-bg: #ffffff;
-      --search-bg: #e3e3e8;
       --accent-blue: #007aff;
       --accent-green: #34c759;
       --accent-red: #ff3b30;
       --text-main: #000000;
       --text-muted: #8e8e93;
-      --border-color: #e5e5ea;
-      --divider-color: #f0f0f3;
+      --border-color: #c6c6c8;
+      --divider-color: #e5e5ea;
       --font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display", "Helvetica Neue", Arial, sans-serif;
     }
 
@@ -28,148 +27,272 @@
       -webkit-tap-highlight-color: transparent;
       user-select: none;
       -webkit-user-select: none;
-      -moz-user-select: none;
-      -ms-user-select: none;
     }
 
     body {
       background-color: var(--bg-color);
       color: var(--text-main);
-      padding: 20px 14px 40px;
+      padding: 20px 16px 40px;
       display: flex;
       flex-direction: column;
       align-items: center;
       min-height: 100vh;
     }
 
-    #toast {
-      position: fixed;
-      top: -60px;
+    .top-nav {
+      width: 100%;
+      max-width: 420px;
+      display: flex;
+      align-items: center;
+      margin-bottom: 20px;
+      position: relative;
+      height: 36px;
+    }
+
+    .back-btn {
+      background: transparent;
+      border: none;
+      width: 36px;
+      height: 32px;
+      display: none;
+      align-items: center;
+      justify-content: flex-start;
+      cursor: pointer;
+      color: var(--accent-blue);
+      padding: 0;
+    }
+
+    .back-btn.show {
+      display: flex;
+    }
+
+    .header-title {
+      font-size: 18px;
+      font-weight: 600;
+      letter-spacing: -0.4px;
+      position: absolute;
       left: 50%;
       transform: translateX(-50%);
-      background: rgba(0, 0, 0, 0.85);
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
-      color: #ffffff;
-      padding: 7px 14px;
-      border-radius: 20px;
+      width: 70%;
+      text-align: center;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .step-container {
+      width: 100%;
+      max-width: 420px;
+      display: none;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .step-container.active {
+      display: flex;
+    }
+
+    .info-box-group {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      width: 100%;
+    }
+
+    .box-label {
       font-size: 13px;
       font-weight: 600;
-      display: flex;
-      align-items: center;
-      gap: 7px;
-      box-shadow: 0 6px 18px rgba(0, 0, 0, 0.2);
-      transition: top 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.3s ease;
-      opacity: 0;
-      z-index: 9999;
-      white-space: nowrap;
-    }
-
-    #toast.show {
-      top: 18px;
-      opacity: 1;
-    }
-
-    #toast .toast-icon {
-      background: var(--accent-green);
-      width: 18px;
-      height: 18px;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .header {
-      width: 100%;
-      max-width: 440px;
-      text-align: center;
-      margin-bottom: 14px;
-    }
-
-    .header h1 {
-      font-size: 22px;
-      font-weight: 700;
-      letter-spacing: -0.4px;
-    }
-
-    .search-container {
-      width: 100%;
-      max-width: 440px;
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      margin-bottom: 8px;
-    }
-
-    .search-box {
-      position: relative;
-      flex: 1;
-      display: flex;
-      align-items: center;
-    }
-
-    .search-box .search-icon {
-      position: absolute;
-      left: 10px;
-      color: var(--text-muted);
-      pointer-events: none;
-    }
-
-    .search-box input {
-      width: 100%;
-      padding: 8px 30px 8px 32px;
-      background: var(--search-bg);
-      border: none;
-      border-radius: 10px;
-      font-size: 13px;
       color: var(--text-main);
+      letter-spacing: -0.2px;
+      padding-left: 2px;
+    }
+
+    /* iOS Country Selector Field */
+    .country-selector-btn {
+      width: 100%;
+      padding: 12px 14px;
+      background: var(--card-bg);
+      border: 1.5px solid var(--border-color);
+      border-radius: 12px;
+      font-size: 15px;
+      color: var(--text-main);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      cursor: pointer;
+      transition: border-color 0.2s ease;
+    }
+
+    .country-selector-btn:active {
+      background: #f8f8f9;
+    }
+
+    .selector-text {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-weight: 500;
+    }
+
+    .selector-text.placeholder {
+      color: var(--text-muted);
+    }
+
+    /* Unified Phone Input Box */
+    .unified-phone-wrapper {
+      position: relative;
+      width: 100%;
+    }
+
+    .unified-phone-box {
+      display: flex;
+      align-items: center;
+      background: var(--card-bg);
+      border: 1.5px solid var(--border-color);
+      border-radius: 12px;
+      padding: 0 40px 0 0;
+      height: 48px;
+      transition: all 0.3s ease;
+      overflow: hidden;
+    }
+
+    .unified-phone-box:focus-within {
+      border-color: var(--accent-blue);
+      box-shadow: 0 0 10px rgba(0, 122, 255, 0.25);
+    }
+
+    .unified-phone-box.valid {
+      border-color: var(--accent-green) !important;
+      box-shadow: 0 0 10px rgba(52, 199, 89, 0.25) !important;
+    }
+
+    .unified-phone-box.invalid {
+      border-color: var(--accent-red) !important;
+      box-shadow: 0 0 10px rgba(255, 59, 48, 0.25) !important;
+    }
+
+    .code-input {
+      width: 65px;
+      height: 100%;
+      border: none;
       outline: none;
+      padding: 0 8px;
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--text-main);
+      background: transparent;
+      text-align: center;
       user-select: text;
       -webkit-user-select: text;
     }
 
-    .search-box input::placeholder {
-      color: var(--text-muted);
+    .v-divider {
+      width: 1px;
+      height: 24px;
+      background-color: var(--border-color);
+      flex-shrink: 0;
     }
 
-    .clear-btn {
-      position: absolute;
-      right: 8px;
-      background: #8e8e93;
-      color: #ffffff;
+    .number-input {
+      flex: 1;
+      height: 100%;
       border: none;
-      width: 17px;
-      height: 17px;
+      outline: none;
+      padding: 0 12px;
+      font-size: 15px;
+      color: var(--text-main);
+      background: transparent;
+      user-select: text;
+      -webkit-user-select: text;
+    }
+
+    /* Standard Box */
+    .ios-box {
+      width: 100%;
+      height: 48px;
+      padding: 0 42px 0 14px;
+      background: var(--card-bg);
+      border: 1.5px solid var(--border-color);
+      border-radius: 12px;
+      font-size: 15px;
+      color: var(--text-main);
+      outline: none;
+      transition: all 0.3s ease;
+      user-select: text;
+      -webkit-user-select: text;
+    }
+
+    .ios-box:focus {
+      border-color: var(--accent-blue);
+      box-shadow: 0 0 10px rgba(0, 122, 255, 0.25);
+    }
+
+    .ios-box.valid {
+      border-color: var(--accent-green) !important;
+      box-shadow: 0 0 10px rgba(52, 199, 89, 0.25) !important;
+    }
+
+    .ios-box.invalid {
+      border-color: var(--accent-red) !important;
+      box-shadow: 0 0 10px rgba(255, 59, 48, 0.25) !important;
+    }
+
+    .input-indicator {
+      position: absolute;
+      right: 14px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 18px;
+      height: 18px;
+      background: var(--accent-green);
       border-radius: 50%;
       display: none;
       align-items: center;
       justify-content: center;
-      cursor: pointer;
+      pointer-events: none;
     }
 
-    .search-btn {
+    .input-indicator.show {
+      display: flex;
+    }
+
+    /* Proceed Button */
+    .action-container {
+      width: 100%;
+      max-width: 420px;
+      margin-top: 8px;
+    }
+
+    .btn-proceed {
       background: var(--accent-blue);
       color: #ffffff;
       border: none;
-      padding: 8px 12px;
-      border-radius: 10px;
-      font-size: 12px;
+      width: 100%;
+      height: 46px;
+      border-radius: 12px;
+      font-size: 15px;
       font-weight: 600;
       cursor: pointer;
-      display: inline-flex;
+      display: flex;
       align-items: center;
       justify-content: center;
-      gap: 4px;
-      flex-shrink: 0;
-      min-width: 60px;
-      height: 33px;
+      gap: 8px;
+      box-shadow: 0 4px 12px rgba(0, 122, 255, 0.2);
+      transition: all 0.2s ease;
+    }
+
+    .btn-proceed:disabled {
+      background: #c6c6c8;
+      color: #8e8e93;
+      box-shadow: none;
+      cursor: not-allowed;
+      opacity: 0.7;
     }
 
     .ios-spinner {
       display: none;
-      width: 14px;
-      height: 14px;
+      width: 18px;
+      height: 18px;
       animation: iosRotate 0.8s steps(8, end) infinite;
     }
 
@@ -178,47 +301,16 @@
       100% { transform: rotate(360deg); }
     }
 
-    .total-bar {
-      width: 100%;
-      max-width: 440px;
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      margin-bottom: 12px;
-      padding-left: 2px;
-    }
-
-    .total-title {
-      color: var(--accent-blue);
-      font-size: 13px;
-      font-weight: 600;
-    }
-
-    .total-badge {
-      background: rgba(0, 122, 255, 0.12);
-      color: var(--accent-blue);
-      padding: 2px 8px;
-      border-radius: 12px;
-      font-size: 12px;
-      font-weight: 700;
-    }
-
-    #container {
-      width: 100%;
-      max-width: 440px;
-      display: flex;
-      flex-direction: column;
-      gap: 14px;
-    }
-
+    /* Confirmation Card */
     .account-card {
       background: var(--card-bg);
       border-radius: 14px;
       border: 1px solid var(--border-color);
-      padding: 4px 12px 8px;
-      box-shadow: 0 1px 3px rgba(0,0,0,0.02);
+      padding: 4px 14px 14px;
       display: flex;
       flex-direction: column;
+      width: 100%;
+      max-width: 420px;
     }
 
     .field-item {
@@ -226,7 +318,7 @@
       justify-content: space-between;
       align-items: center;
       gap: 8px;
-      padding: 8px 0;
+      padding: 14px 0;
       border-bottom: 0.5px solid var(--divider-color);
     }
 
@@ -235,41 +327,35 @@
     }
 
     .field-left {
-      font-size: 12px;
-      font-weight: 700;
+      font-size: 14px;
+      font-weight: 600;
       color: var(--text-main);
-      white-space: nowrap;
     }
 
     .field-right-group {
       display: flex;
       align-items: center;
-      justify-content: flex-end;
       gap: 10px;
-      flex: 1;
     }
 
     .field-right {
-      font-size: 12px;
+      font-size: 14px;
       font-family: monospace, var(--font-family);
       color: #3a3a3c;
-      text-align: right;
-      word-break: break-all;
-      line-height: 1.35;
     }
 
     .copy-btn {
-      background: #e5e5ea;
+      background: #f0f0f5;
       color: var(--accent-blue);
       border: none;
-      width: 26px;
-      height: 26px;
+      width: 28px;
+      height: 28px;
       border-radius: 50%;
       display: inline-flex;
       align-items: center;
       justify-content: center;
       cursor: pointer;
-      flex-shrink: 0;
+      transition: all 0.2s ease;
     }
 
     .copy-btn.copied {
@@ -279,354 +365,362 @@
 
     .card-actions {
       display: flex;
-      justify-content: flex-end;
-      align-items: center;
+      flex-direction: column;
       gap: 8px;
-      padding-top: 8px;
+      padding-top: 14px;
       margin-top: 4px;
       border-top: 0.5px solid var(--divider-color);
     }
 
-    .action-btn {
+    .action-btn-confirm {
+      background: var(--accent-blue);
+      color: #ffffff;
+      width: 100%;
       border: none;
-      padding: 5px 10px;
-      border-radius: 8px;
-      font-size: 11px;
-      font-weight: 600;
+      height: 46px;
+      border-radius: 12px;
+      font-size: 15px;
+      font-weight: 700;
       cursor: pointer;
       display: inline-flex;
       align-items: center;
-      gap: 4px;
+      justify-content: center;
+      gap: 8px;
+      box-shadow: 0 4px 12px rgba(0, 122, 255, 0.2);
     }
 
-    .action-btn-edit { background: rgba(0, 122, 255, 0.1); color: var(--accent-blue); }
-    .action-btn-delete { background: rgba(255, 59, 48, 0.1); color: var(--accent-red); }
-
-    .empty-state {
-      text-align: center;
-      padding: 24px 16px;
-      color: var(--text-muted);
-      font-size: 13px;
-      font-weight: 600;
-      background: var(--card-bg);
-      border-radius: 14px;
-      border: 1px solid var(--border-color);
-    }
-
+    /* iOS Country Search Modal */
     .modal-overlay {
       position: fixed;
-      top: 0; left: 0; right: 0; bottom: 0;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
       background: rgba(0, 0, 0, 0.4);
-      backdrop-filter: blur(8px);
-      -webkit-backdrop-filter: blur(8px);
+      backdrop-filter: blur(4px);
+      z-index: 1000;
       display: none;
-      align-items: center;
+      align-items: flex-end;
       justify-content: center;
-      z-index: 10000;
-      padding: 16px;
     }
 
-    .modal-overlay.active { display: flex; }
+    .modal-overlay.active {
+      display: flex;
+    }
 
-    .modal-box {
-      background: var(--card-bg);
+    .modal-content {
+      background: #ffffff;
       width: 100%;
-      max-width: 350px;
-      border-radius: 18px;
-      padding: 18px;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.25);
+      max-width: 440px;
+      height: 85vh;
+      border-top-left-radius: 20px;
+      border-top-right-radius: 20px;
       display: flex;
       flex-direction: column;
-      gap: 12px;
-      animation: modalPop 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      animation: slideUp 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+      overflow: hidden;
     }
 
-    @keyframes modalPop {
-      0% { transform: scale(0.9); opacity: 0; }
-      100% { transform: scale(1); opacity: 1; }
+    @keyframes slideUp {
+      from { transform: translateY(100%); }
+      to { transform: translateY(0); }
+    }
+
+    .modal-header {
+      padding: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 0.5px solid var(--divider-color);
     }
 
     .modal-title {
-      font-size: 15px;
-      font-weight: 700;
-      text-align: center;
+      font-size: 17px;
+      font-weight: 600;
+    }
+
+    .modal-close-btn {
+      background: #e5e5ea;
+      border: none;
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: 6px;
+      cursor: pointer;
+      color: #8e8e93;
+      font-weight: bold;
     }
 
-    .modal-title.text-red { color: var(--accent-red); }
-    .modal-title.text-blue { color: var(--accent-blue); }
-
-    .delete-target-info {
-      text-align: center;
-      margin-top: -4px;
+    .search-box-wrapper {
+      padding: 10px 16px;
+      background: #f2f2f7;
     }
 
-    .delete-target-phone {
-      color: var(--accent-blue);
-      font-weight: 700;
-      font-size: 14px;
-      word-break: break-all;
-    }
-
-    .delete-subtext {
-      font-size: 11px;
-      color: var(--text-muted);
-      margin-top: 3px;
-      font-weight: 500;
-    }
-
-    .modal-input-group {
-      display: flex;
-      flex-direction: column;
-      gap: 5px;
-    }
-
-    .modal-label {
-      font-size: 12px;
-      font-weight: 600;
-      color: #3a3a3c;
-    }
-
-    .input-wrapper {
-      position: relative;
-      display: flex;
-      align-items: center;
+    .search-input {
       width: 100%;
-    }
-
-    .modal-input {
-      width: 100%;
-      padding: 9px 34px 9px 10px;
-      background: #ffffff;
-      border: 1.5px solid var(--accent-blue);
-      box-shadow: 0 0 6px rgba(0, 122, 255, 0.3);
+      padding: 10px 14px 10px 36px;
+      background: #e3e3e8;
+      border: none;
       border-radius: 10px;
-      font-size: 13px;
-      color: var(--text-main);
+      font-size: 15px;
       outline: none;
-      transition: all 0.25s ease;
       user-select: text;
       -webkit-user-select: text;
     }
 
-    .modal-input.blue-glow {
-      border-color: var(--accent-blue) !important;
-      box-shadow: 0 0 8px rgba(0, 122, 255, 0.35) !important;
+    .search-input-container {
+      position: relative;
     }
 
-    .modal-input.valid-glow {
-      border-color: var(--accent-green) !important;
-      box-shadow: 0 0 8px rgba(52, 199, 89, 0.45) !important;
-    }
-
-    .modal-input.invalid-glow {
-      border-color: var(--accent-red) !important;
-      box-shadow: 0 0 8px rgba(255, 59, 48, 0.45) !important;
-    }
-
-    .valid-check-badge {
+    .search-icon {
       position: absolute;
-      right: 10px;
-      background: var(--accent-green);
-      width: 15px;
-      height: 15px;
-      border-radius: 50%;
-      display: none;
-      align-items: center;
-      justify-content: center;
+      left: 10px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--text-muted);
       pointer-events: none;
-      box-shadow: 0 1px 3px rgba(0,0,0,0.15);
     }
 
-    .valid-check-badge.show {
-      display: flex;
-    }
-
-    .modal-buttons {
-      display: flex;
-      gap: 8px;
-      margin-top: 6px;
-    }
-
-    .modal-cancel-btn {
+    .country-list {
       flex: 1;
-      background: #e5e5ea;
-      color: var(--text-main);
-      border: none;
-      padding: 9px;
-      border-radius: 10px;
-      font-size: 13px;
-      font-weight: 600;
-      cursor: pointer;
+      overflow-y: auto;
+      padding: 0 16px;
     }
 
-    .modal-submit-btn {
-      flex: 1;
-      background: var(--accent-blue);
-      color: #ffffff;
-      border: none;
-      padding: 9px;
-      border-radius: 10px;
-      font-size: 13px;
-      font-weight: 600;
-      cursor: pointer;
-      display: inline-flex;
+    .country-item {
+      display: flex;
       align-items: center;
-      justify-content: center;
-      gap: 6px;
+      justify-content: space-between;
+      padding: 12px 0;
+      border-bottom: 0.5px solid var(--divider-color);
+      cursor: pointer;
     }
 
-    .modal-submit-btn.delete-theme { background: var(--accent-red); }
+    .country-item:active {
+      background: #f8f8f9;
+    }
 
-    .modal-submit-btn:disabled {
-      opacity: 0.4;
-      cursor: not-allowed;
+    .country-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 15px;
+    }
+
+    .country-code-text {
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--text-muted);
+    }
+
+    /* Toast Notification */
+    #copy-toast {
+      position: fixed;
+      top: -70px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #000000;
+      color: #ffffff;
+      padding: 10px 18px;
+      border-radius: 24px;
+      font-size: 13px;
+      font-weight: 600;
+      z-index: 9999;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      box-shadow: 0 6px 16px rgba(0,0,0,0.25);
+      transition: top 0.35s ease;
+      pointer-events: none;
+    }
+
+    #copy-toast.show {
+      top: 16px;
     }
   </style>
 </head>
 <body>
 
-  <div id="toast">
-    <div class="toast-icon">
-      <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round">
-        <polyline points="20 6 9 17 4 12"></polyline>
-      </svg>
+  <!-- Toast Popup -->
+  <div id="copy-toast">
+    <div style="width:16px; height:16px; background:var(--accent-green); border-radius:50%; display:inline-flex; align-items:center; justify-content:center;">
+      <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
     </div>
-    <span>Copied Successfully!</span>
+    <span>Copied successfully!</span>
   </div>
 
-  <div class="header">
-    <h1>Gmail Account</h1>
-  </div>
-
-  <div class="search-container">
-    <div class="search-box">
-      <svg class="search-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
-      <input type="text" id="search-input" placeholder="Search by phone number..." oninput="handleInputText()">
-      <button class="clear-btn" id="clear-btn" onclick="clearSearchInput()">
-        <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
-      </button>
-    </div>
-    <button class="search-btn" id="search-btn" onclick="handleSearch()">
-      <span id="btn-text">Search</span>
-      <svg id="btn-spinner" class="ios-spinner" viewBox="0 0 24 24">
-        <line x1="12" y1="3" x2="12" y2="6" stroke="#ffffff" stroke-width="2.5" stroke-linecap="round" opacity="1"/>
-        <line x1="18.36" y1="5.64" x2="16.24" y2="7.76" stroke="#ffffff" stroke-width="2.5" stroke-linecap="round" opacity="0.875"/>
-        <line x1="21" y1="12" x2="18" y2="12" stroke="#ffffff" stroke-width="2.5" stroke-linecap="round" opacity="0.75"/>
-        <line x1="18.36" y1="18.36" x2="16.24" y2="16.24" stroke="#ffffff" stroke-width="2.5" stroke-linecap="round" opacity="0.625"/>
-        <line x1="12" y1="21" x2="12" y2="18" stroke="#ffffff" stroke-width="2.5" stroke-linecap="round" opacity="0.5"/>
-        <line x1="5.64" y1="18.36" x2="7.76" y2="16.24" stroke="#ffffff" stroke-width="2.5" stroke-linecap="round" opacity="0.375"/>
-        <line x1="3" y1="12" x2="6" y2="12" stroke="#ffffff" stroke-width="2.5" stroke-linecap="round" opacity="0.25"/>
-        <line x1="5.64" y1="5.64" x2="7.76" y2="7.76" stroke="#ffffff" stroke-width="2.5" stroke-linecap="round" opacity="0.125"/>
+  <!-- Top Bar -->
+  <div class="top-nav">
+    <button class="back-btn" id="back-btn-elem" onclick="goBackStep()">
+      <svg width="24" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <line x1="19" y1="12" x2="5" y2="12"></line>
+        <polyline points="12 19 5 12 12 5"></polyline>
       </svg>
     </button>
+    <h1 class="header-title" id="main-title">Submit Telegram Account</h1>
   </div>
 
-  <div class="total-bar">
-    <span class="total-title">Total Accounts:</span>
-    <span id="total-badge-count" class="total-badge">0</span>
-  </div>
-
-  <div id="container"></div>
-
-  <!-- Delete Modal -->
-  <div class="modal-overlay" id="delete-modal">
-    <div class="modal-box">
-      <div class="modal-title text-red">
-        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
-        <span>Delete Account</span>
+  <!-- Step 1: Phone Number (with Country Code) -->
+  <div id="step-1" class="step-container active">
+    <div class="info-box-group">
+      <label class="box-label">Select Country Code</label>
+      <div class="country-selector-btn" onclick="openCountryModal()">
+        <span class="selector-text placeholder" id="selected-country-text">Select Country Code</span>
+        <svg width="12" height="12" viewBox="0 0 292.4 292.4" fill="#8e8e93"><path d="M287 69.4a17.6 17.6 0 0 0-13-5.4H18.4c-5 0-9.3 1.8-12.9 5.4A17.6 17.6 0 0 0 0 82.2c0 5 1.8 9.3 5.4 12.9l128 127.9c3.6 3.6 7.8 5.4 12.8 5.4s9.2-1.8 12.8-5.4L287 95c3.5-3.5 5.4-7.8 5.4-12.8 0-5-1.9-9.2-5.5-12.8z"/></svg>
       </div>
-      
-      <div class="delete-target-info">
-        <div id="delete-target-phone" class="delete-target-phone"></div>
-        <p class="delete-subtext">Are you sure you want to delete this account?</p>
-      </div>
+    </div>
 
-      <div class="modal-input-group">
-        <label class="modal-label">Your Confirm Password</label>
-        <div class="input-wrapper">
-          <input type="password" id="delete-pass-input" class="modal-input blue-glow" placeholder="Enter confirm password..." oninput="validateDeleteForm()">
-          <div class="valid-check-badge" id="delete-check-badge">
-            <svg width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
-          </div>
+    <div class="info-box-group">
+      <label class="box-label">Phone Number</label>
+      <div class="unified-phone-wrapper">
+        <div class="unified-phone-box" id="phone-box-container">
+          <input type="text" id="input-code" class="code-input" placeholder="+" maxlength="5" oninput="handleCodeTyping()" onpaste="handlePhonePaste(event)">
+          <div class="v-divider"></div>
+          <input type="tel" id="input-number" class="number-input" placeholder="Phone Number" oninput="validatePhoneStep()" onkeydown="handleNumberKeyDown(event)" onpaste="handlePhonePaste(event)">
+        </div>
+        <div class="input-indicator" id="phone-indicator">
+          <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
         </div>
       </div>
-      <div class="modal-buttons">
-        <button class="modal-cancel-btn" onclick="closeDeleteModal()">Cancel</button>
-        <button class="modal-submit-btn delete-theme" id="confirm-delete-btn" disabled onclick="executeDelete()">
-          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
-          <span>Delete Account</span>
-        </button>
-      </div>
+    </div>
+
+    <div class="action-container">
+      <button class="btn-proceed" id="btn-1" disabled onclick="nextStep(1)">
+        <span id="btn-text-1">Proceed</span>
+        <svg class="ios-spinner" id="spinner-1" viewBox="0 0 24 24">
+          <line x1="12" y1="3" x2="12" y2="6" stroke="#ffffff" stroke-width="2.5" stroke-linecap="round" opacity="1"/>
+          <line x1="18.36" y1="5.64" x2="16.24" y2="7.76" stroke="#ffffff" stroke-width="2.5" stroke-linecap="round" opacity="0.875"/>
+          <line x1="21" y1="12" x2="18" y2="12" stroke="#ffffff" stroke-width="2.5" stroke-linecap="round" opacity="0.75"/>
+          <line x1="18.36" y1="18.36" x2="16.24" y2="16.24" stroke="#ffffff" stroke-width="2.5" stroke-linecap="round" opacity="0.625"/>
+          <line x1="12" y1="21" x2="12" y2="18" stroke="#ffffff" stroke-width="2.5" stroke-linecap="round" opacity="0.5"/>
+          <line x1="5.64" y1="18.36" x2="7.76" y2="16.24" stroke="#ffffff" stroke-width="2.5" stroke-linecap="round" opacity="0.375"/>
+          <line x1="3" y1="12" x2="6" y2="12" stroke="#ffffff" stroke-width="2.5" stroke-linecap="round" opacity="0.25"/>
+          <line x1="5.64" y1="5.64" x2="7.76" y2="7.76" stroke="#ffffff" stroke-width="2.5" stroke-linecap="round" opacity="0.125"/>
+        </svg>
+      </button>
     </div>
   </div>
 
-  <!-- Edit Modal -->
-  <div class="modal-overlay" id="edit-modal">
-    <div class="modal-box">
-      <div class="modal-title text-blue">
-        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
-        <span>Edit Account</span>
-      </div>
-      
-      <!-- Only Field 1: Gmail Edit -->
-      <div class="modal-input-group">
-        <label class="modal-label">Your Gmail Address</label>
-        <div class="input-wrapper">
-          <input type="email" id="edit-new-gmail" class="modal-input blue-glow" placeholder="Enter new gmail address..." oninput="validateEditForm()">
-          <div class="valid-check-badge" id="edit-gmail-check">
-            <svg width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
-          </div>
+  <!-- Step 2: Email Address -->
+  <div id="step-2" class="step-container">
+    <div class="info-box-group">
+      <label class="box-label">Your Email Address</label>
+      <div style="position: relative; width: 100%;">
+        <input type="email" id="input-email" class="ios-box" placeholder="Enter email address" oninput="validateEmailStep()">
+        <div class="input-indicator" id="email-indicator">
+          <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
         </div>
       </div>
+    </div>
+    <div class="action-container">
+      <button class="btn-proceed" id="btn-2" disabled onclick="nextStep(2)">
+        <span id="btn-text-2">Proceed</span>
+        <svg class="ios-spinner" id="spinner-2" viewBox="0 0 24 24">
+          <line x1="12" y1="3" x2="12" y2="6" stroke="#ffffff" stroke-width="2.5" stroke-linecap="round" opacity="1"/>
+          <line x1="18.36" y1="5.64" x2="16.24" y2="7.76" stroke="#ffffff" stroke-width="2.5" stroke-linecap="round" opacity="0.875"/>
+          <line x1="21" y1="12" x2="18" y2="12" stroke="#ffffff" stroke-width="2.5" stroke-linecap="round" opacity="0.75"/>
+          <line x1="18.36" y1="18.36" x2="16.24" y2="16.24" stroke="#ffffff" stroke-width="2.5" stroke-linecap="round" opacity="0.625"/>
+          <line x1="12" y1="21" x2="12" y2="18" stroke="#ffffff" stroke-width="2.5" stroke-linecap="round" opacity="0.5"/>
+          <line x1="5.64" y1="18.36" x2="7.76" y2="16.24" stroke="#ffffff" stroke-width="2.5" stroke-linecap="round" opacity="0.375"/>
+          <line x1="3" y1="12" x2="6" y2="12" stroke="#ffffff" stroke-width="2.5" stroke-linecap="round" opacity="0.25"/>
+          <line x1="5.64" y1="5.64" x2="7.76" y2="7.76" stroke="#ffffff" stroke-width="2.5" stroke-linecap="round" opacity="0.125"/>
+        </svg>
+      </button>
+    </div>
+  </div>
 
-      <!-- Field 2: Confirm Password -->
-      <div class="modal-input-group">
-        <label class="modal-label">Your Confirm Password</label>
-        <div class="input-wrapper">
-          <input type="password" id="edit-pass-input" class="modal-input blue-glow" placeholder="Enter confirm password..." oninput="validateEditForm()">
-          <div class="valid-check-badge" id="edit-pass-check">
-            <svg width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
-          </div>
+  <!-- Step 3: Final Confirmation Card -->
+  <div id="step-3" class="step-container">
+    <div class="account-card" id="confirmation-card-content"></div>
+  </div>
+
+  <!-- iOS Country Selector Search Modal -->
+  <div class="modal-overlay" id="country-modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <span class="modal-title">Select Country</span>
+        <button class="modal-close-btn" onclick="closeCountryModal()">✕</button>
+      </div>
+      <div class="search-box-wrapper">
+        <div class="search-input-container">
+          <svg class="search-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+          <input type="text" id="modal-search-input" class="search-input" placeholder="Search country or code..." oninput="filterCountryList()">
         </div>
       </div>
-
-      <div class="modal-buttons">
-        <button class="modal-cancel-btn" onclick="closeEditModal()">Cancel</button>
-        <button class="modal-submit-btn" id="confirm-edit-btn" disabled onclick="executeEdit()">
-          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
-          <span>Save Changes</span>
-        </button>
+      <div class="country-list" id="modal-country-list">
+        <!-- Rendered via JS -->
       </div>
     </div>
   </div>
 
   <script>
-    const SECRET_AUTH_PASS = "Srsohan99";
     const copyIconSVG = `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>`;
-    const checkIconSVG = `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>`;
-    const editIconSVG = `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>`;
-    const deleteIconSVG = `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>`;
 
-    let activeTargetPhone = "";
-    let toastTimer;
-    let loadedAccountsData = [];
+    const countries = [
+      { flag: "🇧🇩", name: "Bangladesh", code: "+880" },
+      { flag: "🇺🇸", name: "United States", code: "+1" },
+      { flag: "🇬🇧", name: "United Kingdom", code: "+44" },
+      { flag: "🇮🇳", name: "India", code: "+91" },
+      { flag: "🇵🇰", name: "Pakistan", code: "+92" },
+      { flag: "🇸🇦", name: "Saudi Arabia", code: "+966" },
+      { flag: "🇦🇪", name: "United Arab Emirates", code: "+971" },
+      { flag: "🇨🇦", name: "Canada", code: "+1" },
+      { flag: "🇦🇺", name: "Australia", code: "+61" },
+      { flag: "🇩🇪", name: "Germany", code: "+49" },
+      { flag: "🇫🇷", name: "France", code: "+33" },
+      { flag: "🇮🇹", name: "Italy", code: "+39" },
+      { flag: "🇧🇷", name: "Brazil", code: "+55" },
+      { flag: "🇲🇾", name: "Malaysia", code: "+60" },
+      { flag: "🇮🇩", name: "Indonesia", code: "+62" },
+      { flag: "🇵🇭", name: "Philippines", code: "+63" },
+      { flag: "🇸🇬", name: "Singapore", code: "+65" },
+      { flag: "🇻🇳", name: "Vietnam", code: "+84" },
+      { flag: "🇹🇭", name: "Thailand", code: "+66" },
+      { flag: "🇳🇵", name: "Nepal", code: "+977" },
+      { flag: "🇱🇰", name: "Sri Lanka", code: "+94" },
+      { flag: "🇳🇬", name: "Nigeria", code: "+234" },
+      { flag: "🇪🇬", name: "Egypt", code: "+20" },
+      { flag: "🇲🇽", name: "Mexico", code: "+52" },
+      { flag: "🇷🇺", name: "Russia", code: "+7" },
+      { flag: "🇯🇵", name: "Japan", code: "+81" },
+      { flag: "🇰🇷", name: "South Korea", code: "+82" },
+      { flag: "🇨🇳", name: "China", code: "+86" },
+      { flag: "🇰🇼", name: "Kuwait", code: "+965" },
+      { flag: "🇶🇦", name: "Qatar", code: "+974" },
+      { flag: "🇴🇲", name: "Oman", code: "+968" },
+      { flag: "🇧🇭", name: "Bahrain", code: "+973" },
+      { flag: "🇹🇷", name: "Turkey", code: "+90" },
+      { flag: "🇿🇦", name: "South Africa", code: "+27" },
+      { flag: "🇪🇸", name: "Spain", code: "+34" },
+      { flag: "🇳🇱", name: "Netherlands", code: "+31" },
+      { flag: "🇸🇪", name: "Sweden", code: "+46" }
+    ];
+
+    let currentStep = 1;
+    let formData = { phone: "", email: "" };
+
+    function updateNavHeader() {
+      const backBtn = document.getElementById('back-btn-elem');
+      if (currentStep > 1 && currentStep <= 3) {
+        backBtn.classList.add('show');
+      } else {
+        backBtn.classList.remove('show');
+      }
+    }
 
     function showToast() {
-      const toast = document.getElementById('toast');
+      const toast = document.getElementById('copy-toast');
       toast.classList.add('show');
-      clearTimeout(toastTimer);
-      toastTimer = setTimeout(() => { toast.classList.remove('show'); }, 2000);
+      setTimeout(() => { toast.classList.remove('show'); }, 2000);
     }
 
     function copyToClipboard(text, btnElement) {
       if (!text) return;
       navigator.clipboard.writeText(text).then(() => {
         btnElement.classList.add('copied');
-        btnElement.innerHTML = checkIconSVG;
+        btnElement.innerHTML = `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>`;
         showToast();
         setTimeout(() => {
           btnElement.classList.remove('copied');
@@ -635,277 +729,280 @@
       });
     }
 
-    function renderAccounts(accounts) {
-      const container = document.getElementById('container');
-      const totalBadge = document.getElementById('total-badge-count');
-      
+    /* Modal Functions */
+    function openCountryModal() {
+      document.getElementById('country-modal').classList.add('active');
+      document.getElementById('modal-search-input').value = "";
+      renderCountryList(countries);
+    }
+
+    function closeCountryModal() {
+      document.getElementById('country-modal').classList.remove('active');
+    }
+
+    function renderCountryList(list) {
+      const container = document.getElementById('modal-country-list');
       container.innerHTML = '';
-      totalBadge.innerText = accounts.length;
-
-      if (!accounts || accounts.length === 0) {
-        container.innerHTML = `<div class="empty-state">No accounts found!</div>`;
-        return;
-      }
-
-      accounts.forEach((acc) => {
-        const card = document.createElement('div');
-        card.className = 'account-card';
-
-        const phoneVal = acc.phone || "";
-        const gmailVal = acc.gmail || acc.email || "";
-
-        card.innerHTML = `
-          ${phoneVal ? `
-            <div class="field-item">
-              <span class="field-left">Phone</span>
-              <div class="field-right-group">
-                <span class="field-right">${escapeHtml(phoneVal)}</span>
-                <button class="copy-btn" onclick="copyToClipboard('${escapeJs(phoneVal)}', this)">${copyIconSVG}</button>
-              </div>
-            </div>
-          ` : ''}
-
-          ${gmailVal ? `
-            <div class="field-item">
-              <span class="field-left">Gmail</span>
-              <div class="field-right-group">
-                <span class="field-right">${escapeHtml(gmailVal)}</span>
-                <button class="copy-btn" onclick="copyToClipboard('${escapeJs(gmailVal)}', this)">${copyIconSVG}</button>
-              </div>
-            </div>
-          ` : ''}
-
-          <div class="card-actions">
-            <button class="action-btn action-btn-edit" onclick="openEditModal('${escapeJs(phoneVal)}', '${escapeJs(gmailVal)}')">
-              ${editIconSVG} Edit
-            </button>
-            <button class="action-btn action-btn-delete" onclick="openDeleteModal('${escapeJs(phoneVal)}')">
-              ${deleteIconSVG} Delete
-            </button>
+      list.forEach(c => {
+        const div = document.createElement('div');
+        div.className = 'country-item';
+        div.onclick = () => selectCountry(c);
+        div.innerHTML = `
+          <div class="country-left">
+            <span>${c.flag}</span>
+            <span>${c.name}</span>
           </div>
+          <span class="country-code-text">${c.code}</span>
         `;
-
-        container.appendChild(card);
+        container.appendChild(div);
       });
     }
 
-    function handleInputText() {
-      const input = document.getElementById('search-input');
-      const clearBtn = document.getElementById('clear-btn');
-      clearBtn.style.display = input.value.trim().length > 0 ? 'flex' : 'none';
+    function filterCountryList() {
+      const query = document.getElementById('modal-search-input').value.toLowerCase().trim();
+      const filtered = countries.filter(c => 
+        c.name.toLowerCase().includes(query) || c.code.toLowerCase().includes(query)
+      );
+      renderCountryList(filtered);
     }
 
-    function clearSearchInput() {
-      const input = document.getElementById('search-input');
-      const clearBtn = document.getElementById('clear-btn');
-      input.value = '';
-      clearBtn.style.display = 'none';
-      renderAccounts(loadedAccountsData);
+    function selectCountry(c) {
+      const label = document.getElementById('selected-country-text');
+      label.textContent = `${c.flag} ${c.name} (${c.code})`;
+      label.classList.remove('placeholder');
+
+      const codeInput = document.getElementById('input-code');
+      codeInput.value = c.code;
+
+      closeCountryModal();
+      document.getElementById('input-number').focus();
+      validatePhoneStep();
     }
 
-    // Phone Normalizer function for Country Code Search
-    function getPhoneDigits(str) {
-      if (!str) return "";
-      return String(str).replace(/\D/g, ''); // Removes +, spaces, etc.
-    }
-
-    function isPhoneMatch(accPhone, searchVal) {
-      if (!accPhone || !searchVal) return false;
-
-      const rawAcc = String(accPhone).trim();
-      const rawSearch = String(searchVal).trim();
-
-      // 1. Direct exact match
-      if (rawAcc === rawSearch) return true;
-
-      // 2. Digits-only match (with and without country code)
-      const accDigits = getPhoneDigits(rawAcc);
-      const searchDigits = getPhoneDigits(rawSearch);
-
-      if (!accDigits || !searchDigits) return false;
-      if (accDigits === searchDigits) return true;
-
-      // Format Variants Handling (Bangladesh Country Code 880 & 0)
-      let accVariants = [accDigits];
-      if (accDigits.startsWith('880')) {
-        accVariants.push('0' + accDigits.substring(3));
-      } else if (accDigits.startsWith('0')) {
-        accVariants.push('880' + accDigits.substring(1));
+    /* Phone Input Handlers */
+    function handleCodeTyping() {
+      const codeInput = document.getElementById('input-code');
+      let val = codeInput.value.trim();
+      
+      if (val !== "" && !val.startsWith("+")) {
+        val = "+" + val;
+        codeInput.value = val;
       }
 
-      let searchVariants = [searchDigits];
-      if (searchDigits.startsWith('880')) {
-        searchVariants.push('0' + searchDigits.substring(3));
-      } else if (searchDigits.startsWith('0')) {
-        searchVariants.push('880' + searchDigits.substring(1));
+      const match = countries.find(c => c.code === val);
+      if (match) {
+        const label = document.getElementById('selected-country-text');
+        label.textContent = `${match.flag} ${match.name} (${match.code})`;
+        label.classList.remove('placeholder');
+        document.getElementById('input-number').focus();
       }
 
-      return accVariants.some(aV => searchVariants.some(sV => aV.includes(sV)));
+      validatePhoneStep();
     }
 
-    function handleSearch() {
-      const btnText = document.getElementById('btn-text');
-      const btnSpinner = document.getElementById('btn-spinner');
+    function handleNumberKeyDown(e) {
+      const numInput = document.getElementById('input-number');
+      const codeInput = document.getElementById('input-code');
+      if (e.key === "Backspace" && numInput.value === "") {
+        codeInput.focus();
+      }
+    }
+
+    function handlePhonePaste(e) {
+      const clipboardData = e.clipboardData || window.clipboardData;
+      if (!clipboardData) return;
+      const pastedText = clipboardData.getData('text').trim();
+
+      if (pastedText.startsWith("+") || /\d{8,}/.test(pastedText)) {
+        e.preventDefault();
+        let matchedCode = "";
+        let remainingNum = pastedText;
+
+        const sortedCountries = [...countries].sort((a, b) => b.code.length - a.code.length);
+        for (let c of sortedCountries) {
+          if (pastedText.startsWith(c.code)) {
+            matchedCode = c.code;
+            remainingNum = pastedText.slice(c.code.length).trim();
+            break;
+          }
+        }
+
+        if (!matchedCode && pastedText.startsWith("+")) {
+          const match = pastedText.match(/^(\+\d{1,4})(.*)$/);
+          if (match) {
+            matchedCode = match[1];
+            remainingNum = match[2].trim();
+          }
+        }
+
+        const codeInput = document.getElementById('input-code');
+        const numInput = document.getElementById('input-number');
+
+        if (matchedCode) {
+          codeInput.value = matchedCode;
+          const selectMatch = countries.find(c => c.code === matchedCode);
+          if (selectMatch) {
+            const label = document.getElementById('selected-country-text');
+            label.textContent = `${selectMatch.flag} ${selectMatch.name} (${selectMatch.code})`;
+            label.classList.remove('placeholder');
+          }
+        }
+
+        numInput.value = remainingNum.replace(/[^\d]/g, '');
+        numInput.focus();
+        validatePhoneStep();
+      }
+    }
+
+    function validatePhoneStep() {
+      const codeInput = document.getElementById('input-code');
+      const numInput = document.getElementById('input-number');
+      const box = document.getElementById('phone-box-container');
+      const indicator = document.getElementById('phone-indicator');
+      const btn = document.getElementById('btn-1');
+
+      const codeVal = codeInput.value.trim();
+      const numVal = numInput.value.trim().replace(/[^\d]/g, '');
+
+      if (codeVal.startsWith("+") && codeVal.length >= 2 && numVal.length >= 6) {
+        box.classList.remove('invalid');
+        box.classList.add('valid');
+        indicator.classList.add('show');
+        btn.disabled = false;
+      } else {
+        if (codeVal.length > 0 || numVal.length > 0) {
+          box.classList.remove('valid');
+          box.classList.add('invalid');
+        } else {
+          box.classList.remove('valid', 'invalid');
+        }
+        indicator.classList.remove('show');
+        btn.disabled = true;
+      }
+    }
+
+    function validateEmailStep() {
+      const input = document.getElementById('input-email');
+      const indicator = document.getElementById('email-indicator');
+      const btn = document.getElementById('btn-2');
+      const val = input.value.trim().toLowerCase();
+
+      if (val.includes("@") && val.includes(".") && val.length > 5) {
+        input.classList.remove('invalid');
+        input.classList.add('valid');
+        indicator.classList.add('show');
+        btn.disabled = false;
+      } else {
+        if (val.length > 0) {
+          input.classList.remove('valid');
+          input.classList.add('invalid');
+        } else {
+          input.classList.remove('valid', 'invalid');
+        }
+        indicator.classList.remove('show');
+        btn.disabled = true;
+      }
+    }
+
+    function nextStep(step) {
+      if (step === 1) {
+        const code = document.getElementById('input-code').value.trim();
+        const num = document.getElementById('input-number').value.trim();
+        formData.phone = `${code}${num}`;
+      }
+      if (step === 2) {
+        formData.email = document.getElementById('input-email').value.trim();
+        buildConfirmationCard();
+        return;
+      }
+
+      const btnText = document.getElementById(`btn-text-${step}`);
+      const spinner = document.getElementById(`spinner-${step}`);
+      const btn = document.getElementById(`btn-${step}`);
+
       btnText.style.display = 'none';
-      btnSpinner.style.display = 'inline-block';
+      spinner.style.display = 'inline-block';
+      btn.disabled = true;
 
       setTimeout(() => {
-        const query = document.getElementById('search-input').value.trim();
-        if (!query) {
-          renderAccounts(loadedAccountsData);
-        } else {
-          const filtered = loadedAccountsData.filter(acc => isPhoneMatch(acc.phone, query));
-          renderAccounts(filtered);
-        }
-        btnSpinner.style.display = 'none';
+        spinner.style.display = 'none';
         btnText.style.display = 'inline';
-      }, 400);
+        btn.disabled = false;
+
+        document.getElementById(`step-${step}`).classList.remove('active');
+        currentStep = step + 1;
+        document.getElementById(`step-${currentStep}`).classList.add('active');
+        updateNavHeader();
+      }, 800);
     }
 
-    function openDeleteModal(phone) {
-      activeTargetPhone = phone;
-      document.getElementById('delete-target-phone').innerText = phone || 'N/A';
-      const modal = document.getElementById('delete-modal');
-      const passInput = document.getElementById('delete-pass-input');
-      passInput.value = '';
-      validateDeleteForm();
-      modal.classList.add('active');
-    }
-
-    function closeDeleteModal() {
-      document.getElementById('delete-modal').classList.remove('active');
-    }
-
-    function validateDeleteForm() {
-      const input = document.getElementById('delete-pass-input');
-      const checkBadge = document.getElementById('delete-check-badge');
-      const deleteBtn = document.getElementById('confirm-delete-btn');
-      const val = input.value;
-
-      if (val.length === 0) {
-        input.className = 'modal-input blue-glow';
-        checkBadge.classList.remove('show');
-        deleteBtn.disabled = true;
-      } else if (val.length >= 8 && val === SECRET_AUTH_PASS) {
-        input.className = 'modal-input valid-glow';
-        checkBadge.classList.add('show');
-        deleteBtn.disabled = false;
-      } else {
-        input.className = 'modal-input invalid-glow';
-        checkBadge.classList.remove('show');
-        deleteBtn.disabled = true;
+    function goBackStep() {
+      if (currentStep > 1 && currentStep <= 3) {
+        document.getElementById(`step-${currentStep}`).classList.remove('active');
+        currentStep--;
+        document.getElementById(`step-${currentStep}`).classList.add('active');
+        updateNavHeader();
       }
     }
 
-    function executeDelete() {
+    function buildConfirmationCard() {
+      const btnText = document.getElementById(`btn-text-2`);
+      const spinner = document.getElementById(`spinner-2`);
+      const btn = document.getElementById(`btn-2`);
+
+      btnText.style.display = 'none';
+      spinner.style.display = 'inline-block';
+      btn.disabled = true;
+
+      setTimeout(() => {
+        spinner.style.display = 'none';
+        btnText.style.display = 'inline';
+        btn.disabled = false;
+
+        document.getElementById('step-2').classList.remove('active');
+        currentStep = 3;
+        document.getElementById('step-3').classList.add('active');
+        updateNavHeader();
+
+        const container = document.getElementById('confirmation-card-content');
+        container.innerHTML = `
+          <div class="field-item">
+            <span class="field-left">Phone Number</span>
+            <div class="field-right-group">
+              <span class="field-right">${escapeHtml(formData.phone)}</span>
+              <button class="copy-btn" onclick="copyToClipboard('${escapeJs(formData.phone)}', this)">${copyIconSVG}</button>
+            </div>
+          </div>
+
+          <div class="field-item">
+            <span class="field-left">Email</span>
+            <div class="field-right-group">
+              <span class="field-right">${escapeHtml(formData.email)}</span>
+              <button class="copy-btn" onclick="copyToClipboard('${escapeJs(formData.email)}', this)">${copyIconSVG}</button>
+            </div>
+          </div>
+
+          <div class="card-actions">
+            <button class="action-btn-confirm" onclick="submitFinalData()">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> Save Account
+            </button>
+          </div>
+        `;
+      }, 800);
+    }
+
+    function submitFinalData() {
       const payload = {
-        action: "delete_account",
-        phone: activeTargetPhone
-      };
-      sendDataToTelegram(payload);
-      closeDeleteModal();
-    }
-
-    function openEditModal(phone, currentGmail) {
-      activeTargetPhone = phone;
-      const modal = document.getElementById('edit-modal');
-      const gmailInput = document.getElementById('edit-new-gmail');
-      const passInput = document.getElementById('edit-pass-input');
-
-      gmailInput.value = currentGmail || "";
-      passInput.value = '';
-
-      validateEditForm();
-      modal.classList.add('active');
-    }
-
-    function closeEditModal() {
-      document.getElementById('edit-modal').classList.remove('active');
-    }
-
-    function validateEditForm() {
-      const gmailInput = document.getElementById('edit-new-gmail');
-      const passInput = document.getElementById('edit-pass-input');
-
-      const gmailCheck = document.getElementById('edit-gmail-check');
-      const passCheck = document.getElementById('edit-pass-check');
-
-      const confirmBtn = document.getElementById('confirm-edit-btn');
-
-      // 1. Gmail Email Validation
-      let isGmailValid = false;
-      const gmailVal = gmailInput.value.trim();
-      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-
-      if (gmailVal.length === 0) {
-        gmailInput.className = 'modal-input blue-glow';
-        gmailCheck.classList.remove('show');
-      } else if (emailRegex.test(gmailVal)) {
-        gmailInput.className = 'modal-input valid-glow';
-        gmailCheck.classList.add('show');
-        isGmailValid = true;
-      } else {
-        gmailInput.className = 'modal-input invalid-glow';
-        gmailCheck.classList.remove('show');
-      }
-
-      // 2. Confirm Password Check (Must match SECRET_AUTH_PASS)
-      let isPassValid = false;
-      const passVal = passInput.value;
-      if (passVal.length === 0) {
-        passInput.className = 'modal-input blue-glow';
-        passCheck.classList.remove('show');
-      } else if (passVal.length >= 8 && passVal === SECRET_AUTH_PASS) {
-        passInput.className = 'modal-input valid-glow';
-        passCheck.classList.add('show');
-        isPassValid = true;
-      } else {
-        passInput.className = 'modal-input invalid-glow';
-        passCheck.classList.remove('show');
-      }
-
-      confirmBtn.disabled = !(isGmailValid && isPassValid);
-    }
-
-    function executeEdit() {
-      const gmailVal = document.getElementById('edit-new-gmail').value.trim();
-
-      const payload = {
-        action: "edit_account",
-        phone: activeTargetPhone,
-        gmail: gmailVal,
-        email: gmailVal
+        action: "submit_telegram_account",
+        phone: formData.phone,
+        email: formData.email
       };
 
-      sendDataToTelegram(payload);
-      closeEditModal();
-    }
-
-    function sendDataToTelegram(payload) {
       const jsonString = JSON.stringify(payload);
       if (window.Telegram && window.Telegram.WebApp) {
         window.Telegram.WebApp.sendData(jsonString);
       } else {
-        alert("Telegram WebApp sendData:\n" + jsonString);
-      }
-    }
-
-    function loadData() {
-      const urlParams = new URLSearchParams(window.location.search);
-      const rawData = urlParams.get('data');
-      const container = document.getElementById('container');
-
-      if (!rawData) {
-        container.innerHTML = `<div class="empty-state">No accounts found!</div>`;
-        return;
-      }
-
-      try {
-        loadedAccountsData = JSON.parse(decodeURIComponent(rawData));
-        if (!Array.isArray(loadedAccountsData)) loadedAccountsData = [];
-        renderAccounts(loadedAccountsData);
-      } catch (e) {
-        container.innerHTML = `<div class="empty-state">No accounts found!</div>`;
+        alert("Account Saved Successfully!");
       }
     }
 
@@ -918,8 +1015,6 @@
     function escapeJs(str) {
       return String(str).replace(/\\/g, '\\\\').replace(/'/g, "\\'").replace(/"/g, '\\"');
     }
-
-    window.onload = loadData;
   </script>
 </body>
 </html>
