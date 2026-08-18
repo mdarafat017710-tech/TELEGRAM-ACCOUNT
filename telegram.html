@@ -110,8 +110,7 @@
     /* Selector Field */
     .country-selector-btn {
       width: 100%;
-      height: 48px;
-      padding: 0 14px;
+      padding: 12px 14px;
       background: var(--card-bg);
       border: 1.5px solid var(--border-color);
       border-radius: 12px;
@@ -131,16 +130,30 @@
     .selector-text {
       display: flex;
       align-items: center;
-      gap: 8px;
+      justify-content: space-between;
+      width: 100%;
+      padding-right: 8px;
       font-weight: 400;
       color: var(--text-main);
+    }
+
+    .selector-text .left-part {
+      display: flex;
+      align-items: center;
+      gap: 8px;
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
     }
+    
+    .selector-text .right-part {
+      font-weight: 500;
+      color: var(--text-muted);
+    }
 
     .selector-text.placeholder {
       color: var(--text-muted);
+      justify-content: flex-start;
     }
 
     /* Unified Phone Input Box */
@@ -155,8 +168,7 @@
       background: var(--card-bg);
       border: 1.5px solid var(--border-color);
       border-radius: 12px;
-      padding: 0 40px 0 0;
-      height: 48px;
+      padding: 0 42px 0 14px;
       transition: all 0.3s ease;
       overflow: hidden;
     }
@@ -177,33 +189,30 @@
     }
 
     .code-input {
-      width: 72px;
-      height: 100%;
+      width: 60px;
+      padding: 12px 8px 12px 0;
       border: none;
       outline: none;
-      padding: 0 8px;
       font-size: 15px;
       font-weight: 500;
       color: var(--text-main);
       background: transparent;
-      text-align: center;
       user-select: text;
       -webkit-user-select: text;
     }
 
     .v-divider {
       width: 1px;
-      height: 24px;
+      height: 20px;
       background-color: var(--border-color);
       flex-shrink: 0;
     }
 
     .number-input {
       flex: 1;
-      height: 100%;
+      padding: 12px 0 12px 12px;
       border: none;
       outline: none;
-      padding: 0 12px;
       font-size: 15px;
       font-weight: 400;
       color: var(--text-main);
@@ -215,8 +224,7 @@
     /* Standard Box */
     .ios-box {
       width: 100%;
-      height: 48px;
-      padding: 0 42px 0 14px;
+      padding: 12px 42px 12px 14px;
       background: var(--card-bg);
       border: 1.5px solid var(--border-color);
       border-radius: 12px;
@@ -269,14 +277,15 @@
       margin-top: 8px;
     }
 
+    /* Proceed Button */
     .btn-proceed {
       background: var(--accent-blue);
       color: #ffffff;
       border: none;
       width: 100%;
-      height: 48px;
+      padding: 11px 16px;
       border-radius: 12px;
-      font-size: 16px;
+      font-size: 15px;
       font-weight: 600;
       cursor: pointer;
       display: flex;
@@ -310,9 +319,9 @@
     /* Confirmation Card */
     .account-card {
       background: var(--card-bg);
-      border-radius: 16px;
+      border-radius: 14px;
       border: 1px solid var(--border-color);
-      padding: 8px 16px 16px;
+      padding: 4px 12px 12px;
       display: flex;
       flex-direction: column;
       width: 100%;
@@ -352,12 +361,13 @@
       word-break: break-all;
     }
 
+    /* Copy Button */
     .copy-btn {
       background: #f0f0f5;
       color: var(--accent-blue);
       border: none;
-      width: 32px;
-      height: 32px;
+      width: 28px;
+      height: 28px;
       border-radius: 50%;
       display: inline-flex;
       align-items: center;
@@ -386,9 +396,9 @@
       color: #ffffff;
       width: 100%;
       border: none;
-      height: 48px;
+      padding: 11px 16px;
       border-radius: 12px;
-      font-size: 16px;
+      font-size: 15px;
       font-weight: 600;
       cursor: pointer;
       display: inline-flex;
@@ -531,14 +541,12 @@
       top: -70px;
       left: 50%;
       transform: translateX(-50%);
-      background: rgba(0, 0, 0, 0.85);
-      backdrop-filter: blur(10px);
-      -webkit-backdrop-filter: blur(10px);
+      background: #000000;
       color: #ffffff;
-      padding: 10px 20px;
-      border-radius: 30px;
-      font-size: 14px;
-      font-weight: 500;
+      padding: 10px 18px;
+      border-radius: 24px;
+      font-size: 13px;
+      font-weight: 600;
       z-index: 9999;
       display: flex;
       align-items: center;
@@ -549,7 +557,17 @@
     }
 
     #copy-toast.show {
-      top: 20px;
+      top: 16px;
+    }
+    
+    .toast-icon {
+      width: 16px;
+      height: 16px;
+      background: var(--accent-green);
+      border-radius: 50%;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
     }
   </style>
 </head>
@@ -557,8 +575,8 @@
 
   <!-- Toast Popup -->
   <div id="copy-toast">
-    <div style="width:18px; height:18px; background:var(--accent-green); border-radius:50%; display:inline-flex; align-items:center; justify-content:center;">
-      <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+    <div class="toast-icon">
+      <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
     </div>
     <span>Copied successfully!</span>
   </div>
@@ -588,9 +606,9 @@
       <label class="box-label">Phone Number</label>
       <div class="unified-phone-wrapper">
         <div class="unified-phone-box" id="phone-box-container">
-          <input type="tel" inputmode="numeric" id="input-code" class="code-input" placeholder="Code" maxlength="5" oninput="handleCodeTyping()" onpaste="handlePhonePaste(event)">
+          <input type="text" id="input-code" class="code-input" placeholder="Code" maxlength="6" oninput="handleCodeTyping()" onpaste="handlePhonePaste(event)">
           <div class="v-divider"></div>
-          <input type="tel" inputmode="numeric" id="input-number" class="number-input" placeholder="Phone Number" oninput="handleNumberInput()" onkeydown="handleNumberKeyDown(event)" onpaste="handlePhonePaste(event)">
+          <input type="tel" id="input-number" class="number-input" placeholder="Phone Number" oninput="validatePhoneStep()" onkeydown="handleNumberKeyDown(event)" onpaste="handlePhonePaste(event)">
         </div>
         <div class="input-indicator" id="phone-indicator">
           <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
@@ -667,7 +685,9 @@
 
   <script>
     const copyIconSVG = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>`;
+    const checkIconSVG = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>`;
 
+    // Global Comprehensive Database (245+ Countries)
     const countries = [
       { flag: "🇦🇫", name: "Afghanistan", code: "+93", minDigits: 9, maxDigits: 9 },
       { flag: "🇦🇱", name: "Albania", code: "+355", minDigits: 8, maxDigits: 9 },
@@ -937,7 +957,7 @@
       if (!text) return;
       navigator.clipboard.writeText(text).then(() => {
         btnElement.classList.add('copied');
-        btnElement.innerHTML = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>`;
+        btnElement.innerHTML = checkIconSVG;
         showToast();
         setTimeout(() => {
           btnElement.classList.remove('copied');
@@ -982,12 +1002,28 @@
       renderCountryList(filtered);
     }
 
-    function selectCountry(c) {
+    function updateCountryDisplay(c) {
       const label = document.getElementById('selected-country-text');
-      // ব্র্যাকেট ছাড়া সরাসরি পতাকা, কান্ট্রি নেম এবং কোড প্রদর্শনী
-      label.textContent = `${c.flag} ${c.name} ${c.code}`;
+      label.innerHTML = `
+        <span class="left-part">${c.flag} ${c.name}</span>
+        <span class="right-part">${c.code}</span>
+      `;
       label.classList.remove('placeholder');
+    }
 
+    function resetCountrySelection() {
+      document.getElementById('input-code').value = '';
+      const label = document.getElementById('selected-country-text');
+      label.innerHTML = 'Select Country Code';
+      label.classList.add('placeholder');
+      const box = document.getElementById('phone-box-container');
+      box.classList.remove('valid', 'invalid');
+      document.getElementById('phone-indicator').classList.remove('show');
+      document.getElementById('btn-1').disabled = true;
+    }
+
+    function selectCountry(c) {
+      updateCountryDisplay(c);
       const codeInput = document.getElementById('input-code');
       codeInput.value = c.code;
 
@@ -996,62 +1032,26 @@
       validatePhoneStep();
     }
 
-    function resetCountrySelection() {
-      const label = document.getElementById('selected-country-text');
-      label.textContent = "Select Country Code";
-      label.classList.add('placeholder');
-
-      const codeInput = document.getElementById('input-code');
-      codeInput.value = "";
-    }
-
     function handleCodeTyping() {
       const codeInput = document.getElementById('input-code');
-      let val = codeInput.value.trim();
-
-      // কোড ফিল্ডে কেবল প্লাস ও সংখ্যা ফিল্টারিং
+      
+      // শুধুমাত্র সংখ্যা এবং প্রথমে প্লাস (+) সাপোর্ট করবে
+      let val = codeInput.value.replace(/[^0-9+]/g, '');
       if (val !== "" && !val.startsWith("+")) {
-        val = "+" + val.replace(/[^\d]/g, '');
+        val = "+" + val.replace(/\+/g, '');
       } else if (val.startsWith("+")) {
-        val = "+" + val.slice(1).replace(/[^\d]/g, '');
+        val = "+" + val.substring(1).replace(/\+/g, '');
       }
+      
       codeInput.value = val;
 
-      if (val === "" || val === "+") {
-        resetCountrySelection();
+      const match = countries.find(c => c.code === val);
+      if (match) {
+        updateCountryDisplay(match);
       } else {
-        const match = countries.find(c => c.code === val);
-        if (match) {
-          const label = document.getElementById('selected-country-text');
-          label.textContent = `${match.flag} ${match.name} ${match.code}`;
-          label.classList.remove('placeholder');
-        } else {
-          const label = document.getElementById('selected-country-text');
-          label.textContent = "Select Country Code";
-          label.classList.add('placeholder');
-        }
-      }
-
-      validatePhoneStep();
-    }
-
-    function handleNumberInput() {
-      const numInput = document.getElementById('input-number');
-      let val = numInput.value;
-
-      // শুধুমাত্র সংখ্যা বাদে বাকি সব অক্ষর বাদ দেওয়া
-      val = val.replace(/[^\d]/g, '');
-
-      // শুরুতে জিরো (0) থাকলে স্বয়ংক্রিয়ভাবে ফিল্টার করে রিমুভ করা
-      if (val.startsWith('0')) {
-        val = val.replace(/^0+/, '');
-      }
-
-      numInput.value = val;
-
-      // নম্বর পুরোপুরি কেটে দিলে কান্ট্রি কোড রিসেট হবে
-      if (val === "") {
-        resetCountrySelection();
+        const label = document.getElementById('selected-country-text');
+        label.innerHTML = 'Select Country Code';
+        label.classList.add('placeholder');
       }
 
       validatePhoneStep();
@@ -1060,6 +1060,8 @@
     function handleNumberKeyDown(e) {
       const numInput = document.getElementById('input-number');
       const codeInput = document.getElementById('input-code');
+      
+      // নাম্বার বক্স সম্পূর্ণ খালি করে ফেললে অটোমেটিক রিসেট
       if (e.key === "Backspace" && numInput.value === "") {
         resetCountrySelection();
         codeInput.focus();
@@ -1100,18 +1102,17 @@
           codeInput.value = matchedCode;
           const selectMatch = countries.find(c => c.code === matchedCode);
           if (selectMatch) {
-            const label = document.getElementById('selected-country-text');
-            label.textContent = `${selectMatch.flag} ${selectMatch.name} ${selectMatch.code}`;
-            label.classList.remove('placeholder');
+             updateCountryDisplay(selectMatch);
           }
         }
 
-        let cleanNum = remainingNum.replace(/[^\d]/g, '');
-        if (cleanNum.startsWith('0')) {
-          cleanNum = cleanNum.replace(/^0+/, '');
+        // Paste করার সময়ও জিরো ফিল্টারিং
+        let finalNum = remainingNum.replace(/[^0-9]/g, '');
+        if (codeInput.value.trim() !== "" && finalNum.startsWith('0')) {
+            finalNum = finalNum.substring(1);
         }
-
-        numInput.value = cleanNum;
+        
+        numInput.value = finalNum;
         numInput.focus();
         validatePhoneStep();
       }
@@ -1124,11 +1125,22 @@
       const indicator = document.getElementById('phone-indicator');
       const btn = document.getElementById('btn-1');
 
-      let codeVal = codeInput.value.trim();
-      const numVal = numInput.value.trim().replace(/[^\d]/g, '');
+      let codeVal = codeInput.value;
+      
+      // নাম্বার ফিল্টারিং: শুধুমাত্র সংখ্যা বসবে (0-9)
+      let numVal = numInput.value.replace(/[^0-9]/g, '');
 
-      if (codeVal !== "" && !codeVal.startsWith("+")) {
-        codeVal = "+" + codeVal;
+      // জিরো (0) ফিল্টারিং: কান্ট্রি কোড থাকলে শুরুতে 0 দিলে অটো রিমুভ হবে
+      if (codeVal.trim() !== "" && numVal.startsWith('0')) {
+          numVal = numVal.substring(1);
+      }
+      
+      numInput.value = numVal;
+
+      // ফোন নাম্বার সম্পূর্ণ মুছে ফেললে কান্ট্রি কোড রিসেট করা
+      if (numVal === "" && codeVal === "") {
+         resetCountrySelection();
+         return;
       }
 
       const matchedCountry = countries.find(c => c.code === codeVal);
@@ -1181,9 +1193,8 @@
     function nextStep(step) {
       if (step === 1) {
         let code = document.getElementById('input-code').value.trim();
-        if (code !== "" && !code.startsWith("+")) code = "+" + code;
         const num = document.getElementById('input-number').value.trim();
-        formData.phone = `${code}${num}`;
+        formData.phone = `${code} ${num}`;
       }
       if (step === 2) {
         formData.email = document.getElementById('input-email').value.trim();
@@ -1259,7 +1270,7 @@
 
           <div class="card-actions">
             <button class="action-btn-confirm" onclick="submitFinalData()">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> Account Saved
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> Save Account
             </button>
           </div>
         `;
@@ -1269,17 +1280,15 @@
     function submitFinalData() {
       const payload = {
         action: "submit_telegram_account",
-        phone: formData.phone,
-        email: formData.email,
-        timestamp: new Date().toISOString()
+        phone: formData.phone.replace(/\s+/g, ''),
+        email: formData.email
       };
 
       const jsonString = JSON.stringify(payload);
       if (window.Telegram && window.Telegram.WebApp) {
         window.Telegram.WebApp.sendData(jsonString);
-        window.Telegram.WebApp.close();
       } else {
-        alert("Account Saved Successfully!\n\nData:\n" + jsonString);
+        alert("Account Saved Successfully!");
       }
     }
 
