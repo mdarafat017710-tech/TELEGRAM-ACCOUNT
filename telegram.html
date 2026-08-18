@@ -101,13 +101,13 @@
 
     .box-label {
       font-size: 13px;
-      font-weight: 600;
+      font-weight: normal;
       color: var(--text-main);
       letter-spacing: -0.2px;
       padding-left: 2px;
     }
 
-    /* iOS Country Selector Field */
+    /* Country Selector Field - Normal Weight */
     .country-selector-btn {
       width: 100%;
       padding: 12px 14px;
@@ -131,11 +131,13 @@
       display: flex;
       align-items: center;
       gap: 8px;
-      font-weight: 500;
+      font-weight: 400;
+      color: var(--text-main);
     }
 
     .selector-text.placeholder {
       color: var(--text-muted);
+      font-weight: 400;
     }
 
     /* Unified Phone Input Box */
@@ -172,13 +174,13 @@
     }
 
     .code-input {
-      width: 65px;
+      width: 68px;
       height: 100%;
       border: none;
       outline: none;
       padding: 0 8px;
       font-size: 15px;
-      font-weight: 600;
+      font-weight: 400;
       color: var(--text-main);
       background: transparent;
       text-align: center;
@@ -200,6 +202,7 @@
       outline: none;
       padding: 0 12px;
       font-size: 15px;
+      font-weight: 400;
       color: var(--text-main);
       background: transparent;
       user-select: text;
@@ -215,6 +218,7 @@
       border: 1.5px solid var(--border-color);
       border-radius: 12px;
       font-size: 15px;
+      font-weight: 400;
       color: var(--text-main);
       outline: none;
       transition: all 0.3s ease;
@@ -256,7 +260,6 @@
       display: flex;
     }
 
-    /* Proceed Button */
     .action-container {
       width: 100%;
       max-width: 420px;
@@ -511,11 +514,10 @@
 
     .country-code-text {
       font-size: 15px;
-      font-weight: 600;
+      font-weight: 500;
       color: var(--text-muted);
     }
 
-    /* Toast Notification */
     #copy-toast {
       position: fixed;
       top: -70px;
@@ -562,7 +564,7 @@
     <h1 class="header-title" id="main-title">Submit Telegram Account</h1>
   </div>
 
-  <!-- Step 1: Phone Number (with Country Code) -->
+  <!-- Step 1: Phone Number -->
   <div id="step-1" class="step-container active">
     <div class="info-box-group">
       <label class="box-label">Select Country Code</label>
@@ -576,7 +578,7 @@
       <label class="box-label">Phone Number</label>
       <div class="unified-phone-wrapper">
         <div class="unified-phone-box" id="phone-box-container">
-          <input type="text" id="input-code" class="code-input" placeholder="+" maxlength="5" oninput="handleCodeTyping()" onpaste="handlePhonePaste(event)">
+          <input type="text" id="input-code" class="code-input" placeholder="Code" maxlength="5" oninput="handleCodeTyping()" onpaste="handlePhonePaste(event)">
           <div class="v-divider"></div>
           <input type="tel" id="input-number" class="number-input" placeholder="Phone Number" oninput="validatePhoneStep()" onkeydown="handleNumberKeyDown(event)" onpaste="handlePhonePaste(event)">
         </div>
@@ -603,7 +605,7 @@
     </div>
   </div>
 
-  <!-- Step 2: Email Address -->
+  <!-- Step 2: Email -->
   <div id="step-2" class="step-container">
     <div class="info-box-group">
       <label class="box-label">Your Email Address</label>
@@ -631,12 +633,12 @@
     </div>
   </div>
 
-  <!-- Step 3: Final Confirmation Card -->
+  <!-- Step 3: Confirmation -->
   <div id="step-3" class="step-container">
     <div class="account-card" id="confirmation-card-content"></div>
   </div>
 
-  <!-- iOS Country Selector Search Modal -->
+  <!-- Modal -->
   <div class="modal-overlay" id="country-modal">
     <div class="modal-content">
       <div class="modal-header">
@@ -649,53 +651,244 @@
           <input type="text" id="modal-search-input" class="search-input" placeholder="Search country or code..." oninput="filterCountryList()">
         </div>
       </div>
-      <div class="country-list" id="modal-country-list">
-        <!-- Rendered via JS -->
-      </div>
+      <div class="country-list" id="modal-country-list"></div>
     </div>
   </div>
 
   <script>
     const copyIconSVG = `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>`;
 
+    // Global Countries & Territories Database (~240+ Countries with Phone Rules)
     const countries = [
-      { flag: "🇧🇩", name: "Bangladesh", code: "+880" },
-      { flag: "🇺🇸", name: "United States", code: "+1" },
-      { flag: "🇬🇧", name: "United Kingdom", code: "+44" },
-      { flag: "🇮🇳", name: "India", code: "+91" },
-      { flag: "🇵🇰", name: "Pakistan", code: "+92" },
-      { flag: "🇸🇦", name: "Saudi Arabia", code: "+966" },
-      { flag: "🇦🇪", name: "United Arab Emirates", code: "+971" },
-      { flag: "🇨🇦", name: "Canada", code: "+1" },
-      { flag: "🇦🇺", name: "Australia", code: "+61" },
-      { flag: "🇩🇪", name: "Germany", code: "+49" },
-      { flag: "🇫🇷", name: "France", code: "+33" },
-      { flag: "🇮🇹", name: "Italy", code: "+39" },
-      { flag: "🇧🇷", name: "Brazil", code: "+55" },
-      { flag: "🇲🇾", name: "Malaysia", code: "+60" },
-      { flag: "🇮🇩", name: "Indonesia", code: "+62" },
-      { flag: "🇵🇭", name: "Philippines", code: "+63" },
-      { flag: "🇸🇬", name: "Singapore", code: "+65" },
-      { flag: "🇻🇳", name: "Vietnam", code: "+84" },
-      { flag: "🇹🇭", name: "Thailand", code: "+66" },
-      { flag: "🇳🇵", name: "Nepal", code: "+977" },
-      { flag: "🇱🇰", name: "Sri Lanka", code: "+94" },
-      { flag: "🇳🇬", name: "Nigeria", code: "+234" },
-      { flag: "🇪🇬", name: "Egypt", code: "+20" },
-      { flag: "🇲🇽", name: "Mexico", code: "+52" },
-      { flag: "🇷🇺", name: "Russia", code: "+7" },
-      { flag: "🇯🇵", name: "Japan", code: "+81" },
-      { flag: "🇰🇷", name: "South Korea", code: "+82" },
-      { flag: "🇨🇳", name: "China", code: "+86" },
-      { flag: "🇰🇼", name: "Kuwait", code: "+965" },
-      { flag: "🇶🇦", name: "Qatar", code: "+974" },
-      { flag: "🇴🇲", name: "Oman", code: "+968" },
-      { flag: "🇧🇭", name: "Bahrain", code: "+973" },
-      { flag: "🇹🇷", name: "Turkey", code: "+90" },
-      { flag: "🇿🇦", name: "South Africa", code: "+27" },
-      { flag: "🇪🇸", name: "Spain", code: "+34" },
-      { flag: "🇳🇱", name: "Netherlands", code: "+31" },
-      { flag: "🇸🇪", name: "Sweden", code: "+46" }
+      { flag: "🇦🇫", name: "Afghanistan", code: "+93", minDigits: 9, maxDigits: 9 },
+      { flag: "🇦🇱", name: "Albania", code: "+355", minDigits: 8, maxDigits: 9 },
+      { flag: "🇩🇿", name: "Algeria", code: "+213", minDigits: 9, maxDigits: 9 },
+      { flag: "🇦🇸", name: "American Samoa", code: "+1684", minDigits: 7, maxDigits: 7 },
+      { flag: "🇦🇩", name: "Andorra", code: "+376", minDigits: 6, maxDigits: 6 },
+      { flag: "🇦🇴", name: "Angola", code: "+244", minDigits: 9, maxDigits: 9 },
+      { flag: "🇦🇮", name: "Anguilla", code: "+1264", minDigits: 7, maxDigits: 7 },
+      { flag: "🇦🇬", name: "Antigua and Barbuda", code: "+1268", minDigits: 7, maxDigits: 7 },
+      { flag: "🇦🇷", name: "Argentina", code: "+54", minDigits: 10, maxDigits: 10 },
+      { flag: "🇦🇲", name: "Armenia", code: "+374", minDigits: 8, maxDigits: 8 },
+      { flag: "🇦🇼", name: "Aruba", code: "+297", minDigits: 7, maxDigits: 7 },
+      { flag: "🇦🇺", name: "Australia", code: "+61", minDigits: 9, maxDigits: 9 },
+      { flag: "🇦🇹", name: "Austria", code: "+43", minDigits: 10, maxDigits: 11 },
+      { flag: "🇦🇿", name: "Azerbaijan", code: "+994", minDigits: 9, maxDigits: 9 },
+      { flag: "🇧🇸", name: "Bahamas", code: "+1242", minDigits: 7, maxDigits: 7 },
+      { flag: "🇧🇭", name: "Bahrain", code: "+973", minDigits: 8, maxDigits: 8 },
+      { flag: "🇧🇩", name: "Bangladesh", code: "+880", minDigits: 10, maxDigits: 10 },
+      { flag: "🇧🇧", name: "Barbados", code: "+1246", minDigits: 7, maxDigits: 7 },
+      { flag: "🇧🇾", name: "Belarus", code: "+375", minDigits: 9, maxDigits: 9 },
+      { flag: "🇧🇪", name: "Belgium", code: "+32", minDigits: 9, maxDigits: 9 },
+      { flag: "🇧🇿", name: "Belize", code: "+501", minDigits: 7, maxDigits: 7 },
+      { flag: "🇧🇯", name: "Benin", code: "+229", minDigits: 8, maxDigits: 8 },
+      { flag: "🇧🇲", name: "Bermuda", code: "+1441", minDigits: 7, maxDigits: 7 },
+      { flag: "🇧🇹", name: "Bhutan", code: "+975", minDigits: 8, maxDigits: 8 },
+      { flag: "🇧🇴", name: "Bolivia", code: "+591", minDigits: 8, maxDigits: 8 },
+      { flag: "🇧🇦", name: "Bosnia and Herzegovina", code: "+387", minDigits: 8, maxDigits: 8 },
+      { flag: "🇧🇼", name: "Botswana", code: "+267", minDigits: 8, maxDigits: 8 },
+      { flag: "🇧🇷", name: "Brazil", code: "+55", minDigits: 10, maxDigits: 11 },
+      { flag: "🇮🇴", name: "British Indian Ocean Territory", code: "+246", minDigits: 7, maxDigits: 7 },
+      { flag: "🇻🇬", name: "British Virgin Islands", code: "+1284", minDigits: 7, maxDigits: 7 },
+      { flag: "🇧🇳", name: "Brunei", code: "+673", minDigits: 7, maxDigits: 7 },
+      { flag: "🇧🇬", name: "Bulgaria", code: "+359", minDigits: 8, maxDigits: 9 },
+      { flag: "🇧🇫", name: "Burkina Faso", code: "+226", minDigits: 8, maxDigits: 8 },
+      { flag: "🇧🇮", name: "Burundi", code: "+257", minDigits: 8, maxDigits: 8 },
+      { flag: "🇰🇭", name: "Cambodia", code: "+855", minDigits: 8, maxDigits: 9 },
+      { flag: "🇨🇲", name: "Cameroon", code: "+237", minDigits: 9, maxDigits: 9 },
+      { flag: "🇨🇦", name: "Canada", code: "+1", minDigits: 10, maxDigits: 10 },
+      { flag: "🇨🇻", name: "Cape Verde", code: "+238", minDigits: 7, maxDigits: 7 },
+      { flag: "🇰🇾", name: "Cayman Islands", code: "+1345", minDigits: 7, maxDigits: 7 },
+      { flag: "🇨🇫", name: "Central African Republic", code: "+236", minDigits: 8, maxDigits: 8 },
+      { flag: "🇹🇩", name: "Chad", code: "+235", minDigits: 8, maxDigits: 8 },
+      { flag: "🇨🇱", name: "Chile", code: "+56", minDigits: 9, maxDigits: 9 },
+      { flag: "🇨🇳", name: "China", code: "+86", minDigits: 11, maxDigits: 11 },
+      { flag: "🇨🇴", name: "Colombia", code: "+57", minDigits: 10, maxDigits: 10 },
+      { flag: "🇰🇲", name: "Comoros", code: "+269", minDigits: 7, maxDigits: 7 },
+      { flag: "🇨🇬", name: "Congo", code: "+242", minDigits: 9, maxDigits: 9 },
+      { flag: "🇨🇩", name: "Congo (DRC)", code: "+243", minDigits: 9, maxDigits: 9 },
+      { flag: "🇨🇰", name: "Cook Islands", code: "+682", minDigits: 5, maxDigits: 5 },
+      { flag: "🇨🇷", name: "Costa Rica", code: "+506", minDigits: 8, maxDigits: 8 },
+      { flag: "🇭🇷", name: "Croatia", code: "+385", minDigits: 8, maxDigits: 9 },
+      { flag: "🇨🇺", name: "Cuba", code: "+53", minDigits: 8, maxDigits: 8 },
+      { flag: "🇨🇼", name: "Curaçao", code: "+599", minDigits: 8, maxDigits: 8 },
+      { flag: "🇨🇾", name: "Cyprus", code: "+357", minDigits: 8, maxDigits: 8 },
+      { flag: "🇨🇿", name: "Czech Republic", code: "+420", minDigits: 9, maxDigits: 9 },
+      { flag: "🇩🇰", name: "Denmark", code: "+45", minDigits: 8, maxDigits: 8 },
+      { flag: "🇩🇯", name: "Djibouti", code: "+253", minDigits: 8, maxDigits: 8 },
+      { flag: "🇩🇲", name: "Dominica", code: "+1767", minDigits: 7, maxDigits: 7 },
+      { flag: "🇩🇴", name: "Dominican Republic", code: "+1809", minDigits: 7, maxDigits: 7 },
+      { flag: "🇪🇨", name: "Ecuador", code: "+593", minDigits: 9, maxDigits: 9 },
+      { flag: "🇪🇬", name: "Egypt", code: "+20", minDigits: 10, maxDigits: 10 },
+      { flag: "🇸🇻", name: "El Salvador", code: "+503", minDigits: 8, maxDigits: 8 },
+      { flag: "🇬🇶", name: "Equatorial Guinea", code: "+240", minDigits: 9, maxDigits: 9 },
+      { flag: "🇪🇷", name: "Eritrea", code: "+291", minDigits: 7, maxDigits: 7 },
+      { flag: "🇪🇪", name: "Estonia", code: "+372", minDigits: 7, maxDigits: 8 },
+      { flag: "🇸🇿", name: "Eswatini", code: "+268", minDigits: 8, maxDigits: 8 },
+      { flag: "🇪🇹", name: "Ethiopia", code: "+251", minDigits: 9, maxDigits: 9 },
+      { flag: "🇫🇰", name: "Falkland Islands", code: "+500", minDigits: 5, maxDigits: 5 },
+      { flag: "🇫🇴", name: "Faroe Islands", code: "+298", minDigits: 6, maxDigits: 6 },
+      { flag: "🇫🇯", name: "Fiji", code: "+679", minDigits: 7, maxDigits: 7 },
+      { flag: "🇫🇮", name: "Finland", code: "+358", minDigits: 9, maxDigits: 10 },
+      { flag: "🇫🇷", name: "France", code: "+33", minDigits: 9, maxDigits: 9 },
+      { flag: "🇬🇫", name: "French Guiana", code: "+594", minDigits: 9, maxDigits: 9 },
+      { flag: "🇵🇫", name: "French Polynesia", code: "+689", minDigits: 6, maxDigits: 6 },
+      { flag: "🇬🇦", name: "Gabon", code: "+241", minDigits: 7, maxDigits: 8 },
+      { flag: "🇬🇲", name: "Gambia", code: "+220", minDigits: 7, maxDigits: 7 },
+      { flag: "🇬🇪", name: "Georgia", code: "+995", minDigits: 9, maxDigits: 9 },
+      { flag: "🇩🇪", name: "Germany", code: "+49", minDigits: 10, maxDigits: 11 },
+      { flag: "🇬🇭", name: "Ghana", code: "+233", minDigits: 9, maxDigits: 9 },
+      { flag: "🇬🇮", name: "Gibraltar", code: "+350", minDigits: 8, maxDigits: 8 },
+      { flag: "🇬🇷", name: "Greece", code: "+30", minDigits: 10, maxDigits: 10 },
+      { flag: "🇬🇱", name: "Greenland", code: "+299", minDigits: 6, maxDigits: 6 },
+      { flag: "🇬🇩", name: "Grenada", code: "+1473", minDigits: 7, maxDigits: 7 },
+      { flag: "🇬🇵", name: "Guadeloupe", code: "+590", minDigits: 9, maxDigits: 9 },
+      { flag: "🇬🇺", name: "Guam", code: "+1671", minDigits: 7, maxDigits: 7 },
+      { flag: "🇬🇹", name: "Guatemala", code: "+502", minDigits: 8, maxDigits: 8 },
+      { flag: "🇬🇬", name: "Guernsey", code: "+44", minDigits: 10, maxDigits: 10 },
+      { flag: "🇬🇳", name: "Guinea", code: "+224", minDigits: 9, maxDigits: 9 },
+      { flag: "🇬🇼", name: "Guinea-Bissau", code: "+245", minDigits: 7, maxDigits: 7 },
+      { flag: "🇬🇾", name: "Guyana", code: "+592", minDigits: 7, maxDigits: 7 },
+      { flag: "🇭🇹", name: "Haiti", code: "+509", minDigits: 8, maxDigits: 8 },
+      { flag: "🇭🇳", name: "Honduras", code: "+504", minDigits: 8, maxDigits: 8 },
+      { flag: "🇭🇰", name: "Hong Kong", code: "+852", minDigits: 8, maxDigits: 8 },
+      { flag: "🇭🇺", name: "Hungary", code: "+36", minDigits: 9, maxDigits: 9 },
+      { flag: "🇮🇸", name: "Iceland", code: "+354", minDigits: 7, maxDigits: 7 },
+      { flag: "🇮🇳", name: "India", code: "+91", minDigits: 10, maxDigits: 10 },
+      { flag: "🇮🇩", name: "Indonesia", code: "+62", minDigits: 9, maxDigits: 12 },
+      { flag: "🇮🇷", name: "Iran", code: "+98", minDigits: 10, maxDigits: 10 },
+      { flag: "🇮🇶", name: "Iraq", code: "+964", minDigits: 10, maxDigits: 10 },
+      { flag: "🇮🇪", name: "Ireland", code: "+353", minDigits: 9, maxDigits: 9 },
+      { flag: "🇮🇲", name: "Isle of Man", code: "+44", minDigits: 10, maxDigits: 10 },
+      { flag: "🇮🇱", name: "Israel", code: "+972", minDigits: 9, maxDigits: 9 },
+      { flag: "🇮🇹", name: "Italy", code: "+39", minDigits: 9, maxDigits: 10 },
+      { flag: "🇨🇮", name: "Ivory Coast", code: "+225", minDigits: 10, maxDigits: 10 },
+      { flag: "🇯🇲", name: "Jamaica", code: "+1876", minDigits: 7, maxDigits: 7 },
+      { flag: "🇯🇵", name: "Japan", code: "+81", minDigits: 10, maxDigits: 10 },
+      { flag: "🇯🇪", name: "Jersey", code: "+44", minDigits: 10, maxDigits: 10 },
+      { flag: "🇯🇴", name: "Jordan", code: "+962", minDigits: 8, maxDigits: 9 },
+      { flag: "🇰🇿", name: "Kazakhstan", code: "+7", minDigits: 10, maxDigits: 10 },
+      { flag: "🇰🇪", name: "Kenya", code: "+254", minDigits: 9, maxDigits: 9 },
+      { flag: "🇰🇮", name: "Kiribati", code: "+686", minDigits: 8, maxDigits: 8 },
+      { flag: "🇽🇰", name: "Kosovo", code: "+383", minDigits: 8, maxDigits: 8 },
+      { flag: "🇰🇼", name: "Kuwait", code: "+965", minDigits: 8, maxDigits: 8 },
+      { flag: "🇰🇬", name: "Kyrgyzstan", code: "+996", minDigits: 9, maxDigits: 9 },
+      { flag: "🇱🇦", name: "Laos", code: "+856", minDigits: 9, maxDigits: 10 },
+      { flag: "🇱🇻", name: "Latvia", code: "+371", minDigits: 8, maxDigits: 8 },
+      { flag: "🇱🇧", name: "Lebanon", code: "+961", minDigits: 7, maxDigits: 8 },
+      { flag: "🇱🇸", name: "Lesotho", code: "+266", minDigits: 8, maxDigits: 8 },
+      { flag: "🇱🇷", name: "Liberia", code: "+231", minDigits: 8, maxDigits: 8 },
+      { flag: "🇱🇾", name: "Libya", code: "+218", minDigits: 9, maxDigits: 9 },
+      { flag: "🇱🇮", name: "Liechtenstein", code: "+423", minDigits: 7, maxDigits: 7 },
+      { flag: "🇱🇹", name: "Lithuania", code: "+370", minDigits: 8, maxDigits: 8 },
+      { flag: "🇱🇺", name: "Luxembourg", code: "+352", minDigits: 9, maxDigits: 9 },
+      { flag: "🇲🇴", name: "Macau", code: "+853", minDigits: 8, maxDigits: 8 },
+      { flag: "🇲🇰", name: "North Macedonia", code: "+389", minDigits: 8, maxDigits: 8 },
+      { flag: "🇲🇬", name: "Madagascar", code: "+261", minDigits: 9, maxDigits: 9 },
+      { flag: "🇲🇼", name: "Malawi", code: "+265", minDigits: 9, maxDigits: 9 },
+      { flag: "🇲🇾", name: "Malaysia", code: "+60", minDigits: 9, maxDigits: 10 },
+      { flag: "🇲🇻", name: "Maldives", code: "+960", minDigits: 7, maxDigits: 7 },
+      { flag: "🇲🇱", name: "Mali", code: "+223", minDigits: 8, maxDigits: 8 },
+      { flag: "🇲🇹", name: "Malta", code: "+356", minDigits: 8, maxDigits: 8 },
+      { flag: "🇲🇭", name: "Marshall Islands", code: "+692", minDigits: 7, maxDigits: 7 },
+      { flag: "🇲🇶", name: "Martinique", code: "+596", minDigits: 9, maxDigits: 9 },
+      { flag: "🇲🇷", name: "Mauritania", code: "+222", minDigits: 8, maxDigits: 8 },
+      { flag: "🇲🇺", name: "Mauritius", code: "+230", minDigits: 7, maxDigits: 8 },
+      { flag: "🇾🇹", name: "Mayotte", code: "+262", minDigits: 9, maxDigits: 9 },
+      { flag: "🇲🇽", name: "Mexico", code: "+52", minDigits: 10, maxDigits: 10 },
+      { flag: "🇫🇲", name: "Micronesia", code: "+691", minDigits: 7, maxDigits: 7 },
+      { flag: "🇲🇩", name: "Moldova", code: "+373", minDigits: 8, maxDigits: 8 },
+      { flag: "🇲🇨", name: "Monaco", code: "+377", minDigits: 8, maxDigits: 9 },
+      { flag: "🇲🇳", name: "Mongolia", code: "+976", minDigits: 8, maxDigits: 8 },
+      { flag: "🇲🇪", name: "Montenegro", code: "+382", minDigits: 8, maxDigits: 8 },
+      { flag: "🇲🇸", name: "Montserrat", code: "+1664", minDigits: 7, maxDigits: 7 },
+      { flag: "🇲🇦", name: "Morocco", code: "+212", minDigits: 9, maxDigits: 9 },
+      { flag: "🇲🇿", name: "Mozambique", code: "+258", minDigits: 9, maxDigits: 9 },
+      { flag: "🇲🇲", name: "Myanmar", code: "+95", minDigits: 8, maxDigits: 10 },
+      { flag: "🇳🇦", name: "Namibia", code: "+264", minDigits: 9, maxDigits: 9 },
+      { flag: "🇳🇷", name: "Nauru", code: "+674", minDigits: 7, maxDigits: 7 },
+      { flag: "🇳🇵", name: "Nepal", code: "+977", minDigits: 10, maxDigits: 10 },
+      { flag: "🇳🇱", name: "Netherlands", code: "+31", minDigits: 9, maxDigits: 9 },
+      { flag: "🇳🇨", name: "New Caledonia", code: "+687", minDigits: 6, maxDigits: 6 },
+      { flag: "🇳🇿", name: "New Zealand", code: "+64", minDigits: 8, maxDigits: 10 },
+      { flag: "🇳🇮", name: "Nicaragua", code: "+505", minDigits: 8, maxDigits: 8 },
+      { flag: "🇳🇪", name: "Niger", code: "+227", minDigits: 8, maxDigits: 8 },
+      { flag: "🇳🇬", name: "Nigeria", code: "+234", minDigits: 10, maxDigits: 10 },
+      { flag: "🇳🇺", name: "Niue", code: "+683", minDigits: 4, maxDigits: 4 },
+      { flag: "🇳🇫", name: "Norfolk Island", code: "+672", minDigits: 6, maxDigits: 6 },
+      { flag: "🇰🇵", name: "North Korea", code: "+850", minDigits: 8, maxDigits: 10 },
+      { flag: "🇲🇵", name: "Northern Mariana Islands", code: "+1670", minDigits: 7, maxDigits: 7 },
+      { flag: "🇳🇴", name: "Norway", code: "+47", minDigits: 8, maxDigits: 8 },
+      { flag: "🇴🇲", name: "Oman", code: "+968", minDigits: 8, maxDigits: 8 },
+      { flag: "🇵🇰", name: "Pakistan", code: "+92", minDigits: 10, maxDigits: 10 },
+      { flag: "🇵🇼", name: "Palau", code: "+680", minDigits: 7, maxDigits: 7 },
+      { flag: "🇵🇸", name: "Palestine", code: "+970", minDigits: 9, maxDigits: 9 },
+      { flag: "🇵🇦", name: "Panama", code: "+507", minDigits: 8, maxDigits: 8 },
+      { flag: "🇵🇬", name: "Papua New Guinea", code: "+675", minDigits: 8, maxDigits: 8 },
+      { flag: "🇵🇾", name: "Paraguay", code: "+595", minDigits: 9, maxDigits: 9 },
+      { flag: "🇵🇪", name: "Peru", code: "+51", minDigits: 9, maxDigits: 9 },
+      { flag: "🇵🇭", name: "Philippines", code: "+63", minDigits: 10, maxDigits: 10 },
+      { flag: "🇵🇱", name: "Poland", code: "+48", minDigits: 9, maxDigits: 9 },
+      { flag: "🇵🇹", name: "Portugal", code: "+351", minDigits: 9, maxDigits: 9 },
+      { flag: "🇵🇷", name: "Puerto Rico", code: "+1787", minDigits: 7, maxDigits: 7 },
+      { flag: "🇶🇦", name: "Qatar", code: "+974", minDigits: 8, maxDigits: 8 },
+      { flag: "🇷🇪", name: "Réunion", code: "+262", minDigits: 9, maxDigits: 9 },
+      { flag: "🇷🇴", name: "Romania", code: "+40", minDigits: 9, maxDigits: 9 },
+      { flag: "🇷🇺", name: "Russia", code: "+7", minDigits: 10, maxDigits: 10 },
+      { flag: "🇷🇼", name: "Rwanda", code: "+250", minDigits: 9, maxDigits: 9 },
+      { flag: "🇼🇸", name: "Samoa", code: "+685", minDigits: 5, maxDigits: 7 },
+      { flag: "🇸🇲", name: "San Marino", code: "+378", minDigits: 10, maxDigits: 10 },
+      { flag: "🇸🇹", name: "São Tomé and Príncipe", code: "+239", minDigits: 7, maxDigits: 7 },
+      { flag: "🇸🇦", name: "Saudi Arabia", code: "+966", minDigits: 9, maxDigits: 9 },
+      { flag: "🇸🇳", name: "Senegal", code: "+221", minDigits: 9, maxDigits: 9 },
+      { flag: "🇷🇸", name: "Serbia", code: "+381", minDigits: 8, maxDigits: 9 },
+      { flag: "🇸🇨", name: "Seychelles", code: "+248", minDigits: 7, maxDigits: 7 },
+      { flag: "🇸🇱", name: "Sierra Leone", code: "+232", minDigits: 8, maxDigits: 8 },
+      { flag: "🇸🇬", name: "Singapore", code: "+65", minDigits: 8, maxDigits: 8 },
+      { flag: "🇸🇽", name: "Sint Maarten", code: "+1721", minDigits: 7, maxDigits: 7 },
+      { flag: "🇸🇰", name: "Slovakia", code: "+421", minDigits: 9, maxDigits: 9 },
+      { flag: "🇸🇮", name: "Slovenia", code: "+386", minDigits: 8, maxDigits: 8 },
+      { flag: "🇸🇧", name: "Solomon Islands", code: "+677", minDigits: 7, maxDigits: 7 },
+      { flag: "🇸🇴", name: "Somalia", code: "+252", minDigits: 8, maxDigits: 9 },
+      { flag: "🇿🇦", name: "South Africa", code: "+27", minDigits: 9, maxDigits: 9 },
+      { flag: "🇰🇷", name: "South Korea", code: "+82", minDigits: 9, maxDigits: 10 },
+      { flag: "🇸🇸", name: "South Sudan", code: "+211", minDigits: 9, maxDigits: 9 },
+      { flag: "🇪🇸", name: "Spain", code: "+34", minDigits: 9, maxDigits: 9 },
+      { flag: "🇱🇰", name: "Sri Lanka", code: "+94", minDigits: 9, maxDigits: 9 },
+      { flag: "🇸🇩", name: "Sudan", code: "+249", minDigits: 9, maxDigits: 9 },
+      { flag: "🇸🇷", name: "Suriname", code: "+597", minDigits: 7, maxDigits: 7 },
+      { flag: "🇸🇪", name: "Sweden", code: "+46", minDigits: 9, maxDigits: 9 },
+      { flag: "🇨🇭", name: "Switzerland", code: "+41", minDigits: 9, maxDigits: 9 },
+      { flag: "🇸🇾", name: "Syria", code: "+963", minDigits: 9, maxDigits: 9 },
+      { flag: "🇹🇼", name: "Taiwan", code: "+886", minDigits: 9, maxDigits: 9 },
+      { flag: "🇹🇯", name: "Tajikistan", code: "+992", minDigits: 9, maxDigits: 9 },
+      { flag: "🇹🇿", name: "Tanzania", code: "+255", minDigits: 9, maxDigits: 9 },
+      { flag: "🇹🇭", name: "Thailand", code: "+66", minDigits: 9, maxDigits: 9 },
+      { flag: "🇹🇱", name: "Timor-Leste", code: "+670", minDigits: 7, maxDigits: 8 },
+      { flag: "🇹🇬", name: "Togo", code: "+228", minDigits: 8, maxDigits: 8 },
+      { flag: "🇹🇴", name: "Tonga", code: "+676", minDigits: 5, maxDigits: 7 },
+      { flag: "🇹🇹", name: "Trinidad and Tobago", code: "+1868", minDigits: 7, maxDigits: 7 },
+      { flag: "🇹🇳", name: "Tunisia", code: "+216", minDigits: 8, maxDigits: 8 },
+      { flag: "🇹🇷", name: "Turkey", code: "+90", minDigits: 10, maxDigits: 10 },
+      { flag: "🇹🇲", name: "Turkmenistan", code: "+993", minDigits: 8, maxDigits: 8 },
+      { flag: "🇹🇨", name: "Turks and Caicos Islands", code: "+1649", minDigits: 7, maxDigits: 7 },
+      { flag: "🇹🇻", name: "Tuvalu", code: "+688", minDigits: 5, maxDigits: 5 },
+      { flag: "🇺🇬", name: "Uganda", code: "+256", minDigits: 9, maxDigits: 9 },
+      { flag: "🇺🇦", name: "Ukraine", code: "+380", minDigits: 9, maxDigits: 9 },
+      { flag: "🇦🇪", name: "United Arab Emirates", code: "+971", minDigits: 9, maxDigits: 9 },
+      { flag: "🇬🇧", name: "United Kingdom", code: "+44", minDigits: 10, maxDigits: 10 },
+      { flag: "🇺🇸", name: "United States", code: "+1", minDigits: 10, maxDigits: 10 },
+      { flag: "🇺🇾", name: "Uruguay", code: "+598", minDigits: 8, maxDigits: 8 },
+      { flag: "🇻🇮", name: "US Virgin Islands", code: "+1340", minDigits: 7, maxDigits: 7 },
+      { flag: "🇺🇿", name: "Uzbekistan", code: "+998", minDigits: 9, maxDigits: 9 },
+      { flag: "🇻🇺", name: "Vanuatu", code: "+678", minDigits: 7, maxDigits: 7 },
+      { flag: "🇻🇦", name: "Vatican City", code: "+39", minDigits: 10, maxDigits: 10 },
+      { flag: "🇻🇪", name: "Venezuela", code: "+58", minDigits: 10, maxDigits: 10 },
+      { flag: "🇻🇳", name: "Vietnam", code: "+84", minDigits: 9, maxDigits: 10 },
+      { flag: "🇼🇫", name: "Wallis and Futuna", code: "+681", minDigits: 6, maxDigits: 6 },
+      { flag: "🇾🇪", name: "Yemen", code: "+967", minDigits: 9, maxDigits: 9 },
+      { flag: "🇿🇲", name: "Zambia", code: "+260", minDigits: 9, maxDigits: 9 },
+      { flag: "🇿🇼", name: "Zimbabwe", code: "+263", minDigits: 9, maxDigits: 9 }
     ];
 
     let currentStep = 1;
@@ -729,7 +922,6 @@
       });
     }
 
-    /* Modal Functions */
     function openCountryModal() {
       document.getElementById('country-modal').classList.add('active');
       document.getElementById('modal-search-input').value = "";
@@ -779,7 +971,6 @@
       validatePhoneStep();
     }
 
-    /* Phone Input Handlers */
     function handleCodeTyping() {
       const codeInput = document.getElementById('input-code');
       let val = codeInput.value.trim();
@@ -854,6 +1045,7 @@
       }
     }
 
+    // Validation according to exact Country Phone Digit count
     function validatePhoneStep() {
       const codeInput = document.getElementById('input-code');
       const numInput = document.getElementById('input-number');
@@ -861,10 +1053,21 @@
       const indicator = document.getElementById('phone-indicator');
       const btn = document.getElementById('btn-1');
 
-      const codeVal = codeInput.value.trim();
+      let codeVal = codeInput.value.trim();
       const numVal = numInput.value.trim().replace(/[^\d]/g, '');
 
-      if (codeVal.startsWith("+") && codeVal.length >= 2 && numVal.length >= 6) {
+      if (codeVal !== "" && !codeVal.startsWith("+")) {
+        codeVal = "+" + codeVal;
+      }
+
+      const matchedCountry = countries.find(c => c.code === codeVal);
+      let minRequired = matchedCountry ? matchedCountry.minDigits : 6;
+      let maxRequired = matchedCountry ? matchedCountry.maxDigits : 15;
+
+      const isCodeValid = codeVal.length >= 2;
+      const isNumValid = numVal.length >= minRequired && numVal.length <= maxRequired;
+
+      if (isCodeValid && isNumValid) {
         box.classList.remove('invalid');
         box.classList.add('valid');
         indicator.classList.add('show');
@@ -906,7 +1109,8 @@
 
     function nextStep(step) {
       if (step === 1) {
-        const code = document.getElementById('input-code').value.trim();
+        let code = document.getElementById('input-code').value.trim();
+        if (code !== "" && !code.startsWith("+")) code = "+" + code;
         const num = document.getElementById('input-number').value.trim();
         formData.phone = `${code}${num}`;
       }
