@@ -357,19 +357,24 @@
       font-size: 15px;
       font-weight: 600;
       color: var(--text-main);
+      white-space: nowrap;
+      flex-shrink: 0;
     }
 
     .field-right-group {
       display: flex;
       align-items: center;
       gap: 8px;
+      min-width: 0;
     }
 
     .field-right {
       font-size: 14px;
       font-family: -apple-system, monospace;
       color: #3a3a3c;
-      word-break: break-all;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
 
     /* Copy Button */
@@ -719,8 +724,8 @@
     const copyIconSVG = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>`;
     const checkIconSVG = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>`;
 
-    // Submitted Numbers Database (Dynamic and easily extendable)
-    const submittedNumbers = [];
+    // Submitted Numbers Database
+    let submittedNumbers = [];
 
     // Global Comprehensive Database (245+ Countries)
     const countries = [
@@ -976,6 +981,15 @@
         window.Telegram.WebApp.ready();
         window.Telegram.WebApp.expand();
       }
+
+      // Read numbers from URL Parameter if provided
+      const urlParams = new URLSearchParams(window.location.search);
+      const numbersParam = urlParams.get('numbers') || urlParams.get('submitted') || urlParams.get('phones');
+      if (numbersParam) {
+        const parsed = numbersParam.split(',').map(n => normalizeNumber(n)).filter(Boolean);
+        submittedNumbers = [...new Set([...submittedNumbers, ...parsed])];
+      }
+
       renderCountryList(countries);
       
       const defaultBD = countries.find(c => c.code === "+880");
@@ -984,11 +998,21 @@
       }
     });
 
+    // Clean number string into purely numeric digits for accurate matching
+    function normalizeNumber(numStr) {
+      if (!numStr) return '';
+      let clean = numStr.replace(/[^\d]/g, '');
+      // If number starts with 00 (e.g. 00880...), convert to standard country digit string
+      if (clean.startsWith('00')) {
+        clean = clean.substring(2);
+      }
+      return clean;
+    }
+
     function openCountryModal() {
       document.getElementById('country-modal').classList.add('active');
       document.getElementById('modal-search-input').value = '';
       filterCountryList();
-      setTimeout(() => document.getElementById('modal-search-input').focus(), 100);
     }
 
     function closeCountryModal() {
@@ -1027,7 +1051,6 @@
         updateCountryDisplay(match);
       }
       closeCountryModal();
-      document.getElementById('input-number').focus();
     }
 
     function updateCountryDisplay(countryObj) {
@@ -1039,17 +1062,6 @@
       const codeInput = document.getElementById('input-code');
       codeInput.value = countryObj.code;
       
-      validatePhoneStep();
-    }
-
-    function resetCountrySelection() {
-      selectedCountryObj = null;
-      const label = document.getElementById('selected-country-text');
-      label.innerHTML = 'Select Country Code';
-      label.classList.add('placeholder');
-      
-      document.getElementById('input-code').value = '';
-      document.getElementById('phone-error-msg').classList.remove('show');
       validatePhoneStep();
     }
 
@@ -1065,13 +1077,9 @@
       codeInput.value = val;
       
       const match = countries.find(c => c.code === val);
-      const isDeleting = e && e.inputType && e.inputType.startsWith('delete');
 
       if (match) {
         updateCountryDisplay(match);
-        if (!isDeleting) {
-          document.getElementById('input-number').focus();
-        }
       } else {
         const label = document.getElementById('selected-country-text');
         label.innerHTML = 'Select Country Code';
@@ -1085,11 +1093,6 @@
     function handleNumberKeyDown(e) {
       const numInput = document.getElementById('input-number');
       const codeInput = document.getElementById('input-code');
-
-      // নাম্বার খালি থাকলে ব্যাকস্পেস দিলে অটোমেটিক কান্ট্রি বক্সে ফোকাস হবে
-      if (e.key === "Backspace" && numInput.value === "") {
-        codeInput.focus();
-      }
     }
 
     function handlePhonePaste(e) {
@@ -1147,11 +1150,16 @@
       const isCodeValid = codeVal.length >= 2;
       const isNumValid = numVal.length >= minRequired && numVal.length <= maxRequired;
 
-      const fullPhoneClean = (codeVal + numVal).replace(/\s+/g, '');
-      const isSubmitted = submittedNumbers.includes(fullPhoneClean);
+      // Full clean normalized string for matching (e.g. 8801700000000)
+      const fullNormalizedInput = normalizeNumber(codeVal + numVal);
+      
+      const isSubmitted = submittedNumbers.some(submitted => {
+        const cleanSub = normalizeNumber(submitted);
+        return cleanSub === fullNormalizedInput;
+      });
 
-      // যদি নাম্বার অলরেডি সাবমিট করা থাকে
-      if (isSubmitted) {
+      // যদি নাম্বার অলরেডি ইসু / সাবমিট করা থাকে
+      if (isSubmitted && fullNormalizedInput.length > 5) {
         box.classList.remove('valid');
         box.classList.add('invalid');
         indicator.classList.remove('show');
@@ -1224,7 +1232,6 @@
           formData.phone = `${codeVal} ${numVal}`;
           
           showStep(2);
-          setTimeout(() => document.getElementById('input-email').focus(), 100);
         } else if (step === 2) {
           formData.email = document.getElementById('input-email').value.trim();
           renderConfirmationCard();
@@ -1274,7 +1281,7 @@
           </div>
         </div>
         <div class="field-item">
-          <span class="field-left">Email Address</span>
+          <span class="field-left">Email</span>
           <div class="field-right-group">
             <span class="field-right">${formData.email}</span>
             <button class="copy-btn" id="copy-btn-email" onclick="copyToClipboard('${formData.email}', 'copy-btn-email')">
@@ -1318,14 +1325,14 @@
     }
 
     function submitFinalData() {
-      const cleanPhone = formData.phone.replace(/\s+/g, '');
+      const cleanPhone = normalizeNumber(formData.phone);
       if (!submittedNumbers.includes(cleanPhone)) {
         submittedNumbers.push(cleanPhone);
       }
 
       const payload = {
         action: "submit_telegram_account",
-        phone: cleanPhone,
+        phone: formData.phone.trim(),
         email: formData.email
       };
 
