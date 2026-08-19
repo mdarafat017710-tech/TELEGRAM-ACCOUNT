@@ -642,7 +642,7 @@
           <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
         </div>
       </div>
-      <!-- Error Message with Exclamation SVG -->
+      <!-- Error Message -->
       <div id="phone-error-msg" class="phone-error-msg">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#ff3b30" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
           <circle cx="12" cy="12" r="10"></circle>
@@ -703,7 +703,7 @@
     <div class="account-card" id="confirmation-card-content"></div>
   </div>
 
-  <!-- Modal -->
+  <!-- Country Search Modal -->
   <div class="modal-overlay" id="country-modal">
     <div class="modal-content">
       <div class="modal-header">
@@ -724,10 +724,10 @@
     const copyIconSVG = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>`;
     const checkIconSVG = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>`;
 
-    // Submitted Numbers Database
+    // Submitted Numbers Database (Parsed from URL)
     let submittedNumbers = [];
 
-    // Global Comprehensive Database (245+ Countries)
+    // Global Countries Database
     const countries = [
       { flag: "🇦🇫", name: "Afghanistan", code: "+93", minDigits: 9, maxDigits: 9 },
       { flag: "🇦🇱", name: "Albania", code: "+355", minDigits: 8, maxDigits: 9 },
@@ -982,31 +982,55 @@
         window.Telegram.WebApp.expand();
       }
 
-      // Read numbers from URL Parameter if provided
-      const urlParams = new URLSearchParams(window.location.search);
-      const numbersParam = urlParams.get('numbers') || urlParams.get('submitted') || urlParams.get('phones');
-      if (numbersParam) {
-        const parsed = numbersParam.split(',').map(n => normalizeNumber(n)).filter(Boolean);
-        submittedNumbers = [...new Set([...submittedNumbers, ...parsed])];
-      }
+      // Parse URL parameters for submitted numbers accurately
+      parseURLNumbers();
 
+      // Render Country List
       renderCountryList(countries);
-      
-      const defaultBD = countries.find(c => c.code === "+880");
-      if (defaultBD) {
-        updateCountryDisplay(defaultBD);
-      }
+
+      // Default state: Keep unselected ("Select Country Code")
+      resetCountryDisplay();
     });
 
-    // Clean number string into purely numeric digits for accurate matching
+    // Helper to normalize any phone number into pure digits (e.g. "+880 1329365319" -> "8801329365319")
     function normalizeNumber(numStr) {
       if (!numStr) return '';
-      let clean = numStr.replace(/[^\d]/g, '');
-      // If number starts with 00 (e.g. 00880...), convert to standard country digit string
-      if (clean.startsWith('00')) {
-        clean = clean.substring(2);
+      return numStr.replace(/\D/g, '');
+    }
+
+    function parseURLNumbers() {
+      const urlParams = new URLSearchParams(window.location.search);
+      let rawValues = [];
+
+      ['numbers', 'submitted', 'phones', 'phone', 'number'].forEach(key => {
+        if (urlParams.has(key)) {
+          const val = urlParams.get(key);
+          if (val) {
+            val.split(',').forEach(p => rawValues.push(p.trim()));
+          }
+        }
+      });
+
+      // Also check full search query string in case of direct numbers like ?+8801329365319
+      if (rawValues.length === 0 && window.location.search) {
+        const queryStr = decodeURIComponent(window.location.search.substring(1));
+        if (queryStr.includes('+') || queryStr.match(/\d{8,}/)) {
+          queryStr.split(',').forEach(p => rawValues.push(p.trim()));
+        }
       }
-      return clean;
+
+      submittedNumbers = rawValues.map(n => normalizeNumber(n)).filter(n => n.length >= 7);
+    }
+
+    function resetCountryDisplay() {
+      selectedCountryObj = null;
+      const label = document.getElementById('selected-country-text');
+      label.innerHTML = 'Select Country Code';
+      label.classList.add('placeholder');
+      
+      document.getElementById('input-code').value = '';
+      document.getElementById('input-number').value = '';
+      validatePhoneStep();
     }
 
     function openCountryModal() {
@@ -1048,12 +1072,12 @@
     function selectCountryFromModal(code, name) {
       const match = countries.find(c => c.code === code && c.name === name) || countries.find(c => c.code === code);
       if (match) {
-        updateCountryDisplay(match);
+        updateCountryDisplay(match, true);
       }
       closeCountryModal();
     }
 
-    function updateCountryDisplay(countryObj) {
+    function updateCountryDisplay(countryObj, focusNumber = false) {
       selectedCountryObj = countryObj;
       const label = document.getElementById('selected-country-text');
       label.innerHTML = `<span class="left-part"><span>${countryObj.flag}</span><span>${countryObj.name}</span></span>`;
@@ -1062,12 +1086,16 @@
       const codeInput = document.getElementById('input-code');
       codeInput.value = countryObj.code;
       
+      if (focusNumber) {
+        document.getElementById('input-number').focus();
+      }
       validatePhoneStep();
     }
 
     function handleCodeTyping(e) {
       const codeInput = document.getElementById('input-code');
       let val = codeInput.value.replace(/[^0-9+]/g, '');
+
       if (val !== "" && !val.startsWith("+")) {
         val = "+" + val.replace(/\+/g, '');
       } else if (val.startsWith("+")) {
@@ -1077,14 +1105,23 @@
       codeInput.value = val;
       
       const match = countries.find(c => c.code === val);
+      const isDeleting = e && e.inputType === 'deleteContentBackward';
 
       if (match) {
-        updateCountryDisplay(match);
+        selectedCountryObj = match;
+        const label = document.getElementById('selected-country-text');
+        label.innerHTML = `<span class="left-part"><span>${match.flag}</span><span>${match.name}</span></span>`;
+        label.classList.remove('placeholder');
+        
+        // Auto jump to phone number input field when country code matches (unless user is backspacing)
+        if (!isDeleting) {
+          document.getElementById('input-number').focus();
+        }
       } else {
+        selectedCountryObj = null;
         const label = document.getElementById('selected-country-text');
         label.innerHTML = 'Select Country Code';
         label.classList.add('placeholder');
-        selectedCountryObj = null;
       }
       
       validatePhoneStep();
@@ -1093,6 +1130,11 @@
     function handleNumberKeyDown(e) {
       const numInput = document.getElementById('input-number');
       const codeInput = document.getElementById('input-code');
+
+      // Jump back to code input if number box is empty and Backspace is pressed
+      if (e.key === 'Backspace' && numInput.value === '') {
+        codeInput.focus();
+      }
     }
 
     function handlePhonePaste(e) {
@@ -1104,7 +1146,7 @@
       const match = countries.slice().sort((a,b) => b.code.length - a.code.length).find(c => cleanData.startsWith(c.code));
 
       if (match) {
-        updateCountryDisplay(match);
+        updateCountryDisplay(match, true);
         const remainingNum = cleanData.substring(match.code.length);
         document.getElementById('input-number').value = remainingNum;
       } else {
@@ -1126,16 +1168,16 @@
       const btn = document.getElementById('btn-1');
       const errorMsg = document.getElementById('phone-error-msg');
 
-      let codeVal = codeInput.value;
+      let codeVal = codeInput.value.trim();
       let numVal = numInput.value.replace(/[^0-9]/g, '');
 
-      if (codeVal.trim() !== "" && numVal.startsWith('0')) {
+      // Strip leading zero if country code is present
+      if (codeVal !== "" && numVal.startsWith('0')) {
           numVal = numVal.substring(1);
+          numInput.value = numVal;
       }
-      
-      numInput.value = numVal;
 
-      if (numVal === "" && codeVal === "") {
+      if (numVal === "" && (codeVal === "" || codeVal === "+")) {
         box.classList.remove('valid', 'invalid');
         indicator.classList.remove('show');
         errorMsg.classList.remove('show');
@@ -1150,15 +1192,15 @@
       const isCodeValid = codeVal.length >= 2;
       const isNumValid = numVal.length >= minRequired && numVal.length <= maxRequired;
 
-      // Full clean normalized string for matching (e.g. 8801700000000)
+      // Full clean normalized string for matching (e.g. 8801329365319)
       const fullNormalizedInput = normalizeNumber(codeVal + numVal);
       
       const isSubmitted = submittedNumbers.some(submitted => {
         const cleanSub = normalizeNumber(submitted);
-        return cleanSub === fullNormalizedInput;
+        return cleanSub && cleanSub === fullNormalizedInput;
       });
 
-      // যদি নাম্বার অলরেডি ইসু / সাবমিট করা থাকে
+      // Show error if number already exists in URL parameters
       if (isSubmitted && fullNormalizedInput.length > 5) {
         box.classList.remove('valid');
         box.classList.add('invalid');
