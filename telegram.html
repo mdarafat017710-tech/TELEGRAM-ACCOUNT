@@ -216,6 +216,22 @@
       -webkit-user-select: text;
     }
 
+    /* Phone Error Message Style */
+    .phone-error-msg {
+      display: none;
+      align-items: center;
+      gap: 6px;
+      color: var(--accent-red);
+      font-size: 13px;
+      font-weight: 500;
+      margin-top: 4px;
+      padding-left: 4px;
+    }
+
+    .phone-error-msg.show {
+      display: flex;
+    }
+
     /* Standard Box */
     .ios-box {
       width: 100%;
@@ -613,13 +629,22 @@
       <label class="box-label">Phone Number</label>
       <div class="unified-phone-wrapper">
         <div class="unified-phone-box" id="phone-box-container">
-          <input type="tel" id="input-code" class="code-input" placeholder="Code" maxlength="6" inputmode="tel" oninput="handleCodeTyping()" onpaste="handlePhonePaste(event)">
+          <input type="tel" id="input-code" class="code-input" placeholder="Code" maxlength="6" inputmode="tel" oninput="handleCodeTyping(event)" onpaste="handlePhonePaste(event)">
           <div class="v-divider"></div>
           <input type="tel" id="input-number" class="number-input" placeholder="Phone Number" oninput="validatePhoneStep()" onkeydown="handleNumberKeyDown(event)" onpaste="handlePhonePaste(event)">
         </div>
         <div class="input-indicator" id="phone-indicator">
           <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
         </div>
+      </div>
+      <!-- Error Message with Exclamation SVG -->
+      <div id="phone-error-msg" class="phone-error-msg">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#ff3b30" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="10"></circle>
+          <line x1="12" y1="8" x2="12" y2="12"></line>
+          <line x1="12" y1="16" x2="12.01" y2="16"></line>
+        </svg>
+        <span>Number already submitted!</span>
       </div>
     </div>
 
@@ -693,6 +718,9 @@
   <script>
     const copyIconSVG = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>`;
     const checkIconSVG = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>`;
+
+    // Submitted Numbers Database (Dynamic and easily extendable)
+    const submittedNumbers = [];
 
     // Global Comprehensive Database (245+ Countries)
     const countries = [
@@ -771,8 +799,8 @@
       { flag: "🇫🇮", name: "Finland", code: "+358", minDigits: 9, maxDigits: 10 },
       { flag: "🇫🇷", name: "France", code: "+33", minDigits: 9, maxDigits: 9 },
       { flag: "🇬🇫", name: "French Guiana", code: "+594", minDigits: 9, maxDigits: 9 },
-      { flag: "🇵🇫", name: "French Polynesia", code: "+689", minDigits: 6, maxDigits: 6 },
-      { flag: "🇬🇦", name: "Gabon", code: "+241", minDigits: 7, maxDigits: 8 },
+      { flag: "🇵🇫", name: "French Polynesia", code: "+689", minDigits: 8, maxDigits: 8 },
+      { flag: "🇬🇦", name: "Gabon", code: "+241", minDigits: 8, maxDigits: 8 },
       { flag: "🇬🇲", name: "Gambia", code: "+220", minDigits: 7, maxDigits: 7 },
       { flag: "🇬🇪", name: "Georgia", code: "+995", minDigits: 9, maxDigits: 9 },
       { flag: "🇩🇪", name: "Germany", code: "+49", minDigits: 10, maxDigits: 11 },
@@ -800,12 +828,12 @@
       { flag: "🇮🇪", name: "Ireland", code: "+353", minDigits: 9, maxDigits: 9 },
       { flag: "🇮🇲", name: "Isle of Man", code: "+44", minDigits: 10, maxDigits: 10 },
       { flag: "🇮🇱", name: "Israel", code: "+972", minDigits: 9, maxDigits: 9 },
-      { flag: "🇮🇹", name: "Italy", code: "+39", minDigits: 9, maxDigits: 10 },
+      { flag: "🇮🇹", name: "Italy", code: "+39", minDigits: 10, maxDigits: 10 },
       { flag: "🇨🇮", name: "Ivory Coast", code: "+225", minDigits: 10, maxDigits: 10 },
       { flag: "🇯🇲", name: "Jamaica", code: "+1876", minDigits: 7, maxDigits: 7 },
       { flag: "🇯🇵", name: "Japan", code: "+81", minDigits: 10, maxDigits: 10 },
       { flag: "🇯🇪", name: "Jersey", code: "+44", minDigits: 10, maxDigits: 10 },
-      { flag: "🇯🇴", name: "Jordan", code: "+962", minDigits: 8, maxDigits: 9 },
+      { flag: "🇯🇴", name: "Jordan", code: "+962", minDigits: 9, maxDigits: 9 },
       { flag: "🇰🇿", name: "Kazakhstan", code: "+7", minDigits: 10, maxDigits: 10 },
       { flag: "🇰🇪", name: "Kenya", code: "+254", minDigits: 9, maxDigits: 9 },
       { flag: "🇰🇮", name: "Kiribati", code: "+686", minDigits: 8, maxDigits: 8 },
@@ -816,7 +844,7 @@
       { flag: "🇱🇻", name: "Latvia", code: "+371", minDigits: 8, maxDigits: 8 },
       { flag: "🇱🇧", name: "Lebanon", code: "+961", minDigits: 7, maxDigits: 8 },
       { flag: "🇱🇸", name: "Lesotho", code: "+266", minDigits: 8, maxDigits: 8 },
-      { flag: "🇱🇷", name: "Liberia", code: "+231", minDigits: 8, maxDigits: 8 },
+      { flag: "🇱🇷", name: "Liberia", code: "+231", minDigits: 7, maxDigits: 8 },
       { flag: "🇱🇾", name: "Libya", code: "+218", minDigits: 9, maxDigits: 9 },
       { flag: "🇱🇮", name: "Liechtenstein", code: "+423", minDigits: 7, maxDigits: 7 },
       { flag: "🇱🇹", name: "Lithuania", code: "+370", minDigits: 8, maxDigits: 8 },
@@ -832,7 +860,7 @@
       { flag: "🇲🇭", name: "Marshall Islands", code: "+692", minDigits: 7, maxDigits: 7 },
       { flag: "🇲🇶", name: "Martinique", code: "+596", minDigits: 9, maxDigits: 9 },
       { flag: "🇲🇷", name: "Mauritania", code: "+222", minDigits: 8, maxDigits: 8 },
-      { flag: "🇲🇺", name: "Mauritius", code: "+230", minDigits: 7, maxDigits: 8 },
+      { flag: "🇲🇺", name: "Mauritius", code: "+230", minDigits: 8, maxDigits: 8 },
       { flag: "🇾🇹", name: "Mayotte", code: "+262", minDigits: 9, maxDigits: 9 },
       { flag: "🇲🇽", name: "Mexico", code: "+52", minDigits: 10, maxDigits: 10 },
       { flag: "🇫🇲", name: "Micronesia", code: "+691", minDigits: 7, maxDigits: 7 },
@@ -867,7 +895,6 @@
       { flag: "🇵🇾", name: "Paraguay", code: "+595", minDigits: 9, maxDigits: 9 },
       { flag: "🇵🇪", name: "Peru", code: "+51", minDigits: 9, maxDigits: 9 },
       { flag: "🇵🇭", name: "Philippines", code: "+63", minDigits: 10, maxDigits: 10 },
-      { flag: "🇵🇳", name: "Pitcairn Islands", code: "+64", minDigits: 8, maxDigits: 8 },
       { flag: "🇵🇱", name: "Poland", code: "+48", minDigits: 9, maxDigits: 9 },
       { flag: "🇵🇹", name: "Portugal", code: "+351", minDigits: 9, maxDigits: 9 },
       { flag: "🇵🇷", name: "Puerto Rico", code: "+1787", minDigits: 7, maxDigits: 7 },
@@ -876,14 +903,7 @@
       { flag: "🇷🇴", name: "Romania", code: "+40", minDigits: 9, maxDigits: 9 },
       { flag: "🇷🇺", name: "Russia", code: "+7", minDigits: 10, maxDigits: 10 },
       { flag: "🇷🇼", name: "Rwanda", code: "+250", minDigits: 9, maxDigits: 9 },
-      { flag: "🇧🇱", name: "Saint Barthélemy", code: "+590", minDigits: 9, maxDigits: 9 },
-      { flag: "🇸🇭", name: "Saint Helena", code: "+290", minDigits: 4, maxDigits: 4 },
-      { flag: "🇰🇳", name: "Saint Kitts and Nevis", code: "+1869", minDigits: 7, maxDigits: 7 },
-      { flag: "🇱🇨", name: "Saint Lucia", code: "+1758", minDigits: 7, maxDigits: 7 },
-      { flag: "🇲🇫", name: "Saint Martin", code: "+590", minDigits: 9, maxDigits: 9 },
-      { flag: "🇵🇲", name: "Saint Pierre and Miquelon", code: "+508", minDigits: 6, maxDigits: 6 },
-      { flag: "🇻🇨", name: "Saint Vincent and the Grenadines", code: "+1784", minDigits: 7, maxDigits: 7 },
-      { flag: "🇼🇸", name: "Samoa", code: "+685", minDigits: 5, maxDigits: 7 },
+      { flag: "🇼🇸", name: "Samoa", code: "+685", minDigits: 7, maxDigits: 7 },
       { flag: "🇸🇲", name: "San Marino", code: "+378", minDigits: 10, maxDigits: 10 },
       { flag: "🇸🇹", name: "São Tomé and Príncipe", code: "+239", minDigits: 7, maxDigits: 7 },
       { flag: "🇸🇦", name: "Saudi Arabia", code: "+966", minDigits: 9, maxDigits: 9 },
@@ -896,12 +916,19 @@
       { flag: "🇸🇰", name: "Slovakia", code: "+421", minDigits: 9, maxDigits: 9 },
       { flag: "🇸🇮", name: "Slovenia", code: "+386", minDigits: 8, maxDigits: 8 },
       { flag: "🇸🇧", name: "Solomon Islands", code: "+677", minDigits: 7, maxDigits: 7 },
-      { flag: "🇸🇴", name: "Somalia", code: "+252", minDigits: 8, maxDigits: 9 },
+      { flag: "🇸🇴", name: "Somalia", code: "+252", minDigits: 8, maxDigits: 8 },
       { flag: "🇿🇦", name: "South Africa", code: "+27", minDigits: 9, maxDigits: 9 },
       { flag: "🇰🇷", name: "South Korea", code: "+82", minDigits: 9, maxDigits: 10 },
       { flag: "🇸🇸", name: "South Sudan", code: "+211", minDigits: 9, maxDigits: 9 },
       { flag: "🇪🇸", name: "Spain", code: "+34", minDigits: 9, maxDigits: 9 },
       { flag: "🇱🇰", name: "Sri Lanka", code: "+94", minDigits: 9, maxDigits: 9 },
+      { flag: "🇧🇱", name: "Saint Barthélemy", code: "+590", minDigits: 9, maxDigits: 9 },
+      { flag: "🇸🇭", name: "Saint Helena", code: "+290", minDigits: 4, maxDigits: 4 },
+      { flag: "🇰🇳", name: "Saint Kitts and Nevis", code: "+1869", minDigits: 7, maxDigits: 7 },
+      { flag: "🇱🇨", name: "Saint Lucia", code: "+1758", minDigits: 7, maxDigits: 7 },
+      { flag: "🇲🇫", name: "Saint Martin", code: "+590", minDigits: 9, maxDigits: 9 },
+      { flag: "🇵🇲", name: "Saint Pierre and Miquelon", code: "+508", minDigits: 6, maxDigits: 6 },
+      { flag: "🇻🇨", name: "Saint Vincent and the Grenadines", code: "+1784", minDigits: 7, maxDigits: 7 },
       { flag: "🇸🇩", name: "Sudan", code: "+249", minDigits: 9, maxDigits: 9 },
       { flag: "🇸🇷", name: "Suriname", code: "+597", minDigits: 7, maxDigits: 7 },
       { flag: "🇸🇯", name: "Svalbard and Jan Mayen", code: "+47", minDigits: 8, maxDigits: 8 },
@@ -917,7 +944,6 @@
       { flag: "🇹🇰", name: "Tokelau", code: "+690", minDigits: 4, maxDigits: 4 },
       { flag: "🇹🇴", name: "Tonga", code: "+676", minDigits: 5, maxDigits: 7 },
       { flag: "🇹🇹", name: "Trinidad and Tobago", code: "+1868", minDigits: 7, maxDigits: 7 },
-      { flag: "🇸🇭", name: "Tristan da Cunha", code: "+2908", minDigits: 4, maxDigits: 4 },
       { flag: "🇹🇳", name: "Tunisia", code: "+216", minDigits: 8, maxDigits: 8 },
       { flag: "🇹🇷", name: "Turkey", code: "+90", minDigits: 10, maxDigits: 10 },
       { flag: "🇹🇲", name: "Turkmenistan", code: "+993", minDigits: 8, maxDigits: 8 },
@@ -929,54 +955,40 @@
       { flag: "🇬🇧", name: "United Kingdom", code: "+44", minDigits: 10, maxDigits: 10 },
       { flag: "🇺🇸", name: "United States", code: "+1", minDigits: 10, maxDigits: 10 },
       { flag: "🇺🇾", name: "Uruguay", code: "+598", minDigits: 8, maxDigits: 8 },
-      { flag: "🇻🇮", name: "US Virgin Islands", code: "+1340", minDigits: 7, maxDigits: 7 },
+      { flag: "🇻🇮", name: "U.S. Virgin Islands", code: "+1340", minDigits: 7, maxDigits: 7 },
       { flag: "🇺🇿", name: "Uzbekistan", code: "+998", minDigits: 9, maxDigits: 9 },
       { flag: "🇻🇺", name: "Vanuatu", code: "+678", minDigits: 7, maxDigits: 7 },
       { flag: "🇻🇦", name: "Vatican City", code: "+39", minDigits: 10, maxDigits: 10 },
       { flag: "🇻🇪", name: "Venezuela", code: "+58", minDigits: 10, maxDigits: 10 },
-      { flag: "🇻🇳", name: "Vietnam", code: "+84", minDigits: 9, maxDigits: 10 },
+      { flag: "🇻🇳", name: "Vietnam", code: "+84", minDigits: 9, maxDigits: 9 },
       { flag: "🇼🇫", name: "Wallis and Futuna", code: "+681", minDigits: 6, maxDigits: 6 },
       { flag: "🇾🇪", name: "Yemen", code: "+967", minDigits: 9, maxDigits: 9 },
       { flag: "🇿🇲", name: "Zambia", code: "+260", minDigits: 9, maxDigits: 9 },
-      { flag: "🇿🇼", name: "Zimbabwe", code: "+263", minDigits: 9, maxDigits: 9 },
-      { flag: "🇦🇽", name: "Åland Islands", code: "+358", minDigits: 9, maxDigits: 10 }
+      { flag: "🇿🇼", name: "Zimbabwe", code: "+263", minDigits: 9, maxDigits: 9 }
     ];
 
     let currentStep = 1;
     let formData = { phone: "", email: "" };
+    let selectedCountryObj = null;
 
-    function updateNavHeader() {
-      const backBtn = document.getElementById('back-btn-elem');
-      if (currentStep > 1 && currentStep <= 3) {
-        backBtn.classList.add('show');
-      } else {
-        backBtn.classList.remove('show');
+    window.addEventListener('DOMContentLoaded', () => {
+      if (window.Telegram && window.Telegram.WebApp) {
+        window.Telegram.WebApp.ready();
+        window.Telegram.WebApp.expand();
       }
-    }
-
-    function showToast() {
-      const toast = document.getElementById('copy-toast');
-      toast.classList.add('show');
-      setTimeout(() => { toast.classList.remove('show'); }, 2000);
-    }
-
-    function copyToClipboard(text, btnElement) {
-      if (!text) return;
-      navigator.clipboard.writeText(text).then(() => {
-        btnElement.classList.add('copied');
-        btnElement.innerHTML = checkIconSVG;
-        showToast();
-        setTimeout(() => {
-          btnElement.classList.remove('copied');
-          btnElement.innerHTML = copyIconSVG;
-        }, 2000);
-      });
-    }
+      renderCountryList(countries);
+      
+      const defaultBD = countries.find(c => c.code === "+880");
+      if (defaultBD) {
+        updateCountryDisplay(defaultBD);
+      }
+    });
 
     function openCountryModal() {
       document.getElementById('country-modal').classList.add('active');
-      document.getElementById('modal-search-input').value = "";
-      renderCountryList(countries);
+      document.getElementById('modal-search-input').value = '';
+      filterCountryList();
+      setTimeout(() => document.getElementById('modal-search-input').focus(), 100);
     }
 
     function closeCountryModal() {
@@ -985,62 +997,64 @@
 
     function renderCountryList(list) {
       const container = document.getElementById('modal-country-list');
-      container.innerHTML = '';
-      list.forEach(c => {
-        const div = document.createElement('div');
-        div.className = 'country-item';
-        div.onclick = () => selectCountry(c);
-        div.innerHTML = `
+      if(list.length === 0) {
+        container.innerHTML = `<div style="padding: 20px; text-align: center; color: var(--text-muted);">No country found</div>`;
+        return;
+      }
+      container.innerHTML = list.map(c => `
+        <div class="country-item" onclick="selectCountryFromModal('${c.code}', '${c.name}')">
           <div class="country-left">
             <span>${c.flag}</span>
             <span>${c.name}</span>
           </div>
           <span class="country-code-text">${c.code}</span>
-        `;
-        container.appendChild(div);
-      });
+        </div>
+      `).join('');
     }
 
     function filterCountryList() {
       const query = document.getElementById('modal-search-input').value.toLowerCase().trim();
       const filtered = countries.filter(c => 
-        c.name.toLowerCase().includes(query) || c.code.toLowerCase().includes(query)
+        c.name.toLowerCase().includes(query) || 
+        c.code.includes(query)
       );
       renderCountryList(filtered);
     }
 
-    function updateCountryDisplay(c) {
-      const label = document.getElementById('selected-country-text');
-      label.innerHTML = `
-        <span class="left-part">${c.flag} ${c.name}</span>
-      `;
-      label.classList.remove('placeholder');
-    }
-
-    function resetCountrySelection() {
-      document.getElementById('input-code').value = '';
-      const label = document.getElementById('selected-country-text');
-      label.innerHTML = 'Select Country Code';
-      label.classList.add('placeholder');
-      const box = document.getElementById('phone-box-container');
-      box.classList.remove('valid', 'invalid');
-      document.getElementById('phone-indicator').classList.remove('show');
-      document.getElementById('btn-1').disabled = true;
-    }
-
-    function selectCountry(c) {
-      updateCountryDisplay(c);
-      const codeInput = document.getElementById('input-code');
-      codeInput.value = c.code;
-
+    function selectCountryFromModal(code, name) {
+      const match = countries.find(c => c.code === code && c.name === name) || countries.find(c => c.code === code);
+      if (match) {
+        updateCountryDisplay(match);
+      }
       closeCountryModal();
       document.getElementById('input-number').focus();
+    }
+
+    function updateCountryDisplay(countryObj) {
+      selectedCountryObj = countryObj;
+      const label = document.getElementById('selected-country-text');
+      label.innerHTML = `<span class="left-part"><span>${countryObj.flag}</span><span>${countryObj.name}</span></span>`;
+      label.classList.remove('placeholder');
+      
+      const codeInput = document.getElementById('input-code');
+      codeInput.value = countryObj.code;
+      
       validatePhoneStep();
     }
 
-    function handleCodeTyping() {
-      const codeInput = document.getElementById('input-code');
+    function resetCountrySelection() {
+      selectedCountryObj = null;
+      const label = document.getElementById('selected-country-text');
+      label.innerHTML = 'Select Country Code';
+      label.classList.add('placeholder');
       
+      document.getElementById('input-code').value = '';
+      document.getElementById('phone-error-msg').classList.remove('show');
+      validatePhoneStep();
+    }
+
+    function handleCodeTyping(e) {
+      const codeInput = document.getElementById('input-code');
       let val = codeInput.value.replace(/[^0-9+]/g, '');
       if (val !== "" && !val.startsWith("+")) {
         val = "+" + val.replace(/\+/g, '');
@@ -1049,78 +1063,56 @@
       }
       
       codeInput.value = val;
-
+      
       const match = countries.find(c => c.code === val);
+      const isDeleting = e && e.inputType && e.inputType.startsWith('delete');
+
       if (match) {
         updateCountryDisplay(match);
-        document.getElementById('input-number').focus();
+        if (!isDeleting) {
+          document.getElementById('input-number').focus();
+        }
       } else {
         const label = document.getElementById('selected-country-text');
         label.innerHTML = 'Select Country Code';
         label.classList.add('placeholder');
+        selectedCountryObj = null;
       }
-
+      
       validatePhoneStep();
     }
 
     function handleNumberKeyDown(e) {
       const numInput = document.getElementById('input-number');
       const codeInput = document.getElementById('input-code');
-      
-      // নাম্বার বক্স খালি থাকা অবস্থায় ব্যাকস্পেস দিলে অটোমেটিক রিসেট ও কোড বক্সে ফোকাস
+
+      // নাম্বার খালি থাকলে ব্যাকস্পেস দিলে অটোমেটিক কান্ট্রি বক্সে ফোকাস হবে
       if (e.key === "Backspace" && numInput.value === "") {
-        resetCountrySelection();
         codeInput.focus();
       }
     }
 
     function handlePhonePaste(e) {
-      const clipboardData = e.clipboardData || window.clipboardData;
-      if (!clipboardData) return;
-      const pastedText = clipboardData.getData('text').trim();
+      e.preventDefault();
+      const pastedData = (e.clipboardData || window.clipboardData).getData('text').trim();
+      if (!pastedData) return;
 
-      if (pastedText.startsWith("+") || /\d{6,}/.test(pastedText)) {
-        e.preventDefault();
-        let matchedCode = "";
-        let remainingNum = pastedText;
+      const cleanData = pastedData.replace(/[^\d+]/g, '');
+      const match = countries.slice().sort((a,b) => b.code.length - a.code.length).find(c => cleanData.startsWith(c.code));
 
-        const sortedCountries = [...countries].sort((a, b) => b.code.length - a.code.length);
-        for (let c of sortedCountries) {
-          if (pastedText.startsWith(c.code)) {
-            matchedCode = c.code;
-            remainingNum = pastedText.slice(c.code.length).trim();
-            break;
-          }
+      if (match) {
+        updateCountryDisplay(match);
+        const remainingNum = cleanData.substring(match.code.length);
+        document.getElementById('input-number').value = remainingNum;
+      } else {
+        if (cleanData.startsWith('+')) {
+          document.getElementById('input-code').value = cleanData.substring(0, 4);
+          document.getElementById('input-number').value = cleanData.substring(4);
+        } else {
+          document.getElementById('input-number').value = cleanData;
         }
-
-        if (!matchedCode && pastedText.startsWith("+")) {
-          const match = pastedText.match(/^(\+\d{1,4})(.*)$/);
-          if (match) {
-            matchedCode = match[1];
-            remainingNum = match[2].trim();
-          }
-        }
-
-        const codeInput = document.getElementById('input-code');
-        const numInput = document.getElementById('input-number');
-
-        if (matchedCode) {
-          codeInput.value = matchedCode;
-          const selectMatch = countries.find(c => c.code === matchedCode);
-          if (selectMatch) {
-             updateCountryDisplay(selectMatch);
-          }
-        }
-
-        let finalNum = remainingNum.replace(/[^0-9]/g, '');
-        if (codeInput.value.trim() !== "" && finalNum.startsWith('0')) {
-            finalNum = finalNum.substring(1);
-        }
-        
-        numInput.value = finalNum;
-        numInput.focus();
-        validatePhoneStep();
       }
+      validatePhoneStep();
     }
 
     function validatePhoneStep() {
@@ -1129,6 +1121,7 @@
       const box = document.getElementById('phone-box-container');
       const indicator = document.getElementById('phone-indicator');
       const btn = document.getElementById('btn-1');
+      const errorMsg = document.getElementById('phone-error-msg');
 
       let codeVal = codeInput.value;
       let numVal = numInput.value.replace(/[^0-9]/g, '');
@@ -1140,8 +1133,11 @@
       numInput.value = numVal;
 
       if (numVal === "" && codeVal === "") {
-         resetCountrySelection();
-         return;
+        box.classList.remove('valid', 'invalid');
+        indicator.classList.remove('show');
+        errorMsg.classList.remove('show');
+        btn.disabled = true;
+        return;
       }
 
       const matchedCountry = countries.find(c => c.code === codeVal);
@@ -1150,6 +1146,21 @@
 
       const isCodeValid = codeVal.length >= 2;
       const isNumValid = numVal.length >= minRequired && numVal.length <= maxRequired;
+
+      const fullPhoneClean = (codeVal + numVal).replace(/\s+/g, '');
+      const isSubmitted = submittedNumbers.includes(fullPhoneClean);
+
+      // যদি নাম্বার অলরেডি সাবমিট করা থাকে
+      if (isSubmitted) {
+        box.classList.remove('valid');
+        box.classList.add('invalid');
+        indicator.classList.remove('show');
+        errorMsg.classList.add('show');
+        btn.disabled = true;
+        return;
+      } else {
+        errorMsg.classList.remove('show');
+      }
 
       if (isCodeValid && isNumValid) {
         box.classList.remove('invalid');
@@ -1169,22 +1180,24 @@
     }
 
     function validateEmailStep() {
-      const input = document.getElementById('input-email');
+      const emailInput = document.getElementById('input-email');
       const indicator = document.getElementById('email-indicator');
       const btn = document.getElementById('btn-2');
-      const val = input.value.trim().toLowerCase();
+      const val = emailInput.value.trim();
 
-      if (val.includes("@") && val.includes(".") && val.length > 5) {
-        input.classList.remove('invalid');
-        input.classList.add('valid');
+      const isValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(val);
+
+      if (isValid) {
+        emailInput.classList.remove('invalid');
+        emailInput.classList.add('valid');
         indicator.classList.add('show');
         btn.disabled = false;
       } else {
         if (val.length > 0) {
-          input.classList.remove('valid');
-          input.classList.add('invalid');
+          emailInput.classList.remove('valid');
+          emailInput.classList.add('invalid');
         } else {
-          input.classList.remove('valid', 'invalid');
+          emailInput.classList.remove('valid', 'invalid');
         }
         indicator.classList.remove('show');
         btn.disabled = true;
@@ -1192,118 +1205,137 @@
     }
 
     function nextStep(step) {
-      if (step === 1) {
-        let code = document.getElementById('input-code').value.trim();
-        const num = document.getElementById('input-number').value.trim();
-        formData.phone = `${code} ${num}`;
-      }
-      if (step === 2) {
-        formData.email = document.getElementById('input-email').value.trim();
-        buildConfirmationCard();
-        return;
-      }
-
+      const btn = document.getElementById(`btn-${step}`);
       const btnText = document.getElementById(`btn-text-${step}`);
       const spinner = document.getElementById(`spinner-${step}`);
-      const btn = document.getElementById(`btn-${step}`);
 
-      btnText.style.display = 'none';
-      spinner.style.display = 'inline-block';
       btn.disabled = true;
+      btnText.style.display = 'none';
+      spinner.style.display = 'block';
 
       setTimeout(() => {
         spinner.style.display = 'none';
         btnText.style.display = 'inline';
         btn.disabled = false;
 
-        document.getElementById(`step-${step}`).classList.remove('active');
-        currentStep = step + 1;
-        document.getElementById(`step-${currentStep}`).classList.add('active');
-        updateNavHeader();
-      }, 700);
+        if (step === 1) {
+          const codeVal = document.getElementById('input-code').value.trim();
+          const numVal = document.getElementById('input-number').value.trim();
+          formData.phone = `${codeVal} ${numVal}`;
+          
+          showStep(2);
+          setTimeout(() => document.getElementById('input-email').focus(), 100);
+        } else if (step === 2) {
+          formData.email = document.getElementById('input-email').value.trim();
+          renderConfirmationCard();
+          showStep(3);
+        }
+      }, 500);
+    }
+
+    function showStep(step) {
+      currentStep = step;
+      document.querySelectorAll('.step-container').forEach(el => el.classList.remove('active'));
+      document.getElementById(`step-${step}`).classList.add('active');
+
+      const backBtn = document.getElementById('back-btn-elem');
+      const title = document.getElementById('main-title');
+
+      if (step === 1) {
+        backBtn.classList.remove('show');
+        title.innerText = "Submit Telegram Account";
+      } else if (step === 2) {
+        backBtn.classList.add('show');
+        title.innerText = "Submit Email";
+      } else if (step === 3) {
+        backBtn.classList.add('show');
+        title.innerText = "Account Confirmation";
+      }
     }
 
     function goBackStep() {
-      if (currentStep > 1 && currentStep <= 3) {
-        document.getElementById(`step-${currentStep}`).classList.remove('active');
-        currentStep--;
-        document.getElementById(`step-${currentStep}`).classList.add('active');
-        updateNavHeader();
+      if (currentStep === 2) {
+        showStep(1);
+      } else if (currentStep === 3) {
+        showStep(2);
       }
     }
 
-    function buildConfirmationCard() {
-      const btnText = document.getElementById(`btn-text-2`);
-      const spinner = document.getElementById(`spinner-2`);
-      const btn = document.getElementById(`btn-2`);
-
-      btnText.style.display = 'none';
-      spinner.style.display = 'inline-block';
-      btn.disabled = true;
-
-      setTimeout(() => {
-        spinner.style.display = 'none';
-        btnText.style.display = 'inline';
-        btn.disabled = false;
-
-        document.getElementById('step-2').classList.remove('active');
-        currentStep = 3;
-        document.getElementById('step-3').classList.add('active');
-        updateNavHeader();
-
-        const container = document.getElementById('confirmation-card-content');
-        container.innerHTML = `
-          <div class="field-item">
-            <span class="field-left">Phone Number</span>
-            <div class="field-right-group">
-              <span class="field-right">${escapeHtml(formData.phone)}</span>
-              <button class="copy-btn" onclick="copyToClipboard('${escapeJs(formData.phone)}', this)">${copyIconSVG}</button>
-            </div>
-          </div>
-
-          <div class="field-item">
-            <span class="field-left">Email</span>
-            <div class="field-right-group">
-              <span class="field-right">${escapeHtml(formData.email)}</span>
-              <button class="copy-btn" onclick="copyToClipboard('${escapeJs(formData.email)}', this)">${copyIconSVG}</button>
-            </div>
-          </div>
-
-          <div class="card-actions">
-            <button class="action-btn-confirm" onclick="submitFinalData()">
-              <span class="save-icon-circle">
-                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
-              </span>
-              Save Account
+    function renderConfirmationCard() {
+      const container = document.getElementById('confirmation-card-content');
+      container.innerHTML = `
+        <div class="field-item">
+          <span class="field-left">Phone Number</span>
+          <div class="field-right-group">
+            <span class="field-right">${formData.phone}</span>
+            <button class="copy-btn" id="copy-btn-phone" onclick="copyToClipboard('${formData.phone}', 'copy-btn-phone')">
+              ${copyIconSVG}
             </button>
           </div>
-        `;
-      }, 700);
+        </div>
+        <div class="field-item">
+          <span class="field-left">Email Address</span>
+          <div class="field-right-group">
+            <span class="field-right">${formData.email}</span>
+            <button class="copy-btn" id="copy-btn-email" onclick="copyToClipboard('${formData.email}', 'copy-btn-email')">
+              ${copyIconSVG}
+            </button>
+          </div>
+        </div>
+        <div class="card-actions">
+          <button class="action-btn-confirm" onclick="submitFinalData()">
+            <div class="save-icon-circle">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+            </div>
+            <span>Save Account</span>
+          </button>
+        </div>
+      `;
+    }
+
+    function copyToClipboard(text, btnId) {
+      navigator.clipboard.writeText(text).then(() => {
+        const btn = document.getElementById(btnId);
+        btn.classList.add('copied');
+        btn.innerHTML = checkIconSVG;
+
+        showToast("Copied Successfully!");
+
+        setTimeout(() => {
+          btn.classList.remove('copied');
+          btn.innerHTML = copyIconSVG;
+        }, 2000);
+      });
+    }
+
+    function showToast(msg) {
+      const toast = document.getElementById('copy-toast');
+      toast.querySelector('span').innerText = msg;
+      toast.classList.add('show');
+      setTimeout(() => {
+        toast.classList.remove('show');
+      }, 2000);
     }
 
     function submitFinalData() {
+      const cleanPhone = formData.phone.replace(/\s+/g, '');
+      if (!submittedNumbers.includes(cleanPhone)) {
+        submittedNumbers.push(cleanPhone);
+      }
+
       const payload = {
         action: "submit_telegram_account",
-        phone: formData.phone.replace(/\s+/g, ''),
+        phone: cleanPhone,
         email: formData.email
       };
 
       const jsonString = JSON.stringify(payload);
+
       if (window.Telegram && window.Telegram.WebApp) {
         window.Telegram.WebApp.sendData(jsonString);
       } else {
         alert("Account Saved Successfully!");
       }
-    }
-
-    function escapeHtml(str) {
-      return String(str).replace(/[&<>"']/g, function(m) {
-        return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' }[m];
-      });
-    }
-
-    function escapeJs(str) {
-      return String(str).replace(/\\/g, '\\\\').replace(/'/g, "\\'").replace(/"/g, '\\"');
     }
   </script>
 </body>
