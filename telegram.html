@@ -145,11 +145,6 @@
       overflow: hidden;
       text-overflow: ellipsis;
     }
-    
-    .selector-text .right-part {
-      font-weight: 500;
-      color: var(--text-muted);
-    }
 
     .selector-text.placeholder {
       color: var(--text-muted);
@@ -408,6 +403,17 @@
       box-shadow: 0 4px 12px rgba(0, 122, 255, 0.25);
     }
 
+    .save-icon-circle {
+      background: var(--accent-green);
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
     /* Country Search Modal */
     .modal-overlay {
       position: fixed;
@@ -554,6 +560,7 @@
       box-shadow: 0 8px 24px rgba(0,0,0,0.2);
       transition: top 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275);
       pointer-events: none;
+      white-space: nowrap;
     }
 
     #copy-toast.show {
@@ -578,7 +585,7 @@
     <div class="toast-icon">
       <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
     </div>
-    <span>Copied successfully!</span>
+    <span>Copied Successfully!</span>
   </div>
 
   <!-- Top Bar -->
@@ -606,7 +613,7 @@
       <label class="box-label">Phone Number</label>
       <div class="unified-phone-wrapper">
         <div class="unified-phone-box" id="phone-box-container">
-          <input type="text" id="input-code" class="code-input" placeholder="Code" maxlength="6" oninput="handleCodeTyping()" onpaste="handlePhonePaste(event)">
+          <input type="tel" id="input-code" class="code-input" placeholder="Code" maxlength="6" inputmode="tel" oninput="handleCodeTyping()" onpaste="handlePhonePaste(event)">
           <div class="v-divider"></div>
           <input type="tel" id="input-number" class="number-input" placeholder="Phone Number" oninput="validatePhoneStep()" onkeydown="handleNumberKeyDown(event)" onpaste="handlePhonePaste(event)">
         </div>
@@ -1006,7 +1013,6 @@
       const label = document.getElementById('selected-country-text');
       label.innerHTML = `
         <span class="left-part">${c.flag} ${c.name}</span>
-        <span class="right-part">${c.code}</span>
       `;
       label.classList.remove('placeholder');
     }
@@ -1035,7 +1041,6 @@
     function handleCodeTyping() {
       const codeInput = document.getElementById('input-code');
       
-      // শুধুমাত্র সংখ্যা এবং প্রথমে প্লাস (+) সাপোর্ট করবে
       let val = codeInput.value.replace(/[^0-9+]/g, '');
       if (val !== "" && !val.startsWith("+")) {
         val = "+" + val.replace(/\+/g, '');
@@ -1048,6 +1053,7 @@
       const match = countries.find(c => c.code === val);
       if (match) {
         updateCountryDisplay(match);
+        document.getElementById('input-number').focus();
       } else {
         const label = document.getElementById('selected-country-text');
         label.innerHTML = 'Select Country Code';
@@ -1061,7 +1067,7 @@
       const numInput = document.getElementById('input-number');
       const codeInput = document.getElementById('input-code');
       
-      // নাম্বার বক্স সম্পূর্ণ খালি করে ফেললে অটোমেটিক রিসেট
+      // নাম্বার বক্স খালি থাকা অবস্থায় ব্যাকস্পেস দিলে অটোমেটিক রিসেট ও কোড বক্সে ফোকাস
       if (e.key === "Backspace" && numInput.value === "") {
         resetCountrySelection();
         codeInput.focus();
@@ -1106,7 +1112,6 @@
           }
         }
 
-        // Paste করার সময়ও জিরো ফিল্টারিং
         let finalNum = remainingNum.replace(/[^0-9]/g, '');
         if (codeInput.value.trim() !== "" && finalNum.startsWith('0')) {
             finalNum = finalNum.substring(1);
@@ -1126,18 +1131,14 @@
       const btn = document.getElementById('btn-1');
 
       let codeVal = codeInput.value;
-      
-      // নাম্বার ফিল্টারিং: শুধুমাত্র সংখ্যা বসবে (0-9)
       let numVal = numInput.value.replace(/[^0-9]/g, '');
 
-      // জিরো (0) ফিল্টারিং: কান্ট্রি কোড থাকলে শুরুতে 0 দিলে অটো রিমুভ হবে
       if (codeVal.trim() !== "" && numVal.startsWith('0')) {
           numVal = numVal.substring(1);
       }
       
       numInput.value = numVal;
 
-      // ফোন নাম্বার সম্পূর্ণ মুছে ফেললে কান্ট্রি কোড রিসেট করা
       if (numVal === "" && codeVal === "") {
          resetCountrySelection();
          return;
@@ -1270,7 +1271,10 @@
 
           <div class="card-actions">
             <button class="action-btn-confirm" onclick="submitFinalData()">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> Save Account
+              <span class="save-icon-circle">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+              </span>
+              Save Account
             </button>
           </div>
         `;
