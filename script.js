@@ -38,7 +38,7 @@ const copyIconSvg = `<svg width="12" height="12" viewBox="0 0 24 24" fill="none"
 const checkIconSvg = `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>`;
 
 document.getElementById('username').innerText = firstName;
-document.getElementById('user-id').innerText = `ID: ${userId}`;
+document.getElementById('user-id').innerText = userId;
 if (user?.photo_url) document.getElementById('avatar').src = user.photo_url;
 
 function showToast(msg) {
@@ -85,7 +85,8 @@ function fallbackCopyText(text) {
 }
 
 window.copyUserId = function() {
-  window.copyToClipboard(userId);
+  const btn = document.getElementById('id-copy-btn');
+  window.copyToClipboard(userId, btn);
 };
 
 // Date Formatter: DD-MM-YYYY (e.g., 10-01-2026)
@@ -133,24 +134,39 @@ function updateOverallBalance() {
   validateWithdrawForm();
 }
 
-// Realtime Email History & Earned Balance Calculation
+// Realtime Email History & Balance & Dashboard Stats
 onSnapshot(query(collection(db, "allGmailHistory"), where("userId", "==", userId)), (snapshot) => {
   let completedCount = 0;
+  let pendingCount = 0;
+  let rejectedCount = 0;
+  let totalCount = 0;
+
   rawGmailHistory = [];
   
   snapshot.forEach((doc) => {
     const data = doc.data();
     const status = data.status || 'Pending';
+    totalCount++;
+
     if (status === "Completed") completedCount++;
+    else if (status === "Pending") pendingCount++;
+    else if (status === "Rejected") rejectedCount++;
+
     rawGmailHistory.push(data);
   });
+
+  // Update Dashboard Stats
+  document.getElementById('stat-total').innerText = totalCount;
+  document.getElementById('stat-pending').innerText = pendingCount;
+  document.getElementById('stat-completed').innerText = completedCount;
+  document.getElementById('stat-rejected').innerText = rejectedCount;
 
   totalEarned = completedCount * 10;
   updateOverallBalance();
   renderGmailHistory();
 });
 
-// Realtime Withdraw History & Deducted Balance Calculation
+// Realtime Withdraw History & Balance Auto-Deduction
 onSnapshot(query(collection(db, "withdrawHistory"), where("userId", "==", userId)), (snapshot) => {
   let sumWithdrawn = 0;
   rawWithdrawHistory = [];
@@ -288,7 +304,7 @@ function renderWithdrawHistory() {
   list.innerHTML = html;
 }
 
-/* Gmail History Search Handlers */
+/* Search Box Handlers */
 window.handleGmailSearchInput = function() {
   const val = document.getElementById('gmail-search-input').value;
   document.getElementById('gmail-clear-btn').style.display = val.length > 0 ? 'flex' : 'none';
@@ -317,7 +333,6 @@ window.handleGmailSearch = function() {
   }, 400);
 };
 
-/* Withdraw History Search Handlers */
 window.handleWithdrawSearchInput = function() {
   const val = document.getElementById('withdraw-search-input').value;
   document.getElementById('withdraw-clear-btn').style.display = val.length > 0 ? 'flex' : 'none';
@@ -346,7 +361,12 @@ window.handleWithdrawSearch = function() {
   }, 400);
 };
 
-/* Validation Logic */
+/* Submit Account Logic */
+window.startGmailSubmission = function() {
+  document.getElementById('gmail-submit-trigger').style.display = 'none';
+  document.getElementById('gmail-submit-form').style.display = 'block';
+};
+
 window.validateGmailField = function(fieldType, step) {
   const input = document.getElementById(`input-${fieldType}`);
   const indicator = document.getElementById(`${fieldType}-indicator`);
@@ -453,6 +473,9 @@ window.submitFinalAccount = async function() {
 
     document.querySelectorAll('#tab-submit .step-container').forEach(el => el.classList.remove('active'));
     document.getElementById('step-1').classList.add('active');
+    document.getElementById('gmail-submit-form').style.display = 'none';
+    document.getElementById('gmail-submit-trigger').style.display = 'block';
+
     loadExistingEmails();
   } catch (e) {
     showToast("Submission failed!");
@@ -468,11 +491,6 @@ window.selectPaymentMethod = function(method, elem) {
   elem.classList.add('active');
 };
 
-window.nextWithdrawStep = function(step) {
-  document.querySelectorAll('.withdraw-step').forEach(s => s.classList.remove('active'));
-  document.getElementById(`withdraw-step-${step}`).classList.add('active');
-};
-
 window.validateWithdrawForm = function() {
   const phoneInput = document.getElementById('withdraw-phone');
   const amountInput = document.getElementById('withdraw-amount');
@@ -485,7 +503,7 @@ window.validateWithdrawForm = function() {
 
   const phoneValid = phoneInput.value.trim().length >= 11;
   const amount = Number(amountInput.value);
-  const amountValid = amount > 0 && amount <= userBalance;
+  const amountValid = amount >= 20 && amount <= userBalance;
 
   if (phoneValid) {
     phoneInput.classList.add('valid'); phoneIndicator.classList.add('show');
@@ -504,7 +522,7 @@ window.validateWithdrawForm = function() {
     errorMsg.classList.remove('show');
   } else {
     btn.disabled = true;
-    if (amount > 0 && amount > userBalance) {
+    if (amount > 0 && (amount < 20 || amount > userBalance)) {
       errorMsg.classList.add('show');
     } else {
       errorMsg.classList.remove('show');
@@ -535,7 +553,6 @@ window.handleWithdrawSubmit = async function() {
     document.getElementById('withdraw-phone').value = '';
     document.getElementById('withdraw-amount').value = '';
     validateWithdrawForm();
-    nextWithdrawStep(1);
   } catch (e) {
     showToast("Withdraw request failed!");
   }
@@ -551,8 +568,9 @@ window.switchMainTab = function(tab, elem) {
   const titleMap = {
     'submit': 'Submit Account',
     'submit-history': 'Account History',
+    'withdraw': 'Withdraw',
     'withdraw-history': 'Withdraw History',
-    'withdraw': 'Withdraw'
+    'my-account': 'My Account'
   };
   document.getElementById('main-title').innerText = titleMap[tab] || 'Account';
 };
