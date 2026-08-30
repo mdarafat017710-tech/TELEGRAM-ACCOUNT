@@ -1,9 +1,6 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-import { 
-  getFirestore, collection, addDoc, query, where, onSnapshot, serverTimestamp, getDocs 
-} from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+import { getFirestore, collection, addDoc, query, where, onSnapshot, serverTimestamp, getDocs } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
-// Firebase Config
 const firebaseConfig = {
   apiKey: "AIzaSyB0AdImn8AlFKA4z_j4n25xz-Py2jgmMNU",
   authDomain: "sell-156d4.firebaseapp.com",
@@ -16,7 +13,6 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
-// Telegram Setup
 const tg = window.Telegram?.WebApp;
 if (tg) tg.expand();
 
@@ -34,7 +30,6 @@ document.getElementById('username').innerText = firstName;
 document.getElementById('user-id').innerText = `ID: ${userId}`;
 if (user?.photo_url) document.getElementById('avatar').src = user.photo_url;
 
-// Toast Function
 function showToast(msg) {
   const toast = document.getElementById('copy-toast');
   document.getElementById('toast-msg').innerText = msg;
@@ -42,7 +37,7 @@ function showToast(msg) {
   setTimeout(() => toast.classList.remove('show'), 2000);
 }
 
-// Fetch All Submitted Emails for Duplication Check
+// Global Email Duplication Data Fetching
 async function loadExistingEmails() {
   const querySnapshot = await getDocs(collection(db, "allGmailHistory"));
   existingEmails = [];
@@ -54,23 +49,19 @@ async function loadExistingEmails() {
 }
 loadExistingEmails();
 
-// Realtime User Balance & Submissions
+// Realtime User Data & History
 onSnapshot(query(collection(db, "allGmailHistory"), where("userId", "==", userId)), (snapshot) => {
   let approvedCount = 0;
   const list = document.getElementById('history-gmail-list');
-  list.innerHTML = snapshot.empty ? '<p style="font-size:11px;color:#8e8e93;">No email submitted</p>' : '';
+  list.innerHTML = snapshot.empty ? '<p style="font-size:11px;color:#8e8e93;">No history found</p>' : '';
   
   snapshot.forEach((doc) => {
     const data = doc.data();
     if (data.status === "Approved") approvedCount++;
-    list.innerHTML += `
-      <div class="field-item">
-        <span>${data.email}</span>
-        <span class="status-${(data.status||'pending').toLowerCase()}">${data.status || 'Pending'}</span>
-      </div>`;
+    list.innerHTML += `<div class="field-item"><span>${data.email}</span><span class="status-${(data.status||'pending').toLowerCase()}">${data.status || 'Pending'}</span></div>`;
   });
 
-  userBalance = approvedCount * 10; // ধরে নিলাম প্রতি ইমেইলে ১০ টাকা
+  userBalance = approvedCount * 10;
   document.getElementById('user-balance').innerText = userBalance.toFixed(2);
 });
 
@@ -80,15 +71,11 @@ onSnapshot(query(collection(db, "withdrawHistory"), where("userId", "==", userId
   list.innerHTML = snapshot.empty ? '<p style="font-size:11px;color:#8e8e93;">No withdraw history</p>' : '';
   snapshot.forEach((doc) => {
     const data = doc.data();
-    list.innerHTML += `
-      <div class="field-item">
-        <span>${data.method} (${data.phone})</span>
-        <span>৳${data.amount} [${data.status}]</span>
-      </div>`;
+    list.innerHTML += `<div class="field-item"><span>${data.method} (${data.phone})</span><span>৳${data.amount} [${data.status}]</span></div>`;
   });
 });
 
-// Gmail & Recovery Field Validator
+// Gmail Validation with Green Check Indicator & Duplication Check
 window.validateGmailField = function(field, step) {
   const input = document.getElementById(`input-${field}`);
   const indicator = document.getElementById(`${field}-indicator`);
@@ -124,7 +111,6 @@ window.validateStandardField = function(field, minLen, step) {
   }
 };
 
-// Navigation Steps
 window.nextStep = function(step) {
   if (step === 1) formData.email = document.getElementById('input-email').value.trim();
   if (step === 2) formData.password = document.getElementById('input-password').value.trim();
@@ -158,14 +144,14 @@ window.submitFinalData = async function() {
       userId: userId, email: formData.email, password: formData.password,
       status: formData.status, recovery: formData.recovery, timestamp: serverTimestamp()
     });
-    showToast("Account saved successfully!");
+    showToast("Saved successfully!");
     location.reload();
   } catch (e) {
     showToast("Submission failed!");
   }
 };
 
-// Payment & Withdraw Validation
+// Payment Method Selection & Form Validation with Checkmark Indicator
 window.selectPaymentMethod = function(method) {
   selectedPayment = method;
   document.querySelectorAll('.payment-card').forEach(c => c.classList.remove('active'));
@@ -173,15 +159,37 @@ window.selectPaymentMethod = function(method) {
 };
 
 window.validateWithdrawForm = function() {
-  const phone = document.getElementById('withdraw-phone').value.trim();
-  const amount = Number(document.getElementById('withdraw-amount').value);
+  const phoneInput = document.getElementById('withdraw-phone');
+  const phoneIndicator = document.getElementById('withdraw-phone-indicator');
+  const amountInput = document.getElementById('withdraw-amount');
+  const amountIndicator = document.getElementById('withdraw-amount-indicator');
+  
+  const phone = phoneInput.value.trim();
+  const amount = Number(amountInput.value);
   const btn = document.getElementById('btn-withdraw');
   const errorMsg = document.getElementById('withdraw-error-msg');
 
-  if (phone.length === 11 && amount >= 20 && amount <= userBalance) {
+  let phoneValid = phone.length === 11;
+  let amountValid = amount >= 20 && amount <= userBalance;
+
+  if (phoneValid) {
+    phoneInput.classList.add('valid'); phoneIndicator.classList.add('show');
+  } else {
+    phoneInput.classList.remove('valid'); phoneIndicator.classList.remove('show');
+  }
+
+  if (amountValid) {
+    amountInput.classList.add('valid'); amountIndicator.classList.add('show');
+  } else {
+    amountInput.classList.remove('valid'); amountIndicator.classList.remove('show');
+  }
+
+  if (phoneValid && amountValid) {
     btn.disabled = false; errorMsg.classList.remove('show');
   } else {
-    btn.disabled = true; errorMsg.classList.add('show');
+    btn.disabled = true;
+    if (amount > 0 && !amountValid) errorMsg.classList.add('show');
+    else errorMsg.classList.remove('show');
   }
 };
 
@@ -197,12 +205,12 @@ window.handleWithdrawSubmit = async function() {
     showToast("Withdraw requested!");
     document.getElementById('withdraw-phone').value = '';
     document.getElementById('withdraw-amount').value = '';
+    validateWithdrawForm();
   } catch (e) {
     showToast("Withdraw request failed!");
   }
 };
 
-// Global Tabs Switcher
 window.switchMainTab = function(tab, elem) {
   document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
   document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
