@@ -9,33 +9,16 @@
 </head>
 <body>
 
-  <!-- Toast Notification -->
+  <!-- Toast Notification Popup -->
   <div id="copy-toast">
     <div class="toast-icon-wrapper">
-      <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
     </div>
     <span id="toast-msg">Copied successfully!</span>
   </div>
 
-  <!-- Profile Card -->
-  <div class="profile-card">
-    <img id="avatar" src="https://ui-avatars.com/api/?name=User&background=007aff&color=fff" alt="Profile">
-    <div class="profile-info">
-      <h3 id="username">Loading...</h3>
-      <p id="user-id">ID: ----</p>
-    </div>
-    <div class="balance-badge">
-      <span>৳</span><span id="user-balance">0.00</span>
-    </div>
-  </div>
-
+  <!-- Header Title -->
   <div class="top-nav">
-    <button class="back-btn" id="back-btn-elem" onclick="goBackStep()">
-      <svg width="24" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-        <line x1="19" y1="12" x2="5" y2="12"></line>
-        <polyline points="12 19 5 12 12 5"></polyline>
-      </svg>
-    </button>
     <h1 class="header-title" id="main-title">Submit Account</h1>
   </div>
 
@@ -48,7 +31,7 @@
         <div class="input-wrapper">
           <input type="email" id="input-email" class="ios-box" placeholder="Enter email address" oninput="validateGmailField('email', 1)">
           <div class="input-indicator" id="email-indicator">
-            <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+            <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
           </div>
         </div>
         <div class="field-error-msg" id="email-error-msg">
@@ -70,7 +53,7 @@
         <div class="input-wrapper">
           <input type="text" id="input-password" class="ios-box" placeholder="Enter account password" oninput="validateStandardField('password', 6, 2)">
           <div class="input-indicator" id="password-indicator">
-            <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+            <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
           </div>
         </div>
       </div>
@@ -81,37 +64,14 @@
       </div>
     </div>
 
-    <!-- Step 3: Status Selection -->
+    <!-- Step 3: Recovery Email -->
     <div id="step-3" class="step-container">
-      <div class="info-box-group">
-        <label class="box-label">Select Status</label>
-        <div class="ios-dropdown-wrapper">
-          <div class="ios-dropdown-trigger" id="dropdown-trigger" onclick="toggleDropdown()">
-            <span id="selected-status-text" class="status-red">Security Processing</span>
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#8e8e93" stroke-width="2.5"><polyline points="6 9 12 15 18 9"></polyline></svg>
-          </div>
-          <div class="ios-dropdown-menu" id="dropdown-menu">
-            <div class="ios-dropdown-item status-red" onclick="selectStatus('Security Processing', 'status-red')">Security Processing</div>
-            <div class="ios-dropdown-item status-yellow" onclick="selectStatus('Rent Processing', 'status-yellow')">Rent Processing</div>
-            <div class="ios-dropdown-item status-green" onclick="selectStatus('Sell Processing', 'status-green')">Sell Processing</div>
-          </div>
-        </div>
-      </div>
-      <div class="action-container">
-        <button class="btn-proceed" id="btn-3" onclick="nextStep(3)">
-          <span>Proceed</span>
-        </button>
-      </div>
-    </div>
-
-    <!-- Step 4: Recovery Email -->
-    <div id="step-4" class="step-container">
       <div class="info-box-group">
         <label class="box-label">Recovery Email</label>
         <div class="input-wrapper">
-          <input type="email" id="input-recovery" class="ios-box" placeholder="Enter recovery email" oninput="validateGmailField('recovery', 4)">
+          <input type="email" id="input-recovery" class="ios-box" placeholder="Enter recovery email" oninput="validateGmailField('recovery', 3)">
           <div class="input-indicator" id="recovery-indicator">
-            <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+            <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
           </div>
         </div>
         <div class="field-error-msg" id="recovery-error-msg">
@@ -119,89 +79,114 @@
           <span>Recovery email already submitted!</span>
         </div>
       </div>
-      <div class="action-container-dual">
-        <button class="btn-skip" onclick="skipRecovery()">Skip</button>
-        <button class="btn-proceed" id="btn-4" disabled onclick="nextStep(4)">
+      <div class="action-container">
+        <button class="btn-proceed" id="btn-3" disabled onclick="nextStep(3)">
           <span>Proceed</span>
         </button>
       </div>
     </div>
 
-    <!-- Step 5: Final Review -->
-    <div id="step-5" class="step-container">
+    <!-- Step 4: Final Confirmation -->
+    <div id="step-4" class="step-container">
       <div class="account-card" id="confirmation-card-content"></div>
     </div>
   </div>
 
-  <!-- TAB 2: WITHDRAW SECTION -->
-  <div id="tab-withdraw" class="tab-content">
-    <div class="info-box-group">
-      <label class="box-label">Select Payment Method</label>
-      <div class="payment-selector">
-        <div class="payment-card active" id="pay-bkash" onclick="selectPaymentMethod('bKash')">
-          <img src="https://ui-avatars.com/api/?name=bKash&background=e2136e&color=fff" alt="bKash">
-          <span>bKash</span>
-        </div>
-        <div class="payment-card" id="pay-nagad" onclick="selectPaymentMethod('Nagad')">
-          <img src="https://ui-avatars.com/api/?name=Nagad&background=f7921e&color=fff" alt="Nagad">
-          <span>Nagad</span>
-        </div>
-      </div>
+  <!-- TAB 2: SUBMIT HISTORY -->
+  <div id="tab-submit-history" class="tab-content">
+    <div id="gmail-history-container" class="history-container">
+      <p style="font-size:12px; color:#8e8e93; text-align:center;">Loading history...</p>
+    </div>
+  </div>
 
-      <label class="box-label" style="margin-top: 12px;">Account Number</label>
-      <div class="input-wrapper">
-        <input type="number" id="withdraw-phone" class="ios-box" placeholder="017XXXXXXXX" oninput="validateWithdrawForm()">
-        <div class="input-indicator" id="withdraw-phone-indicator">
-          <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
-        </div>
-      </div>
+  <!-- TAB 3: WITHDRAW HISTORY -->
+  <div id="tab-withdraw-history" class="tab-content">
+    <div id="withdraw-history-container" class="history-container">
+      <p style="font-size:12px; color:#8e8e93; text-align:center;">Loading withdraw history...</p>
+    </div>
+  </div>
 
-      <label class="box-label" style="margin-top: 12px;">Withdraw Amount (Min 20 BDT)</label>
-      <div class="input-wrapper">
-        <input type="number" id="withdraw-amount" class="ios-box" placeholder="Enter amount" oninput="validateWithdrawForm()">
-        <div class="input-indicator" id="withdraw-amount-indicator">
-          <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+  <!-- TAB 4: MY ACCOUNT -->
+  <div id="tab-my-account" class="tab-content">
+    <div class="profile-card">
+      <img id="avatar" src="https://ui-avatars.com/api/?name=User&background=007aff&color=fff" alt="Profile">
+      <div class="profile-info">
+        <h3 id="username">Loading...</h3>
+        <div class="id-copy-wrapper">
+          <span id="user-id">ID: ----</span>
+          <button class="copy-btn" onclick="copyUserId()">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+          </button>
         </div>
       </div>
-
-      <div class="field-error-msg" id="withdraw-error-msg">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line></svg>
-        <span>Insufficient balance or amount less than 20 BDT!</span>
+      <div class="balance-badge">
+        <span>৳</span><span id="user-balance">0.00</span>
       </div>
+    </div>
 
-      <div class="action-container" style="margin-top: 15px;">
-        <button class="btn-proceed" id="btn-withdraw" disabled onclick="handleWithdrawSubmit()">
-          <span>Request Withdraw</span>
-        </button>
+    <!-- Withdraw Section Inside My Account -->
+    <div class="account-card" style="margin-top: 15px;">
+      <h3 style="font-size: 14px; margin-bottom: 12px;">Withdraw Funds</h3>
+      <div class="info-box-group">
+        <label class="box-label">Select Payment Method</label>
+        <div class="payment-selector">
+          <div class="payment-card active" id="pay-bkash" onclick="selectPaymentMethod('bKash')">
+            <img src="YOUR_BKASH_LOGO_LINK_HERE" onerror="this.src='https://ui-avatars.com/api/?name=bKash&background=e2136e&color=fff'" alt="bKash">
+            <span>bKash</span>
+          </div>
+          <div class="payment-card" id="pay-nagad" onclick="selectPaymentMethod('Nagad')">
+            <img src="YOUR_NAGAD_LOGO_LINK_HERE" onerror="this.src='https://ui-avatars.com/api/?name=Nagad&background=f7921e&color=fff'" alt="Nagad">
+            <span>Nagad</span>
+          </div>
+        </div>
+
+        <label class="box-label" style="margin-top: 10px;">Account Number</label>
+        <div class="input-wrapper">
+          <input type="number" id="withdraw-phone" class="ios-box" placeholder="017XXXXXXXX" oninput="validateWithdrawForm()">
+          <div class="input-indicator" id="withdraw-phone-indicator">
+            <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+          </div>
+        </div>
+
+        <label class="box-label" style="margin-top: 10px;">Withdraw Amount (Min 20 BDT)</label>
+        <div class="input-wrapper">
+          <input type="number" id="withdraw-amount" class="ios-box" placeholder="Enter amount" oninput="validateWithdrawForm()">
+          <div class="input-indicator" id="withdraw-amount-indicator">
+            <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+          </div>
+        </div>
+
+        <div class="field-error-msg" id="withdraw-error-msg">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line></svg>
+          <span>Insufficient balance or amount less than 20 BDT!</span>
+        </div>
+
+        <div class="action-container" style="margin-top: 15px;">
+          <button class="btn-proceed" id="btn-withdraw" disabled onclick="handleWithdrawSubmit()">
+            <span>Request Withdraw</span>
+          </button>
+        </div>
       </div>
     </div>
   </div>
 
-  <!-- TAB 3: HISTORY LOGS -->
-  <div id="tab-history" class="tab-content">
-    <div class="account-card">
-      <h3 style="font-size: 13px; margin-bottom: 8px;">Submissions</h3>
-      <div id="history-gmail-list">Loading...</div>
-    </div>
-    <div class="account-card" style="margin-top: 12px;">
-      <h3 style="font-size: 13px; margin-bottom: 8px;">Withdrawals</h3>
-      <div id="history-withdraw-list">Loading...</div>
-    </div>
-  </div>
-
-  <!-- Bottom Navigation -->
+  <!-- Bottom Glassmorphism Navigation (4 Buttons) -->
   <div class="bottom-nav">
     <div class="nav-item active" onclick="switchMainTab('submit', this)">
       <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="2" fill="none"><path d="M12 5v14M5 12h14"></path></svg>
       <span>Submit</span>
     </div>
-    <div class="nav-item" onclick="switchMainTab('withdraw', this)">
-      <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="2" fill="none"><rect x="2" y="5" width="20" height="14" rx="2"></rect><line x1="2" y1="10" x2="22" y2="10"></line></svg>
-      <span>Withdraw</span>
+    <div class="nav-item" onclick="switchMainTab('submit-history', this)">
+      <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="2" fill="none"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline></svg>
+      <span>Submit History</span>
     </div>
-    <div class="nav-item" onclick="switchMainTab('history', this)">
+    <div class="nav-item" onclick="switchMainTab('withdraw-history', this)">
       <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="2" fill="none"><polyline points="12 8 12 12 14 14"></polyline><path d="M3.05 11a9 9 0 1 1 .5 4m-.5 5v-5h5"></path></svg>
-      <span>History</span>
+      <span>Withdraw History</span>
+    </div>
+    <div class="nav-item" onclick="switchMainTab('my-account', this)">
+      <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="2" fill="none"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+      <span>My Account</span>
     </div>
   </div>
 
