@@ -1,55 +1,119 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="bn">
 <head>
- <meta charset="UTF-8">
- <meta name="viewport" content="width=device-width, initial-scale=1.0">
- <title>Gmail Bot Mini App</title>
- <link rel="stylesheet" href="style.css">
- <script src="https://telegram.org/js/webapp.js"></script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Account Management Mini App</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
 </head>
 <body>
- <div id="app">
- <header>
- <div id="profile">
- <img id="avatar" src="" alt="Profile">
- <span id="username">Loading...</span>
- </div>
- <div id="account-info">
- <span>Balance: ৳<span id="balance">0</span></span>
- <button id="refresh-btn">Refresh</button>
- </div>
- </header>
 
- <main>
- <section id="submission">
- <h2>Submit Gmail Account</h2>
- <form id="gmail-form">
- <input type="email" id="email" placeholder="Gmail Address" required>
- <input type="password" id="password" placeholder="Password" required>
- <input type="email" id="recovery" placeholder="Recovery Email" required>
- <button type="submit">Submit Account</button>
- </form>
- </section>
+  <div id="app">
 
- <section id="history">
- <h2>Submission History</h2>
- <div id="history-list"></div>
- </section>
+    <!-- Profile Header Section -->
+    <header class="profile-card">
+      <img id="avatar" src="https://ui-avatars.com/api/?name=User&background=007aff&color=fff" alt="Profile Picture">
+      <div class="profile-info">
+        <h3 id="username">Loading...</h3>
+        <p id="user-id">ID: ----</p>
+      </div>
+    </header>
 
- <section id="withdraw">
- <h2>Withdraw</h2>
- <form id="withdraw-form">
- <select id="method">
- <option value="bkash">bKash</option>
- <option value="nagad">Nagad</option>
- </select>
- <input type="text" id="phone" placeholder="Phone Number" required>
- <input type="number" id="amount" placeholder="Amount (৳)" required>
- <button type="submit">Withdraw Request</button>
- </form>
- </section>
- </main>
- </div>
- <script src="script.js"></script>
+    <!-- TAB 1: HOME (Email Submit) -->
+    <div id="page-home" class="tab-page active-page">
+      <div class="ios-card">
+        <h2 class="card-title">Submit Gmail Account</h2>
+        <form id="gmail-form">
+          <div class="form-group">
+            <label class="input-label">Gmail Address</label>
+            <input type="email" id="email" placeholder="example@gmail.com" required>
+          </div>
+          <div class="form-group">
+            <label class="input-label">Password</label>
+            <input type="password" id="password" placeholder="Password" required>
+          </div>
+          <div class="form-group">
+            <label class="input-label">Recovery Email</label>
+            <input type="email" id="recovery" placeholder="recovery@gmail.com" required>
+          </div>
+          <button type="submit" class="btn-primary">Submit Account</button>
+        </form>
+      </div>
+    </div>
+
+    <!-- TAB 2: HISTORY (Submission List) -->
+    <div id="page-history" class="tab-page">
+      <div class="ios-card">
+        <h2 class="card-title">Submission History</h2>
+        <div id="gmail-history-list" class="history-list">
+          <p class="loading-text">Loading history...</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 3: ACCOUNT & WITHDRAW -->
+    <div id="page-account" class="tab-page">
+      <div class="balance-card">
+        <div class="bal-title">Current Balance</div>
+        <div class="bal-amount">৳ <span id="user-balance">0.00</span></div>
+      </div>
+
+      <div class="ios-card">
+        <h2 class="card-title">Withdraw Funds</h2>
+        <form id="withdraw-form">
+          <div class="form-group">
+            <label class="input-label">Select Payment Method</label>
+            <select id="method">
+              <option value="bKash">bKash</option>
+              <option value="Nagad">Nagad</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="input-label">Account Number</label>
+            <input type="number" id="phone" placeholder="017xxxxxxxx" required>
+          </div>
+          <div class="form-group">
+            <label class="input-label">Amount (BDT)</label>
+            <input type="number" id="amount" placeholder="Minimum 100" required>
+          </div>
+          <button type="submit" class="btn-primary">Request Withdraw</button>
+        </form>
+      </div>
+    </div>
+
+    <!-- TAB 4: WITHDRAW LOG -->
+    <div id="page-withdraw-history" class="tab-page">
+      <div class="ios-card">
+        <h2 class="card-title">Withdrawal Log</h2>
+        <div id="withdraw-history-list" class="history-list">
+          <p class="loading-text">Loading withdraw log...</p>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- iOS Glass Bottom Navigation Bar -->
+  <div class="bottom-nav">
+    <div class="nav-item active" onclick="switchTab('home', this)">
+      <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path></svg>
+      <span>Home</span>
+    </div>
+    <div class="nav-item" onclick="switchTab('history', this)">
+      <svg viewBox="0 0 24 24"><polyline points="12 8 12 12 14 14"></polyline><path d="M3.05 11a9 9 0 1 1 .5 4m-.5 5v-5h5"></path></svg>
+      <span>History</span>
+    </div>
+    <div class="nav-item" onclick="switchTab('account', this)">
+      <svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+      <span>Account</span>
+    </div>
+    <div class="nav-item" onclick="switchTab('withdraw-history', this)">
+      <svg viewBox="0 0 24 24"><rect x="2" y="4" width="20" height="16" rx="2"></rect><line x1="12" y1="9" x2="12" y2="15"></line><line x1="9" y1="12" x2="15" y2="12"></line></svg>
+      <span>Withdraw Log</span>
+    </div>
+  </div>
+
+  <script type="module" src="script.js"></script>
 </body>
 </html>
