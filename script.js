@@ -1,16 +1,9 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
 import { 
-  getFirestore, 
-  collection, 
-  addDoc, 
-  query, 
-  where, 
-  onSnapshot, 
-  orderBy, 
-  serverTimestamp 
+  getFirestore, collection, addDoc, query, where, onSnapshot, serverTimestamp, getDocs 
 } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
-// Firebase Configuration
+// Firebase Config
 const firebaseConfig = {
   apiKey: "AIzaSyB0AdImn8AlFKA4z_j4n25xz-Py2jgmMNU",
   authDomain: "sell-156d4.firebaseapp.com",
@@ -20,145 +13,210 @@ const firebaseConfig = {
   appId: "622346055495"
 };
 
-// Initialize Firebase
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
-// Telegram WebApp Integration
+// Telegram Setup
 const tg = window.Telegram?.WebApp;
-if (tg) {
-  tg.expand();
-}
+if (tg) tg.expand();
 
 const user = tg?.initDataUnsafe?.user;
-const userId = user?.id ? user.id.toString() : "test_user_123";
-const firstName = user?.first_name || "Guest User";
+const userId = user?.id ? user.id.toString() : "guest_user";
+const firstName = user?.first_name || "User";
 
-// Setup Profile Header
+let userBalance = 0.00;
+let existingEmails = [];
+let selectedPayment = 'bKash';
+let currentStep = 1;
+let formData = { email: "", password: "", status: "Security Processing", statusClass: "status-red", recovery: "" };
+
 document.getElementById('username').innerText = firstName;
 document.getElementById('user-id').innerText = `ID: ${userId}`;
+if (user?.photo_url) document.getElementById('avatar').src = user.photo_url;
 
-if (user?.photo_url) {
-  document.getElementById('avatar').src = user.photo_url;
-} else {
-  document.getElementById('avatar').src = `https://ui-avatars.com/api/?name=${encodeURIComponent(firstName)}&background=007aff&color=fff`;
+// Toast Function
+function showToast(msg) {
+  const toast = document.getElementById('copy-toast');
+  document.getElementById('toast-msg').innerText = msg;
+  toast.classList.add('show');
+  setTimeout(() => toast.classList.remove('show'), 2000);
 }
 
-// Navigation Tab Switcher
-window.switchTab = function(tabName, element) {
-  document.querySelectorAll('.tab-page').forEach(page => page.classList.remove('active-page'));
-  document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
+// Fetch All Submitted Emails for Duplication Check
+async function loadExistingEmails() {
+  const querySnapshot = await getDocs(collection(db, "allGmailHistory"));
+  existingEmails = [];
+  querySnapshot.forEach((doc) => {
+    const data = doc.data();
+    if (data.email) existingEmails.push(data.email.toLowerCase().trim());
+    if (data.recovery) existingEmails.push(data.recovery.toLowerCase().trim());
+  });
+}
+loadExistingEmails();
 
-  document.getElementById('page-' + tabName).classList.add('active-page');
-  element.classList.add('active');
-};
-
-// 1. Submit Gmail Account
-document.getElementById('gmail-form').addEventListener('submit', async function(e) {
-  e.preventDefault();
+// Realtime User Balance & Submissions
+onSnapshot(query(collection(db, "allGmailHistory"), where("userId", "==", userId)), (snapshot) => {
+  let approvedCount = 0;
+  const list = document.getElementById('history-gmail-list');
+  list.innerHTML = snapshot.empty ? '<p style="font-size:11px;color:#8e8e93;">No email submitted</p>' : '';
   
-  const email = document.getElementById('email').value.trim();
-  const password = document.getElementById('password').value.trim();
-  const recovery = document.getElementById('recovery').value.trim();
-
-  try {
-    await addDoc(collection(db, "allGmailHistory"), {
-      userId: userId,
-      email: email,
-      password: password,
-      recovery: recovery,
-      status: "Pending",
-      timestamp: serverTimestamp()
-    });
-
-    alert("Account submitted successfully!");
-    this.reset();
-  } catch (error) {
-    console.error("Error submitting account: ", error);
-    alert("Submission failed. Try again.");
-  }
-});
-
-// 2. Realtime Fetch Gmail History
-const gmailQuery = query(
-  collection(db, "allGmailHistory"),
-  where("userId", "==", userId)
-);
-
-onSnapshot(gmailQuery, (snapshot) => {
-  const container = document.getElementById('gmail-history-list');
-  if (snapshot.empty) {
-    container.innerHTML = '<p class="loading-text">No accounts submitted yet.</p>';
-    return;
-  }
-
-  container.innerHTML = '';
   snapshot.forEach((doc) => {
     const data = doc.data();
-    const item = document.createElement('div');
-    item.className = 'list-item';
-    item.innerHTML = `
-      <div class="item-left">
-        <span class="item-title">${data.email}</span>
-        <span class="item-sub">Pass: ${data.password}</span>
-      </div>
-      <span class="status-badge status-${(data.status || 'pending').toLowerCase()}">${data.status || 'Pending'}</span>
-    `;
-    container.appendChild(item);
+    if (data.status === "Approved") approvedCount++;
+    list.innerHTML += `
+      <div class="field-item">
+        <span>${data.email}</span>
+        <span class="status-${(data.status||'pending').toLowerCase()}">${data.status || 'Pending'}</span>
+      </div>`;
+  });
+
+  userBalance = approvedCount * 10; // ধরে নিলাম প্রতি ইমেইলে ১০ টাকা
+  document.getElementById('user-balance').innerText = userBalance.toFixed(2);
+});
+
+// Realtime Withdraw History
+onSnapshot(query(collection(db, "withdrawHistory"), where("userId", "==", userId)), (snapshot) => {
+  const list = document.getElementById('history-withdraw-list');
+  list.innerHTML = snapshot.empty ? '<p style="font-size:11px;color:#8e8e93;">No withdraw history</p>' : '';
+  snapshot.forEach((doc) => {
+    const data = doc.data();
+    list.innerHTML += `
+      <div class="field-item">
+        <span>${data.method} (${data.phone})</span>
+        <span>৳${data.amount} [${data.status}]</span>
+      </div>`;
   });
 });
 
-// 3. Submit Withdraw Request
-document.getElementById('withdraw-form').addEventListener('submit', async function(e) {
-  e.preventDefault();
+// Gmail & Recovery Field Validator
+window.validateGmailField = function(field, step) {
+  const input = document.getElementById(`input-${field}`);
+  const indicator = document.getElementById(`${field}-indicator`);
+  const errorMsg = document.getElementById(`${field}-error-msg`);
+  const btn = document.getElementById(`btn-${step}`);
+  const val = input.value.trim().toLowerCase();
 
-  const method = document.getElementById('method').value;
-  const phone = document.getElementById('phone').value.trim();
-  const amount = document.getElementById('amount').value.trim();
+  if (val.endsWith("@gmail.com") && val.length > 10) {
+    if (existingEmails.includes(val)) {
+      input.classList.remove('valid'); input.classList.add('invalid');
+      indicator.classList.remove('show'); errorMsg.classList.add('show');
+      btn.disabled = true;
+    } else {
+      input.classList.remove('invalid'); input.classList.add('valid');
+      indicator.classList.add('show'); errorMsg.classList.remove('show');
+      btn.disabled = false;
+    }
+  } else {
+    input.classList.remove('valid', 'invalid');
+    indicator.classList.remove('show'); errorMsg.classList.remove('show');
+    btn.disabled = true;
+  }
+};
+
+window.validateStandardField = function(field, minLen, step) {
+  const input = document.getElementById(`input-${field}`);
+  const indicator = document.getElementById(`${field}-indicator`);
+  const btn = document.getElementById(`btn-${step}`);
+  if (input.value.trim().length >= minLen) {
+    input.classList.add('valid'); indicator.classList.add('show'); btn.disabled = false;
+  } else {
+    input.classList.remove('valid'); indicator.classList.remove('show'); btn.disabled = true;
+  }
+};
+
+// Navigation Steps
+window.nextStep = function(step) {
+  if (step === 1) formData.email = document.getElementById('input-email').value.trim();
+  if (step === 2) formData.password = document.getElementById('input-password').value.trim();
+  if (step === 4) formData.recovery = document.getElementById('input-recovery').value.trim();
+
+  document.getElementById(`step-${currentStep}`).classList.remove('active');
+  currentStep = step + 1;
+  document.getElementById(`step-${currentStep}`).classList.add('active');
+
+  if (currentStep === 5) renderConfirmation();
+};
+
+window.skipRecovery = function() {
+  formData.recovery = "Skipped";
+  nextStep(4);
+};
+
+function renderConfirmation() {
+  document.getElementById('confirmation-card-content').innerHTML = `
+    <div class="field-item"><span>Email:</span> <b>${formData.email}</b></div>
+    <div class="field-item"><span>Password:</span> <b>${formData.password}</b></div>
+    <div class="field-item"><span>Status:</span> <b class="${formData.statusClass}">${formData.status}</b></div>
+    <div class="field-item"><span>Recovery:</span> <b>${formData.recovery}</b></div>
+    <button class="btn-proceed" style="margin-top:10px;" onclick="submitFinalData()">Confirm & Save</button>
+  `;
+}
+
+window.submitFinalData = async function() {
+  try {
+    await addDoc(collection(db, "allGmailHistory"), {
+      userId: userId, email: formData.email, password: formData.password,
+      status: formData.status, recovery: formData.recovery, timestamp: serverTimestamp()
+    });
+    showToast("Account saved successfully!");
+    location.reload();
+  } catch (e) {
+    showToast("Submission failed!");
+  }
+};
+
+// Payment & Withdraw Validation
+window.selectPaymentMethod = function(method) {
+  selectedPayment = method;
+  document.querySelectorAll('.payment-card').forEach(c => c.classList.remove('active'));
+  document.getElementById(`pay-${method.toLowerCase()}`).classList.add('active');
+};
+
+window.validateWithdrawForm = function() {
+  const phone = document.getElementById('withdraw-phone').value.trim();
+  const amount = Number(document.getElementById('withdraw-amount').value);
+  const btn = document.getElementById('btn-withdraw');
+  const errorMsg = document.getElementById('withdraw-error-msg');
+
+  if (phone.length === 11 && amount >= 20 && amount <= userBalance) {
+    btn.disabled = false; errorMsg.classList.remove('show');
+  } else {
+    btn.disabled = true; errorMsg.classList.add('show');
+  }
+};
+
+window.handleWithdrawSubmit = async function() {
+  const phone = document.getElementById('withdraw-phone').value.trim();
+  const amount = Number(document.getElementById('withdraw-amount').value);
 
   try {
     await addDoc(collection(db, "withdrawHistory"), {
-      userId: userId,
-      method: method,
-      phone: phone,
-      amount: Number(amount),
-      status: "Pending",
-      timestamp: serverTimestamp()
+      userId: userId, method: selectedPayment, phone: phone, amount: amount,
+      status: "Pending", timestamp: serverTimestamp()
     });
-
-    alert("Withdrawal request submitted!");
-    this.reset();
-  } catch (error) {
-    console.error("Error submitting withdrawal: ", error);
-    alert("Withdrawal failed. Try again.");
+    showToast("Withdraw requested!");
+    document.getElementById('withdraw-phone').value = '';
+    document.getElementById('withdraw-amount').value = '';
+  } catch (e) {
+    showToast("Withdraw request failed!");
   }
-});
+};
 
-// 4. Realtime Fetch Withdraw History
-const withdrawQuery = query(
-  collection(db, "withdrawHistory"),
-  where("userId", "==", userId)
-);
+// Global Tabs Switcher
+window.switchMainTab = function(tab, elem) {
+  document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
+  document.getElementById(`tab-${tab}`).classList.add('active');
+  elem.classList.add('active');
+};
 
-onSnapshot(withdrawQuery, (snapshot) => {
-  const container = document.getElementById('withdraw-history-list');
-  if (snapshot.empty) {
-    container.innerHTML = '<p class="loading-text">No withdrawal history found.</p>';
-    return;
-  }
+window.toggleDropdown = function() {
+  document.getElementById('dropdown-menu').classList.toggle('show');
+};
 
-  container.innerHTML = '';
-  snapshot.forEach((doc) => {
-    const data = doc.data();
-    const item = document.createElement('div');
-    item.className = 'list-item';
-    item.innerHTML = `
-      <div class="item-left">
-        <span class="item-title">${data.method} (${data.phone})</span>
-        <span class="item-sub">Amount: ৳${data.amount}</span>
-      </div>
-      <span class="status-badge status-${(data.status || 'pending').toLowerCase()}">${data.status || 'Pending'}</span>
-    `;
-    container.appendChild(item);
-  });
-});
+window.selectStatus = function(text, cls) {
+  formData.status = text; formData.statusClass = cls;
+  document.getElementById('selected-status-text').innerText = text;
+  document.getElementById('selected-status-text').className = cls;
+  window.toggleDropdown();
+};
