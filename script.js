@@ -18,15 +18,16 @@ if (tg) tg.expand();
 
 const user = tg?.initDataUnsafe?.user;
 const userId = user?.id ? user.id.toString() : "guest_user";
-const firstName = user?.first_name || "User";
 
-let totalEarned = 0.00;
-let totalWithdrawn = 0.00;
-let userBalance = 0.00;
+// Full Name in Telegram
+const telegramFullName = user ? [user.first_name, user.last_name].filter(Boolean).join(" ") : "User";
+
+let totalEarned = 0;
+let totalWithdrawn = 0;
+let userBalance = 0;
 
 let existingEmails = [];
 let selectedPayment = 'bKash';
-let currentStep = 1;
 let formData = { email: "", password: "", recovery: "" };
 
 let rawGmailHistory = [];
@@ -37,7 +38,7 @@ let withdrawSearchQuery = "";
 const copyIconSvg = `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>`;
 const checkIconSvg = `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>`;
 
-document.getElementById('username').innerText = firstName;
+document.getElementById('username').innerText = telegramFullName;
 document.getElementById('user-id').innerText = userId;
 if (user?.photo_url) document.getElementById('avatar').src = user.photo_url;
 
@@ -46,6 +47,24 @@ function showToast(msg) {
   document.getElementById('toast-msg').innerText = msg;
   toast.classList.add('show');
   setTimeout(() => toast.classList.remove('show'), 2000);
+}
+
+// Sound Synthesis for Refresh Action
+function playRefreshSound() {
+  try {
+    const ctx = new (window.AudioContext || window.webkitAudioContext)();
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    osc.type = 'sine';
+    osc.frequency.setValueAtTime(587.33, ctx.currentTime);
+    osc.frequency.exponentialRampToValueAtTime(880, ctx.currentTime + 0.15);
+    gain.gain.setValueAtTime(0.1, ctx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.15);
+    osc.connect(gain);
+    gain.connect(ctx.destination);
+    osc.start();
+    osc.stop(ctx.currentTime + 0.15);
+  } catch (e) {}
 }
 
 // Copy Helper Function
@@ -89,7 +108,7 @@ window.copyUserId = function() {
   window.copyToClipboard(userId, btn);
 };
 
-// Date Formatter: DD-MM-YYYY (e.g., 10-01-2026)
+// Date Formatter: DD-MM-YYYY
 function formatDate(timestamp) {
   if (!timestamp) return "N/A";
   let date;
@@ -128,11 +147,38 @@ async function loadExistingEmails() {
 }
 loadExistingEmails();
 
+// Integer Only Balance (No decimals/points)
 function updateOverallBalance() {
-  userBalance = Math.max(0, totalEarned - totalWithdrawn);
-  document.getElementById('user-balance').innerText = userBalance.toFixed(2);
+  userBalance = Math.max(0, Math.floor(totalEarned - totalWithdrawn));
+  document.getElementById('user-balance').innerText = userBalance;
+  const accBalVal = document.getElementById('account-balance-val');
+  if (accBalVal) accBalVal.innerText = userBalance;
   validateWithdrawForm();
 }
+
+// Refresh Balance Action with Sound & Animation
+window.refreshUserBalance = function() {
+  const btn = document.getElementById('refresh-balance-btn');
+  if (!btn || btn.classList.contains('refreshing')) return;
+
+  btn.classList.add('refreshing');
+  playRefreshSound();
+
+  // Show Spinner
+  btn.innerHTML = `<svg class="ios-spinner" viewBox="0 0 24 24"><line x1="12" y1="3" x2="12" y2="6" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/><line x1="18.36" y1="5.64" x2="16.24" y2="7.76" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/><line x1="21" y1="12" x2="18" y2="12" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/><line x1="18.36" y1="18.36" x2="16.24" y2="16.24" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/><line x1="12" y1="21" x2="12" y2="18" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/><line x1="5.64" y1="18.36" x2="7.76" y2="16.24" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/><line x1="3" y1="12" x2="6" y2="12" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/><line x1="5.64" y1="5.64" x2="7.76" y2="7.76" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/></svg>`;
+
+  setTimeout(() => {
+    updateOverallBalance();
+    // Show Checkmark
+    btn.innerHTML = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--accent-green)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>`;
+    
+    setTimeout(() => {
+      btn.classList.remove('refreshing');
+      // Reset Icon
+      btn.innerHTML = `<svg class="refresh-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"></polyline><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"></path></svg>`;
+    }, 800);
+  }, 600);
+};
 
 // Realtime Email History & Balance & Dashboard Stats
 onSnapshot(query(collection(db, "allGmailHistory"), where("userId", "==", userId)), (snapshot) => {
@@ -155,7 +201,7 @@ onSnapshot(query(collection(db, "allGmailHistory"), where("userId", "==", userId
     rawGmailHistory.push(data);
   });
 
-  // Update Dashboard Stats
+  // Update Dashboard Stats (Single Line)
   document.getElementById('stat-total').innerText = totalCount;
   document.getElementById('stat-pending').innerText = pendingCount;
   document.getElementById('stat-completed').innerText = completedCount;
@@ -271,7 +317,7 @@ function renderWithdrawHistory() {
         <div class="field-item">
           <span class="field-left">Amount</span>
           <div class="field-right-group">
-            <span class="field-right">৳${Number(data.amount).toFixed(2)}</span>
+            <span class="field-right">৳${Math.floor(data.amount || 0)}</span>
           </div>
         </div>
         <div class="field-item">
@@ -502,7 +548,7 @@ window.validateWithdrawForm = function() {
   if (!phoneInput || !amountInput || !btn) return;
 
   const phoneValid = phoneInput.value.trim().length >= 11;
-  const amount = Number(amountInput.value);
+  const amount = Math.floor(Number(amountInput.value) || 0);
   const amountValid = amount >= 20 && amount <= userBalance;
 
   if (phoneValid) {
@@ -532,7 +578,7 @@ window.validateWithdrawForm = function() {
 
 window.handleWithdrawSubmit = async function() {
   const phone = document.getElementById('withdraw-phone').value.trim();
-  const amount = Number(document.getElementById('withdraw-amount').value);
+  const amount = Math.floor(Number(document.getElementById('withdraw-amount').value) || 0);
 
   if (amount > userBalance) {
     showToast("Insufficient balance!");
@@ -567,10 +613,10 @@ window.switchMainTab = function(tab, elem) {
 
   const titleMap = {
     'submit': 'Submit Account',
-    'submit-history': 'Account History',
+    'submit-history': 'History',
+    'my-account': 'My Account',
     'withdraw': 'Withdraw',
-    'withdraw-history': 'Withdraw History',
-    'my-account': 'My Account'
+    'withdraw-history': 'History'
   };
   document.getElementById('main-title').innerText = titleMap[tab] || 'Account';
 };
