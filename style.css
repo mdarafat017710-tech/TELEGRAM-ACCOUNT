@@ -43,15 +43,14 @@ body {
 .tab-content { display: none; width: 100%; max-width: 420px; }
 .tab-content.active { display: block; }
 
-.step-container, .withdraw-step { display: none; flex-direction: column; gap: 12px; }
-.step-container.active, .withdraw-step.active { display: flex; }
+.step-container { display: none; flex-direction: column; gap: 12px; }
+.step-container.active { display: flex; }
 
 .info-box-group { display: flex; flex-direction: column; gap: 6px; width: 100%; }
 .box-label { font-size: 12px; font-weight: 600; }
 
 .input-wrapper { position: relative; display: flex; align-items: center; width: 100%; }
 
-/* Default State: Blue Border & Shadow */
 .ios-box {
   width: 100%; padding: 12px 36px 12px 12px; background: var(--card-bg);
   border: 1.5px solid var(--accent-blue);
@@ -59,19 +58,16 @@ body {
   border-radius: 12px; font-size: 14px; outline: none; transition: all 0.2s ease-in-out;
 }
 
-/* Valid State: Green Border & Shadow */
 .ios-box.valid {
   border-color: var(--accent-green) !important;
   box-shadow: 0px 0px 8px rgba(52, 199, 89, 0.4) !important;
 }
 
-/* Invalid State: Red Border & Shadow */
 .ios-box.invalid {
   border-color: var(--accent-red) !important;
   box-shadow: 0px 0px 8px rgba(255, 59, 48, 0.4) !important;
 }
 
-/* Checkmark Indicator */
 .input-indicator {
   position: absolute; right: 12px; width: 18px; height: 18px;
   background: var(--accent-green); border-radius: 50%;
@@ -99,8 +95,6 @@ body {
   border: none; border-radius: 10px; font-size: 13px; color: var(--text-main); outline: none;
 }
 
-.search-box input::placeholder { color: var(--text-muted); }
-
 .clear-btn {
   position: absolute; right: 8px; background: #8e8e93; color: #ffffff;
   border: none; width: 17px; height: 17px; border-radius: 50%; display: none;
@@ -126,32 +120,57 @@ body {
   100% { transform: rotate(360deg); }
 }
 
-/* User Profile Card */
-.user-profile-card {
-  background: var(--card-bg); border-radius: 14px; border: 1px solid var(--border-color);
-  padding: 14px; display: flex; align-items: center; gap: 12px; margin-bottom: 15px;
+/* My Account Centered Layout */
+.user-profile-center-card {
+  background: var(--card-bg); border-radius: 16px; border: 1px solid var(--border-color);
+  padding: 20px 14px; display: flex; flex-direction: column; align-items: center; text-align: center;
+  margin-bottom: 14px;
 }
-.user-avatar { width: 44px; height: 44px; border-radius: 50%; object-fit: cover; }
-.user-info { flex: 1; }
-.user-info h3 { font-size: 15px; font-weight: 700; }
-.user-id-wrapper { display: flex; align-items: center; gap: 4px; cursor: pointer; margin-top: 2px; }
-#user-id { font-size: 12px; color: var(--text-muted); font-family: monospace; }
-.user-id-copy-btn { background: none; border: none; color: var(--text-muted); cursor: pointer; display: inline-flex; }
-.balance-badge { background: rgba(0, 122, 255, 0.1); color: var(--accent-blue); padding: 6px 12px; border-radius: 20px; font-size: 13px; }
 
-/* Payment Selection Grid */
-.payment-methods-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+.user-avatar-large {
+  width: 72px; height: 72px; border-radius: 50%; object-fit: cover;
+  border: 2px solid var(--accent-blue); margin-bottom: 8px;
+}
+
+.user-name-large { font-size: 18px; font-weight: 700; margin-bottom: 6px; color: var(--text-main); }
+
+.user-id-row {
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+  font-size: 13px; color: var(--text-muted); font-family: monospace;
+}
+
+/* Dashboard Statistics Grid (2 Items per row) */
+.dashboard-grid {
+  display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; width: 100%;
+}
+
+.stat-card {
+  background: var(--card-bg); border-radius: 14px; border: 1px solid var(--border-color);
+  padding: 14px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px;
+}
+
+.stat-label { font-size: 12px; font-weight: 700; color: var(--text-main); }
+.stat-value { font-size: 20px; font-weight: 800; font-family: monospace; }
+
+.text-pending { color: var(--accent-yellow) !important; }
+.text-completed { color: var(--accent-green) !important; }
+.text-rejected { color: var(--accent-red) !important; }
+
+/* Payment Selection Layout (Left Logo, Right Text) */
+.payment-methods-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-bottom: 10px; }
 .payment-card {
   background: var(--card-bg); border: 1.5px solid var(--border-color); border-radius: 12px;
-  padding: 12px 8px; display: flex; flex-direction: column; align-items: center; gap: 6px; cursor: pointer; font-size: 13px;
+  padding: 10px 14px; display: flex; align-items: center; justify-content: flex-start; gap: 10px; cursor: pointer; font-size: 14px; font-weight: 700;
 }
-.payment-card img { width: 22px; height: 22px; border-radius: 50%; }
+.payment-card img { width: 26px; height: 26px; border-radius: 50%; object-fit: cover; }
 .payment-card.active { border-color: var(--accent-blue); background: rgba(0, 122, 255, 0.05); }
+
+.balance-badge { background: rgba(0, 122, 255, 0.1); color: var(--accent-blue); padding: 5px 12px; border-radius: 20px; font-size: 13px; }
 
 .btn-proceed { background: var(--accent-blue); color: #fff; border: none; width: 100%; padding: 12px; border-radius: 12px; font-weight: 700; cursor: pointer; }
 .btn-proceed:disabled { background: #c6c6c8; color: #8e8e93; cursor: not-allowed; }
 
-/* Account & Withdraw Card Layout */
+/* Account Card Structure */
 .account-card { background: var(--card-bg); border-radius: 14px; border: 1px solid var(--border-color); padding: 6px 12px; margin-bottom: 10px; }
 .field-item { display: flex; justify-content: space-between; align-items: center; padding: 7px 0; border-bottom: 0.5px solid var(--divider-color); font-size: 12px; }
 .field-item:last-child { border-bottom: none; }
@@ -174,11 +193,11 @@ body {
 .status-completed { color: var(--accent-green); }
 .status-rejected { color: var(--accent-red); }
 
-/* Bottom Nav */
+/* Bottom Nav Layout (5 Items) */
 .bottom-nav {
   position: fixed; bottom: 0; left: 0; right: 0; height: 55px; background: rgba(255,255,255,0.95);
   backdrop-filter: blur(10px); border-top: 0.5px solid var(--border-color);
-  display: flex; justify-content: space-around; align-items: center; z-index: 100;
+  display: flex; justify-content: space-around; align-items: center; z-index: 100; padding: 0 4px;
 }
-.nav-item { display: flex; flex-direction: column; align-items: center; gap: 2px; color: var(--text-muted); cursor: pointer; font-size: 10px; }
+.nav-item { display: flex; flex-direction: column; align-items: center; gap: 2px; color: var(--text-muted); cursor: pointer; font-size: 9px; flex: 1; text-align: center; }
 .nav-item.active { color: var(--accent-blue); font-weight: 600; }
