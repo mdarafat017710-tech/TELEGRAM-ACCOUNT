@@ -1,22 +1,22 @@
 /* =========================================================
-   iOS Minimalist Theme & Bottom Navigation — style.css
+   iOS White Minimalist Theme & Bottom Navigation — style.css
    ========================================================= */
 
 :root {
   --bg-color: #f2f2f7;
   --card-bg: #ffffff;
   --search-bg: #e3e3e8;
-  --accent-blue: #007aff;  /* Pure iOS Blue */
-  --accent-green: #34c759; /* Pure Bright Green */
+  --accent-blue: #007aff;  /* iOS Classic Blue */
+  --accent-green: #34c759; /* Bright Green */
   --accent-red: #ff3b30;   /* Pure Red */
-  --accent-yellow: #f59e0b;/* Pure Vivid Yellow */
+  --accent-yellow: #f59e0b;/* Vivid Yellow */
   --text-main: #000000;
   --text-muted: #8e8e93;
   --border-color: #e5e5ea;
   --divider-color: #f0f0f3;
   --font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display", "Helvetica Neue", Arial, sans-serif;
-  
-  /* Telegram Theme Variable Fallbacks */
+
+  /* Telegram Theme Variables */
   --tg-theme-bg-color: var(--bg-color);
   --tg-theme-secondary-bg-color: var(--card-bg);
   --tg-theme-text-color: var(--text-main);
@@ -38,7 +38,7 @@
 body {
   background-color: var(--bg-color);
   color: var(--text-main);
-  padding: 15px 14px 90px; /* নিচে বটম নেভিগেশনের জন্য জায়গা রাখা হয়েছে */
+  padding: 16px 14px 90px; /* Space for Bottom Navigation Bar */
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -51,68 +51,118 @@ body {
   margin: 0 auto;
 }
 
-/* Header Section */
-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  background-color: var(--card-bg);
-  padding: 12px 16px;
-  border-radius: 14px;
-  border: 1px solid var(--border-color);
-  margin-bottom: 16px;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.02);
+/* Page Navigation Switching System */
+.tab-page {
+  display: none;
+  animation: fadeIn 0.25s cubic-bezier(0.175, 0.885, 0.32, 1);
 }
 
-#profile {
+.tab-page.active-page {
+  display: block;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* iOS Card Container */
+.ios-card {
+  background-color: var(--card-bg);
+  padding: 18px 16px;
+  border-radius: 16px;
+  border: 1px solid var(--border-color);
+  margin-bottom: 16px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.02);
+}
+
+.card-title {
+  margin-bottom: 14px;
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--text-main);
+  letter-spacing: -0.3px;
+}
+
+/* User Profile Header Card */
+.profile-card {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 14px;
+  background-color: var(--card-bg);
+  padding: 16px;
+  border-radius: 16px;
+  border: 1px solid var(--border-color);
+  margin-bottom: 16px;
 }
 
 #avatar {
-  width: 42px;
-  height: 42px;
+  width: 52px;
+  height: 52px;
   border-radius: 50%;
   object-fit: cover;
-  border: 1.5px solid var(--accent-blue);
+  border: 2px solid var(--accent-blue);
 }
 
-/* Main Sections / Cards */
-main section {
-  background-color: var(--card-bg);
-  padding: 16px;
-  border-radius: 14px;
-  border: 1px solid var(--border-color);
-  margin-bottom: 16px;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.02);
-}
-
-h2 {
-  margin-top: 0;
-  margin-bottom: 12px;
-  font-size: 15px;
+.profile-info h3 {
+  font-size: 16px;
   font-weight: 700;
-  color: var(--accent-blue);
+  color: var(--text-main);
 }
 
-/* Forms & Inputs */
-form {
+.profile-info p {
+  font-size: 12px;
+  color: var(--text-muted);
+  margin-top: 2px;
+}
+
+.balance-card {
+  background: linear-gradient(135deg, var(--accent-blue), #0056b3);
+  color: #ffffff;
+  padding: 20px;
+  border-radius: 16px;
+  text-align: center;
+  margin-bottom: 16px;
+  box-shadow: 0 4px 14px rgba(0, 122, 255, 0.25);
+}
+
+.balance-card .bal-title {
+  font-size: 12px;
+  opacity: 0.85;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.balance-card .bal-amount {
+  font-size: 28px;
+  font-weight: 800;
+  margin: 6px 0 14px;
+}
+
+/* Forms, Inputs and Buttons */
+form, .form-group {
   display: flex;
   flex-direction: column;
   gap: 12px;
 }
 
+.input-label {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-muted);
+  margin-bottom: -6px;
+}
+
 input, select {
   width: 100%;
-  padding: 10px 12px;
-  border-radius: 10px;
+  padding: 12px;
+  border-radius: 12px;
   border: 1px solid var(--border-color);
   background-color: var(--search-bg);
   color: var(--text-main);
-  font-size: 13px;
+  font-size: 14px;
   outline: none;
-  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  transition: all 0.2s ease;
   user-select: text;
   -webkit-user-select: text;
 }
@@ -120,109 +170,133 @@ input, select {
 input:focus, select:focus {
   border-color: var(--accent-blue);
   background-color: #ffffff;
-  box-shadow: 0 0 6px rgba(0, 122, 255, 0.2);
+  box-shadow: 0 0 0 3px rgba(0, 122, 255, 0.15);
 }
 
-button {
-  padding: 11px;
-  border-radius: 10px;
+.btn-primary {
+  width: 100%;
+  padding: 12px;
+  border-radius: 12px;
   border: none;
   background-color: var(--accent-blue);
   color: #ffffff;
-  font-size: 13px;
+  font-size: 14px;
   font-weight: 700;
   cursor: pointer;
   transition: transform 0.15s ease, opacity 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
 }
 
-button:active {
+.btn-primary:active {
   transform: scale(0.97);
   opacity: 0.85;
 }
 
-/* iOS Style Payment / Withdraw Options (Bkash & Nagad) */
-.payment-options {
+/* Payment Selector Grid (Bkash & Nagad) */
+.payment-methods {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 10px;
-  margin-top: 10px;
+  margin-bottom: 12px;
 }
 
 .payment-card {
   background: var(--card-bg);
   border: 1.5px solid var(--border-color);
-  border-radius: 12px;
-  padding: 12px;
+  border-radius: 14px;
+  padding: 14px 10px;
   text-align: center;
   cursor: pointer;
   transition: all 0.2s ease;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 6px;
+  gap: 8px;
 }
 
-.payment-card:active, .payment-card.selected {
+.payment-card.selected {
   border-color: var(--accent-blue);
-  background: rgba(0, 122, 255, 0.05);
+  background: rgba(0, 122, 255, 0.06);
 }
 
 .payment-card img {
-  width: 36px;
-  height: 36px;
-  border-radius: 8px;
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
   object-fit: contain;
 }
 
 .payment-card span {
-  font-size: 12px;
+  font-size: 13px;
   font-weight: 700;
   color: var(--text-main);
 }
 
-/* Withdraw History Item Layout */
-.withdraw-history-list {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-
-.history-item {
+/* Status Badges & Item Lists */
+.list-item {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 10px 0;
+  padding: 12px 0;
   border-bottom: 0.5px solid var(--divider-color);
 }
 
-.history-item:last-child {
+.list-item:last-child {
   border-bottom: none;
 }
 
-.history-method {
-  font-size: 13px;
-  font-weight: 700;
+.item-left {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
 }
 
-.history-date {
+.item-title {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--text-main);
+  word-break: break-all;
+}
+
+.item-sub {
   font-size: 11px;
   color: var(--text-muted);
 }
 
-.history-amount {
-  font-size: 13px;
+.status-badge {
+  font-size: 11px;
   font-weight: 700;
+  padding: 4px 8px;
+  border-radius: 8px;
+  text-transform: capitalize;
+}
+
+.status-approved, .status-success {
+  background: rgba(52, 199, 89, 0.12);
   color: var(--accent-green);
 }
 
-/* iOS Glass Bottom Navigation Bar */
+.status-pending {
+  background: rgba(245, 158, 11, 0.12);
+  color: var(--accent-yellow);
+}
+
+.status-rejected {
+  background: rgba(255, 59, 48, 0.12);
+  color: var(--accent-red);
+}
+
+/* Bottom Navigation Bar (iOS Glass Effect) */
 .bottom-nav {
   position: fixed;
   bottom: 0;
   left: 0;
   right: 0;
   height: 65px;
-  background: rgba(255, 255, 255, 0.85);
+  background: rgba(255, 255, 255, 0.88);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
   border-top: 0.5px solid var(--border-color);
@@ -230,7 +304,7 @@ button:active {
   justify-content: space-around;
   align-items: center;
   z-index: 9999;
-  padding-bottom: 10px;
+  padding-bottom: 8px;
 }
 
 .nav-item {
@@ -239,7 +313,6 @@ button:active {
   align-items: center;
   gap: 3px;
   color: var(--text-muted);
-  text-decoration: none;
   font-size: 10px;
   font-weight: 600;
   cursor: pointer;
