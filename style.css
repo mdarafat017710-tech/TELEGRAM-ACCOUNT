@@ -1,28 +1,17 @@
-/* =========================================================
-   iOS White Minimalist Theme & Bottom Navigation — style.css
-   ========================================================= */
-
+/* iOS White Minimalist Layout */
 :root {
   --bg-color: #f2f2f7;
   --card-bg: #ffffff;
   --search-bg: #e3e3e8;
-  --accent-blue: #007aff;  /* iOS Classic Blue */
-  --accent-green: #34c759; /* Bright Green */
-  --accent-red: #ff3b30;   /* Pure Red */
-  --accent-yellow: #f59e0b;/* Vivid Yellow */
+  --accent-blue: #007aff;
+  --accent-green: #34c759;
+  --accent-red: #ff3b30;
+  --accent-yellow: #f59e0b;
   --text-main: #000000;
   --text-muted: #8e8e93;
   --border-color: #e5e5ea;
   --divider-color: #f0f0f3;
-  --font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display", "Helvetica Neue", Arial, sans-serif;
-
-  /* Telegram Theme Variables */
-  --tg-theme-bg-color: var(--bg-color);
-  --tg-theme-secondary-bg-color: var(--card-bg);
-  --tg-theme-text-color: var(--text-main);
-  --tg-theme-hint-color: var(--text-muted);
-  --tg-theme-button-color: var(--accent-blue);
-  --tg-theme-button-text-color: #ffffff;
+  --font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Helvetica Neue", sans-serif;
 }
 
 * {
@@ -31,216 +20,159 @@
   padding: 0;
   font-family: var(--font-family);
   -webkit-tap-highlight-color: transparent;
-  user-select: none;
-  -webkit-user-select: none;
 }
 
 body {
   background-color: var(--bg-color);
   color: var(--text-main);
-  padding: 16px 14px 90px; /* Space for Bottom Navigation Bar */
+  padding: 16px 14px 85px;
   display: flex;
   flex-direction: column;
   align-items: center;
-  min-height: 100vh;
 }
 
 #app {
   width: 100%;
   max-width: 440px;
-  margin: 0 auto;
 }
 
-/* Page Navigation Switching System */
+/* Tab Navigation Logic */
 .tab-page {
   display: none;
-  animation: fadeIn 0.25s cubic-bezier(0.175, 0.885, 0.32, 1);
 }
 
 .tab-page.active-page {
   display: block;
+  animation: fadeIn 0.2s ease-in-out;
 }
 
 @keyframes fadeIn {
-  from { opacity: 0; transform: translateY(4px); }
+  from { opacity: 0; transform: translateY(3px); }
   to { opacity: 1; transform: translateY(0); }
 }
 
-/* iOS Card Container */
+/* iOS Cards */
 .ios-card {
   background-color: var(--card-bg);
   padding: 18px 16px;
   border-radius: 16px;
   border: 1px solid var(--border-color);
   margin-bottom: 16px;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.02);
 }
 
 .card-title {
   margin-bottom: 14px;
   font-size: 16px;
   font-weight: 700;
-  color: var(--text-main);
-  letter-spacing: -0.3px;
 }
 
-/* User Profile Header Card */
 .profile-card {
   display: flex;
   align-items: center;
   gap: 14px;
   background-color: var(--card-bg);
-  padding: 16px;
+  padding: 14px 16px;
   border-radius: 16px;
   border: 1px solid var(--border-color);
   margin-bottom: 16px;
 }
 
 #avatar {
-  width: 52px;
-  height: 52px;
+  width: 48px;
+  height: 48px;
   border-radius: 50%;
   object-fit: cover;
-  border: 2px solid var(--accent-blue);
+  border: 1.5px solid var(--accent-blue);
 }
 
 .profile-info h3 {
-  font-size: 16px;
+  font-size: 15px;
   font-weight: 700;
-  color: var(--text-main);
 }
 
 .profile-info p {
   font-size: 12px;
   color: var(--text-muted);
-  margin-top: 2px;
 }
 
 .balance-card {
   background: linear-gradient(135deg, var(--accent-blue), #0056b3);
   color: #ffffff;
-  padding: 20px;
+  padding: 18px;
   border-radius: 16px;
   text-align: center;
   margin-bottom: 16px;
-  box-shadow: 0 4px 14px rgba(0, 122, 255, 0.25);
 }
 
 .balance-card .bal-title {
   font-size: 12px;
   opacity: 0.85;
-  font-weight: 600;
-  text-transform: uppercase;
 }
 
 .balance-card .bal-amount {
-  font-size: 28px;
+  font-size: 26px;
   font-weight: 800;
-  margin: 6px 0 14px;
+  margin-top: 4px;
 }
 
-/* Forms, Inputs and Buttons */
-form, .form-group {
+/* Inputs & Buttons */
+.form-group {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 6px;
+  margin-bottom: 12px;
 }
 
 .input-label {
   font-size: 12px;
   font-weight: 600;
   color: var(--text-muted);
-  margin-bottom: -6px;
 }
 
 input, select {
   width: 100%;
-  padding: 12px;
-  border-radius: 12px;
+  padding: 11px 12px;
+  border-radius: 10px;
   border: 1px solid var(--border-color);
   background-color: var(--search-bg);
   color: var(--text-main);
-  font-size: 14px;
+  font-size: 13px;
   outline: none;
-  transition: all 0.2s ease;
-  user-select: text;
-  -webkit-user-select: text;
 }
 
 input:focus, select:focus {
   border-color: var(--accent-blue);
   background-color: #ffffff;
-  box-shadow: 0 0 0 3px rgba(0, 122, 255, 0.15);
 }
 
 .btn-primary {
   width: 100%;
   padding: 12px;
-  border-radius: 12px;
+  border-radius: 10px;
   border: none;
   background-color: var(--accent-blue);
   color: #ffffff;
   font-size: 14px;
   font-weight: 700;
   cursor: pointer;
-  transition: transform 0.15s ease, opacity 0.2s ease;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 6px;
+  margin-top: 4px;
 }
 
 .btn-primary:active {
-  transform: scale(0.97);
   opacity: 0.85;
 }
 
-/* Payment Selector Grid (Bkash & Nagad) */
-.payment-methods {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 10px;
-  margin-bottom: 12px;
-}
-
-.payment-card {
-  background: var(--card-bg);
-  border: 1.5px solid var(--border-color);
-  border-radius: 14px;
-  padding: 14px 10px;
-  text-align: center;
-  cursor: pointer;
-  transition: all 0.2s ease;
+/* History Items */
+.history-list {
   display: flex;
   flex-direction: column;
-  align-items: center;
-  gap: 8px;
 }
 
-.payment-card.selected {
-  border-color: var(--accent-blue);
-  background: rgba(0, 122, 255, 0.06);
-}
-
-.payment-card img {
-  width: 40px;
-  height: 40px;
-  border-radius: 10px;
-  object-fit: contain;
-}
-
-.payment-card span {
-  font-size: 13px;
-  font-weight: 700;
-  color: var(--text-main);
-}
-
-/* Status Badges & Item Lists */
 .list-item {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 12px 0;
+  padding: 10px 0;
   border-bottom: 0.5px solid var(--divider-color);
 }
 
@@ -251,13 +183,12 @@ input:focus, select:focus {
 .item-left {
   display: flex;
   flex-direction: column;
-  gap: 3px;
+  gap: 2px;
 }
 
 .item-title {
   font-size: 13px;
   font-weight: 700;
-  color: var(--text-main);
   word-break: break-all;
 }
 
@@ -269,64 +200,47 @@ input:focus, select:focus {
 .status-badge {
   font-size: 11px;
   font-weight: 700;
-  padding: 4px 8px;
-  border-radius: 8px;
-  text-transform: capitalize;
+  padding: 3px 8px;
+  border-radius: 6px;
 }
 
-.status-approved, .status-success {
-  background: rgba(52, 199, 89, 0.12);
-  color: var(--accent-green);
-}
+.status-pending { background: rgba(245, 158, 11, 0.12); color: var(--accent-yellow); }
+.status-approved, .status-success { background: rgba(52, 199, 89, 0.12); color: var(--accent-green); }
+.status-rejected { background: rgba(255, 59, 48, 0.12); color: var(--accent-red); }
 
-.status-pending {
-  background: rgba(245, 158, 11, 0.12);
-  color: var(--accent-yellow);
-}
-
-.status-rejected {
-  background: rgba(255, 59, 48, 0.12);
-  color: var(--accent-red);
-}
-
-/* Bottom Navigation Bar (iOS Glass Effect) */
+/* Bottom Navigation Bar */
 .bottom-nav {
   position: fixed;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  height: 65px;
-  background: rgba(255, 255, 255, 0.88);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
+  bottom: 0; left: 0; right: 0;
+  height: 60px;
+  background: rgba(255, 255, 255, 0.9);
+  backdrop-filter: blur(15px);
+  -webkit-backdrop-filter: blur(15px);
   border-top: 0.5px solid var(--border-color);
   display: flex;
   justify-content: space-around;
   align-items: center;
   z-index: 9999;
-  padding-bottom: 8px;
 }
 
 .nav-item {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 3px;
+  gap: 2px;
   color: var(--text-muted);
   font-size: 10px;
   font-weight: 600;
   cursor: pointer;
   width: 25%;
-  transition: color 0.2s ease, transform 0.15s ease;
 }
 
 .nav-item svg {
-  width: 22px;
-  height: 22px;
+  width: 20px;
+  height: 20px;
   stroke: var(--text-muted);
   fill: none;
   stroke-width: 2;
-  transition: stroke 0.2s ease;
 }
 
 .nav-item.active {
@@ -337,6 +251,9 @@ input:focus, select:focus {
   stroke: var(--accent-blue);
 }
 
-.nav-item:active {
-  transform: scale(0.9);
+.loading-text {
+  text-align: center;
+  font-size: 12px;
+  color: var(--text-muted);
+  padding: 10px 0;
 }
