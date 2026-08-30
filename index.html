@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+ <meta charset="UTF-8">
+ <meta name="viewport" content="width=device-width, initial-scale=1.0">
+ <title>Gmail Bot Mini App</title>
+ <link rel="stylesheet" href="style.css">
+ <script src="https://telegram.org/js/webapp.js"></script>
+</head>
+<body>
+ <div id="app">
+ <header>
+ <div id="profile">
+ <img id="avatar" src="" alt="Profile">
+ <span id="username">Loading...</span>
+ </div>
+ <div id="account-info">
+ <span>Balance: ৳<span id="balance">0</span></span>
+ <button id="refresh-btn">Refresh</button>
+ </div>
+ </header>
+
+ <main>
+ <section id="submission">
+ <h2>Submit Gmail Account</h2>
+ <form id="gmail-form">
+ <input type="email" id="email" placeholder="Gmail Address" required>
+ <input type="password" id="password" placeholder="Password" required>
+ <input type="email" id="recovery" placeholder="Recovery Email" required>
+ <button type="submit">Submit Account</button>
+ </form>
+ </section>
+
+ <section id="history">
+ <h2>Submission History</h2>
+ <div id="history-list"></div>
+ </section>
+
+ <section id="withdraw">
+ <h2>Withdraw</h2>
+ <form id="withdraw-form">
+ <select id="method">
+ <option value="bkash">bKash</option>
+ <option value="nagad">Nagad</option>
+ </select>
+ <input type="text" id="phone" placeholder="Phone Number" required>
+ <input type="number" id="amount" placeholder="Amount (৳)" required>
+ <button type="submit">Withdraw Request</button>
+ </form>
+ </section>
+ </main>
+ </div>
+ <script src="script.js"></script>
+</body>
+</html>
