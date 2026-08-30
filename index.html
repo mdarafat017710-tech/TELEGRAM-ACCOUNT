@@ -22,11 +22,49 @@
     <h1 class="header-title" id="main-title">Submit Account</h1>
   </div>
 
+  <!-- iOS / Studio Style Search Box (কোথাও ফিল্টার করার জন্য) -->
+  <div class="search-container">
+    <div class="search-box">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#8e8e93" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+      <input type="text" id="searchInput" placeholder="Search..." onkeyup="filterContent()">
+    </div>
+  </div>
+
+  <!-- Studio Style Story / Notice Carousel Section -->
+  <div class="stories-wrapper">
+    <div class="stories-container">
+      <div class="story-card active">
+        <div class="story-avatar">
+          <img src="https://ui-avatars.com/api/?name=Notice&background=007aff&color=fff" alt="Notice">
+        </div>
+        <span>Notice</span>
+      </div>
+      <div class="story-card">
+        <div class="story-avatar">
+          <img src="https://ui-avatars.com/api/?name=Offers&background=34c759&color=fff" alt="Offers">
+        </div>
+        <span>Offers</span>
+      </div>
+      <div class="story-card">
+        <div class="story-avatar">
+          <img src="https://ui-avatars.com/api/?name=Update&background=ff9500&color=fff" alt="Update">
+        </div>
+        <span>Update</span>
+      </div>
+      <div class="story-card">
+        <div class="story-avatar">
+          <img src="https://ui-avatars.com/api/?name=Help&background=ff3b30&color=fff" alt="Help">
+        </div>
+        <span>Help</span>
+      </div>
+    </div>
+  </div>
+
   <!-- TAB 1: SUBMIT ACCOUNT -->
   <div id="tab-submit" class="tab-content active">
     <!-- Step 1: Email Address -->
     <div id="step-1" class="step-container active">
-      <div class="info-box-group">
+      <div class="info-box-group studio-card">
         <label class="box-label">Your Email Address</label>
         <div class="input-wrapper">
           <input type="email" id="input-email" class="ios-box" placeholder="Enter email address" oninput="validateGmailField('email', 1)">
@@ -48,7 +86,7 @@
 
     <!-- Step 2: Password -->
     <div id="step-2" class="step-container">
-      <div class="info-box-group">
+      <div class="info-box-group studio-card">
         <label class="box-label">Your Account Password</label>
         <div class="input-wrapper">
           <input type="text" id="input-password" class="ios-box" placeholder="Enter account password" oninput="validateStandardField('password', 6, 2)">
@@ -66,7 +104,7 @@
 
     <!-- Step 3: Recovery Email -->
     <div id="step-3" class="step-container">
-      <div class="info-box-group">
+      <div class="info-box-group studio-card">
         <label class="box-label">Recovery Email</label>
         <div class="input-wrapper">
           <input type="email" id="input-recovery" class="ios-box" placeholder="Enter recovery email" oninput="validateGmailField('recovery', 3)">
@@ -88,7 +126,7 @@
 
     <!-- Step 4: Final Confirmation -->
     <div id="step-4" class="step-container">
-      <div class="account-card" id="confirmation-card-content"></div>
+      <div class="account-card studio-card" id="confirmation-card-content"></div>
     </div>
   </div>
 
@@ -108,13 +146,14 @@
 
   <!-- TAB 4: MY ACCOUNT -->
   <div id="tab-my-account" class="tab-content">
-    <div class="profile-card">
+    <div class="profile-card studio-card">
       <img id="avatar" src="https://ui-avatars.com/api/?name=User&background=007aff&color=fff" alt="Profile">
       <div class="profile-info">
         <h3 id="username">Loading...</h3>
         <div class="id-copy-wrapper">
           <span id="user-id">ID: ----</span>
-          <button class="copy-btn" onclick="copyUserId()">
+          <!-- iOS Studio Style Copy Button -->
+          <button class="copy-btn studio-copy-btn" onclick="copyUserId(this)">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
           </button>
         </div>
@@ -125,7 +164,7 @@
     </div>
 
     <!-- Withdraw Section Inside My Account -->
-    <div class="account-card" style="margin-top: 15px;">
+    <div class="account-card studio-card" style="margin-top: 15px;">
       <h3 style="font-size: 14px; margin-bottom: 12px;">Withdraw Funds</h3>
       <div class="info-box-group">
         <label class="box-label">Select Payment Method</label>
