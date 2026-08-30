@@ -33,7 +33,7 @@
       </button>
     </div>
 
-    <!-- Submission Steps Container (Hidden initially) -->
+    <!-- Submission Steps Container -->
     <div id="gmail-submit-form" style="display: none;">
       <!-- Step 1: Email Address -->
       <div id="step-1" class="step-container active">
@@ -104,7 +104,7 @@
     </div>
   </div>
 
-  <!-- TAB 2: SUBMIT HISTORY -->
+  <!-- TAB 2: HISTORY (SUBMIT) -->
   <div id="tab-submit-history" class="tab-content">
     <div class="search-container">
       <div class="search-box">
@@ -117,37 +117,76 @@
       <button class="search-btn" id="gmail-search-btn" onclick="handleGmailSearch()">
         <span id="gmail-btn-text">Search</span>
         <svg id="gmail-btn-spinner" class="ios-spinner btn-spinner" viewBox="0 0 24 24">
-          <line x1="12" y1="3" x2="12" y2="6" stroke="#ffffff" stroke-width="2.5" stroke-linecap="round" opacity="1"/>
-          <line x1="18.36" y1="5.64" x2="16.24" y2="7.76" stroke="#ffffff" stroke-width="2.5" stroke-linecap="round" opacity="0.875"/>
-          <line x1="21" y1="12" x2="18" y2="12" stroke="#ffffff" stroke-width="2.5" stroke-linecap="round" opacity="0.75"/>
-          <line x1="18.36" y1="18.36" x2="16.24" y2="16.24" stroke="#ffffff" stroke-width="2.5" stroke-linecap="round" opacity="0.625"/>
-          <line x1="12" y1="21" x2="12" y2="18" stroke="#ffffff" stroke-width="2.5" stroke-linecap="round" opacity="0.5"/>
-          <line x1="5.64" y1="18.36" x2="7.76" y2="16.24" stroke="#ffffff" stroke-width="2.5" stroke-linecap="round" opacity="0.375"/>
-          <line x1="3" y1="12" x2="6" y2="12" stroke="#ffffff" stroke-width="2.5" stroke-linecap="round" opacity="0.25"/>
-          <line x1="5.64" y1="5.64" x2="7.76" y2="7.76" stroke="#ffffff" stroke-width="2.5" stroke-linecap="round" opacity="0.125"/>
+          <line x1="12" y1="3" x2="12" y2="6" stroke="#ffffff" stroke-width="2.5" stroke-linecap="round"/>
+          <line x1="18.36" y1="5.64" x2="16.24" y2="7.76" stroke="#ffffff" stroke-width="2.5" stroke-linecap="round"/>
+          <line x1="21" y1="12" x2="18" y2="12" stroke="#ffffff" stroke-width="2.5" stroke-linecap="round"/>
+          <line x1="18.36" y1="18.36" x2="16.24" y2="16.24" stroke="#ffffff" stroke-width="2.5" stroke-linecap="round"/>
+          <line x1="12" y1="21" x2="12" y2="18" stroke="#ffffff" stroke-width="2.5" stroke-linecap="round"/>
+          <line x1="5.64" y1="18.36" x2="7.76" y2="16.24" stroke="#ffffff" stroke-width="2.5" stroke-linecap="round"/>
+          <line x1="3" y1="12" x2="6" y2="12" stroke="#ffffff" stroke-width="2.5" stroke-linecap="round"/>
+          <line x1="5.64" y1="5.64" x2="7.76" y2="7.76" stroke="#ffffff" stroke-width="2.5" stroke-linecap="round"/>
         </svg>
       </button>
     </div>
     <div id="gmail-history-container"></div>
   </div>
 
-  <!-- TAB 3: WITHDRAW -->
+  <!-- TAB 3: MY ACCOUNT -->
+  <div id="tab-my-account" class="tab-content">
+    <div class="user-profile-center-card">
+      <img id="avatar" src="https://telegram.org/img/t_logo.png" class="user-avatar-large" alt="Avatar">
+      <h2 id="username" class="user-name-large">Loading...</h2>
+      <div class="user-id-row">
+        <strong class="user-id-label">User ID: </strong>
+        <span class="user-id-val" id="user-id">000000</span>
+        <button class="copy-btn" id="id-copy-btn" onclick="copyUserId()">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+        </button>
+      </div>
+
+      <!-- Available Balance Row with Refresh Button -->
+      <div class="account-balance-row">
+        <span class="account-balance-text">Available Balance: <strong id="account-balance-val">0</strong></span>
+        <button class="refresh-btn" id="refresh-balance-btn" onclick="refreshUserBalance()">
+          <svg class="refresh-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"></polyline><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"></path></svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- Dashboard Statistics (1 Line each box) -->
+    <div class="dashboard-grid">
+      <div class="stat-card">
+        <span class="stat-line text-total">Total Submit: <strong id="stat-total">0</strong></span>
+      </div>
+      <div class="stat-card">
+        <span class="stat-line text-pending">Pending: <strong id="stat-pending">0</strong></span>
+      </div>
+      <div class="stat-card">
+        <span class="stat-line text-completed">Completed: <strong id="stat-completed">0</strong></span>
+      </div>
+      <div class="stat-card">
+        <span class="stat-line text-rejected">Rejected: <strong id="stat-rejected">0</strong></span>
+      </div>
+    </div>
+  </div>
+
+  <!-- TAB 4: WITHDRAW -->
   <div id="tab-withdraw" class="tab-content">
     <div class="account-card">
       <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
         <span style="font-size:13px; font-weight:700;">Available Balance</span>
-        <div class="balance-badge">৳ <strong id="user-balance">0.00</strong></div>
+        <div class="balance-badge">৳ <strong id="user-balance">0</strong></div>
       </div>
 
       <div class="info-box-group">
         <label class="box-label">Select Payment Method</label>
         <div class="payment-methods-grid">
           <div class="payment-card active" onclick="selectPaymentMethod('bKash', this)">
-            <img src="https://raw.githubusercontent.com/shakil426/icon/main/bkash.png" alt="bKash" onerror="this.src='https://via.placeholder.com/30?text=bKash'">
+            <img src="https://i.ibb.co.com/bR1wnvmg/images.jpg" alt="bKash">
             <span>bKash</span>
           </div>
           <div class="payment-card" onclick="selectPaymentMethod('Nagad', this)">
-            <img src="https://raw.githubusercontent.com/shakil426/icon/main/nagad.png" alt="Nagad" onerror="this.src='https://via.placeholder.com/30?text=Nagad'">
+            <img src="https://i.ibb.co.com/YF0cQypT/images-1.png" alt="Nagad">
             <span>Nagad</span>
           </div>
         </div>
@@ -182,7 +221,7 @@
     </div>
   </div>
 
-  <!-- TAB 4: WITHDRAW HISTORY -->
+  <!-- TAB 5: HISTORY (WITHDRAW) -->
   <div id="tab-withdraw-history" class="tab-content">
     <div class="search-container">
       <div class="search-box">
@@ -195,75 +234,41 @@
       <button class="search-btn" id="withdraw-search-btn" onclick="handleWithdrawSearch()">
         <span id="withdraw-btn-text">Search</span>
         <svg id="withdraw-btn-spinner" class="ios-spinner btn-spinner" viewBox="0 0 24 24">
-          <line x1="12" y1="3" x2="12" y2="6" stroke="#ffffff" stroke-width="2.5" stroke-linecap="round" opacity="1"/>
-          <line x1="18.36" y1="5.64" x2="16.24" y2="7.76" stroke="#ffffff" stroke-width="2.5" stroke-linecap="round" opacity="0.875"/>
-          <line x1="21" y1="12" x2="18" y2="12" stroke="#ffffff" stroke-width="2.5" stroke-linecap="round" opacity="0.75"/>
-          <line x1="18.36" y1="18.36" x2="16.24" y2="16.24" stroke="#ffffff" stroke-width="2.5" stroke-linecap="round" opacity="0.625"/>
-          <line x1="12" y1="21" x2="12" y2="18" stroke="#ffffff" stroke-width="2.5" stroke-linecap="round" opacity="0.5"/>
-          <line x1="5.64" y1="18.36" x2="7.76" y2="16.24" stroke="#ffffff" stroke-width="2.5" stroke-linecap="round" opacity="0.375"/>
-          <line x1="3" y1="12" x2="6" y2="12" stroke="#ffffff" stroke-width="2.5" stroke-linecap="round" opacity="0.25"/>
-          <line x1="5.64" y1="5.64" x2="7.76" y2="7.76" stroke="#ffffff" stroke-width="2.5" stroke-linecap="round" opacity="0.125"/>
+          <line x1="12" y1="3" x2="12" y2="6" stroke="#ffffff" stroke-width="2.5" stroke-linecap="round"/>
+          <line x1="18.36" y1="5.64" x2="16.24" y2="7.76" stroke="#ffffff" stroke-width="2.5" stroke-linecap="round"/>
+          <line x1="21" y1="12" x2="18" y2="12" stroke="#ffffff" stroke-width="2.5" stroke-linecap="round"/>
+          <line x1="18.36" y1="18.36" x2="16.24" y2="16.24" stroke="#ffffff" stroke-width="2.5" stroke-linecap="round"/>
+          <line x1="12" y1="21" x2="12" y2="18" stroke="#ffffff" stroke-width="2.5" stroke-linecap="round"/>
+          <line x1="5.64" y1="18.36" x2="7.76" y2="16.24" stroke="#ffffff" stroke-width="2.5" stroke-linecap="round"/>
+          <line x1="3" y1="12" x2="6" y2="12" stroke="#ffffff" stroke-width="2.5" stroke-linecap="round"/>
+          <line x1="5.64" y1="5.64" x2="7.76" y2="7.76" stroke="#ffffff" stroke-width="2.5" stroke-linecap="round"/>
         </svg>
       </button>
     </div>
     <div id="withdraw-history-container"></div>
   </div>
 
-  <!-- TAB 5: MY ACCOUNT -->
-  <div id="tab-my-account" class="tab-content">
-    <div class="user-profile-center-card">
-      <img id="avatar" src="https://telegram.org/img/t_logo.png" class="user-avatar-large" alt="Avatar">
-      <h2 id="username" class="user-name-large">Loading...</h2>
-      <div class="user-id-row">
-        <span>ID: <strong id="user-id">000000</strong></span>
-        <button class="copy-btn" id="id-copy-btn" onclick="copyUserId()">
-          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
-        </button>
-      </div>
-    </div>
-
-    <!-- Dashboard Statistics (2 items per row) -->
-    <div class="dashboard-grid">
-      <div class="stat-card">
-        <span class="stat-label">টোটাল সাবমিট</span>
-        <span class="stat-value" id="stat-total">0</span>
-      </div>
-      <div class="stat-card">
-        <span class="stat-label text-pending">পেন্ডিং</span>
-        <span class="stat-value text-pending" id="stat-pending">0</span>
-      </div>
-      <div class="stat-card">
-        <span class="stat-label text-completed">কমপ্লিটেড</span>
-        <span class="stat-value text-completed" id="stat-completed">0</span>
-      </div>
-      <div class="stat-card">
-        <span class="stat-label text-rejected">রিজেক্টেড</span>
-        <span class="stat-value text-rejected" id="stat-rejected">0</span>
-      </div>
-    </div>
-  </div>
-
-  <!-- Bottom Glassmorphism Navigation -->
+  <!-- Larger Glassmorphism Navigation Bar -->
   <div class="bottom-nav">
     <div class="nav-item active" onclick="switchMainTab('submit', this)">
-      <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="2" fill="none"><path d="M12 5v14M5 12h14"></path></svg>
+      <svg viewBox="0 0 24 24" width="22" height="22" stroke="currentColor" stroke-width="2.2" fill="none"><path d="M12 5v14M5 12h14"></path></svg>
       <span>Submit</span>
     </div>
     <div class="nav-item" onclick="switchMainTab('submit-history', this)">
-      <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="2" fill="none"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline></svg>
-      <span>Sub History</span>
+      <svg viewBox="0 0 24 24" width="22" height="22" stroke="currentColor" stroke-width="2.2" fill="none"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+      <span>History</span>
+    </div>
+    <div class="nav-item" onclick="switchMainTab('my-account', this)">
+      <svg viewBox="0 0 24 24" width="22" height="22" stroke="currentColor" stroke-width="2.2" fill="none"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+      <span>My Account</span>
     </div>
     <div class="nav-item" onclick="switchMainTab('withdraw', this)">
-      <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="2" fill="none"><rect x="2" y="5" width="20" height="14" rx="2"></rect><line x1="2" y1="10" x2="22" y2="10"></line></svg>
+      <svg viewBox="0 0 24 24" width="22" height="22" stroke="currentColor" stroke-width="2.2" fill="none"><rect x="2" y="5" width="20" height="14" rx="2"></rect><line x1="2" y1="10" x2="22" y2="10"></line></svg>
       <span>Withdraw</span>
     </div>
     <div class="nav-item" onclick="switchMainTab('withdraw-history', this)">
-      <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="2" fill="none"><polyline points="12 8 12 12 14 14"></polyline><path d="M21 12a9 9 0 1 1-9-9c2.52 0 4.85.83 6.72 2.24"></path></svg>
-      <span>With History</span>
-    </div>
-    <div class="nav-item" onclick="switchMainTab('my-account', this)">
-      <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="2" fill="none"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
-      <span>My Account</span>
+      <svg viewBox="0 0 24 24" width="22" height="22" stroke="currentColor" stroke-width="2.2" fill="none"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+      <span>History</span>
     </div>
   </div>
 
