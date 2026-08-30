@@ -17,7 +17,7 @@
 
 body {
   background-color: var(--bg-color); color: var(--text-main);
-  padding: 12px 14px 80px; display: flex; flex-direction: column; align-items: center;
+  padding: 12px 14px 90px; display: flex; flex-direction: column; align-items: center;
 }
 
 /* Toast Popup */
@@ -123,8 +123,8 @@ body {
 /* My Account Centered Layout */
 .user-profile-center-card {
   background: var(--card-bg); border-radius: 16px; border: 1px solid var(--border-color);
-  padding: 20px 14px; display: flex; flex-direction: column; align-items: center; text-align: center;
-  margin-bottom: 14px;
+  padding: 18px 14px; display: flex; flex-direction: column; align-items: center; text-align: center;
+  margin-bottom: 12px;
 }
 
 .user-avatar-large {
@@ -132,40 +132,61 @@ body {
   border: 2px solid var(--accent-blue); margin-bottom: 8px;
 }
 
-.user-name-large { font-size: 18px; font-weight: 700; margin-bottom: 6px; color: var(--text-main); }
+.user-name-large { font-size: 17px; font-weight: 700; margin-bottom: 6px; color: var(--text-main); }
 
 .user-id-row {
-  display: flex; align-items: center; justify-content: center; gap: 8px;
-  font-size: 13px; color: var(--text-muted); font-family: monospace;
+  display: flex; align-items: center; justify-content: center; gap: 6px;
+  font-size: 13px; margin-bottom: 12px;
 }
 
-/* Dashboard Statistics Grid (2 Items per row) */
+.user-id-label { font-weight: 700; color: var(--text-main); }
+.user-id-val { font-family: monospace, sans-serif; font-weight: 600; color: #3a3a3c; }
+
+.account-balance-row {
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+  color: var(--accent-blue); font-weight: 700; font-size: 14px;
+  background: rgba(0, 122, 255, 0.08); padding: 8px 16px; border-radius: 20px;
+}
+
+.account-balance-text { font-size: 13px; font-weight: 700; color: var(--accent-blue); }
+
+.refresh-btn {
+  background: transparent; border: none; color: var(--accent-blue); cursor: pointer;
+  display: inline-flex; align-items: center; justify-content: center; padding: 2px;
+  border-radius: 50%; transition: transform 0.2s ease;
+}
+
+.refresh-btn.refreshing .refresh-icon {
+  animation: iosRotate 0.8s linear infinite;
+}
+
+/* Dashboard Statistics Grid (Compact & Single-Line Text) */
 .dashboard-grid {
-  display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; width: 100%;
+  display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; width: 100%;
 }
 
 .stat-card {
-  background: var(--card-bg); border-radius: 14px; border: 1px solid var(--border-color);
-  padding: 14px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px;
+  background: var(--card-bg); border-radius: 12px; border: 1px solid var(--border-color);
+  padding: 10px 12px; display: flex; align-items: center; justify-content: center; text-align: center;
 }
 
-.stat-label { font-size: 12px; font-weight: 700; color: var(--text-main); }
-.stat-value { font-size: 20px; font-weight: 800; font-family: monospace; }
+.stat-line { font-size: 12px; font-weight: 700; white-space: nowrap; }
 
+.text-total { color: var(--accent-blue) !important; }
 .text-pending { color: var(--accent-yellow) !important; }
 .text-completed { color: var(--accent-green) !important; }
 .text-rejected { color: var(--accent-red) !important; }
 
-/* Payment Selection Layout (Left Logo, Right Text) */
+/* Payment Selection Layout */
 .payment-methods-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-bottom: 10px; }
 .payment-card {
   background: var(--card-bg); border: 1.5px solid var(--border-color); border-radius: 12px;
   padding: 10px 14px; display: flex; align-items: center; justify-content: flex-start; gap: 10px; cursor: pointer; font-size: 14px; font-weight: 700;
 }
-.payment-card img { width: 26px; height: 26px; border-radius: 50%; object-fit: cover; }
+.payment-card img { width: 28px; height: 28px; border-radius: 50%; object-fit: cover; }
 .payment-card.active { border-color: var(--accent-blue); background: rgba(0, 122, 255, 0.05); }
 
-.balance-badge { background: rgba(0, 122, 255, 0.1); color: var(--accent-blue); padding: 5px 12px; border-radius: 20px; font-size: 13px; }
+.balance-badge { background: rgba(0, 122, 255, 0.1); color: var(--accent-blue); padding: 5px 12px; border-radius: 20px; font-size: 13px; font-weight: 700; }
 
 .btn-proceed { background: var(--accent-blue); color: #fff; border: none; width: 100%; padding: 12px; border-radius: 12px; font-weight: 700; cursor: pointer; }
 .btn-proceed:disabled { background: #c6c6c8; color: #8e8e93; cursor: not-allowed; }
@@ -193,11 +214,11 @@ body {
 .status-completed { color: var(--accent-green); }
 .status-rejected { color: var(--accent-red); }
 
-/* Bottom Nav Layout (5 Items) */
+/* Bottom Nav Layout (Slightly Larger Buttons) */
 .bottom-nav {
-  position: fixed; bottom: 0; left: 0; right: 0; height: 55px; background: rgba(255,255,255,0.95);
-  backdrop-filter: blur(10px); border-top: 0.5px solid var(--border-color);
-  display: flex; justify-content: space-around; align-items: center; z-index: 100; padding: 0 4px;
+  position: fixed; bottom: 0; left: 0; right: 0; height: 62px; background: rgba(255,255,255,0.96);
+  backdrop-filter: blur(12px); border-top: 0.5px solid var(--border-color);
+  display: flex; justify-content: space-around; align-items: center; z-index: 100; padding: 0 2px;
 }
-.nav-item { display: flex; flex-direction: column; align-items: center; gap: 2px; color: var(--text-muted); cursor: pointer; font-size: 9px; flex: 1; text-align: center; }
-.nav-item.active { color: var(--accent-blue); font-weight: 600; }
+.nav-item { display: flex; flex-direction: column; align-items: center; gap: 3px; color: var(--text-muted); cursor: pointer; font-size: 10px; font-weight: 500; flex: 1; text-align: center; }
+.nav-item.active { color: var(--accent-blue); font-weight: 700; }
