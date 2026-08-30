@@ -1,3 +1,6 @@
+import { initializeApp } from "firebase/app";
+import { getFirestore } from "firebase/firestore";
+
 const tg = window.Telegram.WebApp;
 tg.expand();
 
@@ -41,3 +44,5 @@ document.getElementById('withdraw-form').addEventListener('submit', function(e) 
  alert("Withdraw request submitted!");
  this.reset();
 });
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
