@@ -7,12 +7,12 @@ document.getElementById('avatar').src = `https://ui-avatars.com/api/?name=${tg.i
 
 // Firebase configuration (Replace with your actual Firebase config)
 const firebaseConfig = {
- apiKey: "YOUR_API_KEY",
- authDomain: "YOUR_AUTH_DOMAIN",
- projectId: "YOUR_PROJECT_ID",
- storageBucket: "YOUR_STORAGE_BUCKET",
- messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
- appId: "YOUR_APP_ID"
+ apiKey: "AIzaSyB0AdImn8AlFKA4z_j4n25xz-Py2jgmMNU",
+ authDomain: "sell-156d4.firebaseapp.com",
+ projectId: "sell-156d4",
+ storageBucket: "sell-156d4.firebasestorage.app",
+ messagingSenderId: "1:622346055495:web:ac370b08e40d6eadd0a662",
+ appId: "622346055495"
 };
 
 // Initialize Firebase SDKs can be added here.
