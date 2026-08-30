@@ -24,83 +24,83 @@
 
   <!-- TAB 1: SUBMIT ACCOUNT -->
   <div id="tab-submit" class="tab-content active">
-    <!-- Initial Start View -->
-    <div id="submit-start-view" class="start-submit-card">
-      <div class="start-icon-box">
-        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#007aff" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
-      </div>
-      <h3>Gmail Account Submission</h3>
-      <p>Submit your verified Gmail accounts safely and earn money.</p>
-      <button class="btn-proceed" style="margin-top:15px;" onclick="startGmailSubmission()">
+    <!-- Initial Button Trigger -->
+    <div id="gmail-submit-trigger" class="account-card" style="text-align: center; padding: 20px 14px;">
+      <h3 style="font-size:15px; margin-bottom: 8px;">Gmail Account Submission</h3>
+      <p style="font-size:12px; color:var(--text-muted); margin-bottom: 15px;">Click below to start submitting your accounts.</p>
+      <button class="btn-proceed" onclick="startGmailSubmission()">
         <span>Gmail Submit</span>
       </button>
     </div>
 
-    <!-- Step 1: Email Address -->
-    <div id="step-1" class="step-container">
-      <div class="info-box-group">
-        <label class="box-label">Your Email Address</label>
-        <div class="input-wrapper">
-          <input type="email" id="input-email" class="ios-box" placeholder="Enter email address" oninput="validateGmailField('email', 1)">
-          <div class="input-indicator" id="email-indicator">
-            <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+    <!-- Submission Steps Container (Hidden initially) -->
+    <div id="gmail-submit-form" style="display: none;">
+      <!-- Step 1: Email Address -->
+      <div id="step-1" class="step-container active">
+        <div class="info-box-group">
+          <label class="box-label">Your Email Address</label>
+          <div class="input-wrapper">
+            <input type="email" id="input-email" class="ios-box" placeholder="Enter email address" oninput="validateGmailField('email', 1)">
+            <div class="input-indicator" id="email-indicator">
+              <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+            </div>
+          </div>
+          <div class="field-error-msg" id="email-error-msg">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line></svg>
+            <span>Email already submitted!</span>
           </div>
         </div>
-        <div class="field-error-msg" id="email-error-msg">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line></svg>
-          <span>Email already submitted!</span>
+        <div class="action-container">
+          <button class="btn-proceed" id="btn-1" disabled onclick="nextStep(1)">
+            <span>Proceed</span>
+          </button>
         </div>
       </div>
-      <div class="action-container">
-        <button class="btn-proceed" id="btn-1" disabled onclick="nextStep(1)">
-          <span>Proceed</span>
-        </button>
-      </div>
-    </div>
 
-    <!-- Step 2: Password -->
-    <div id="step-2" class="step-container">
-      <div class="info-box-group">
-        <label class="box-label">Your Account Password</label>
-        <div class="input-wrapper">
-          <input type="text" id="input-password" class="ios-box" placeholder="Enter account password" oninput="validateStandardField('password', 6, 2)">
-          <div class="input-indicator" id="password-indicator">
-            <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+      <!-- Step 2: Password -->
+      <div id="step-2" class="step-container">
+        <div class="info-box-group">
+          <label class="box-label">Your Account Password</label>
+          <div class="input-wrapper">
+            <input type="text" id="input-password" class="ios-box" placeholder="Enter account password" oninput="validateStandardField('password', 6, 2)">
+            <div class="input-indicator" id="password-indicator">
+              <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+            </div>
           </div>
         </div>
+        <div class="action-container">
+          <button class="btn-proceed" id="btn-2" disabled onclick="nextStep(2)">
+            <span>Proceed</span>
+          </button>
+        </div>
       </div>
-      <div class="action-container">
-        <button class="btn-proceed" id="btn-2" disabled onclick="nextStep(2)">
-          <span>Proceed</span>
-        </button>
-      </div>
-    </div>
 
-    <!-- Step 3: Recovery Email -->
-    <div id="step-3" class="step-container">
-      <div class="info-box-group">
-        <label class="box-label">Recovery Email</label>
-        <div class="input-wrapper">
-          <input type="email" id="input-recovery" class="ios-box" placeholder="Enter recovery email" oninput="validateGmailField('recovery', 3)">
-          <div class="input-indicator" id="recovery-indicator">
-            <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+      <!-- Step 3: Recovery Email -->
+      <div id="step-3" class="step-container">
+        <div class="info-box-group">
+          <label class="box-label">Recovery Email</label>
+          <div class="input-wrapper">
+            <input type="email" id="input-recovery" class="ios-box" placeholder="Enter recovery email" oninput="validateGmailField('recovery', 3)">
+            <div class="input-indicator" id="recovery-indicator">
+              <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+            </div>
+          </div>
+          <div class="field-error-msg" id="recovery-error-msg">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line></svg>
+            <span>Recovery email already submitted!</span>
           </div>
         </div>
-        <div class="field-error-msg" id="recovery-error-msg">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line></svg>
-          <span>Recovery email already submitted!</span>
+        <div class="action-container">
+          <button class="btn-proceed" id="btn-3" disabled onclick="nextStep(3)">
+            <span>Proceed</span>
+          </button>
         </div>
       </div>
-      <div class="action-container">
-        <button class="btn-proceed" id="btn-3" disabled onclick="nextStep(3)">
-          <span>Proceed</span>
-        </button>
-      </div>
-    </div>
 
-    <!-- Step 4: Final Confirmation -->
-    <div id="step-4" class="step-container">
-      <div class="account-card" id="confirmation-card-content"></div>
+      <!-- Step 4: Final Confirmation -->
+      <div id="step-4" class="step-container">
+        <div class="account-card" id="confirmation-card-content"></div>
+      </div>
     </div>
   </div>
 
@@ -133,53 +133,52 @@
 
   <!-- TAB 3: WITHDRAW -->
   <div id="tab-withdraw" class="tab-content">
-    <div class="account-card" style="margin-bottom:15px; text-align:center;">
-      <span style="font-size:12px; color:var(--text-muted);">Available Balance</span>
-      <h2 style="font-size:24px; color:var(--accent-blue); margin-top:2px;">৳ <span id="withdraw-balance-val">0.00</span></h2>
-    </div>
+    <div class="account-card">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+        <span style="font-size:13px; font-weight:700;">Available Balance</span>
+        <div class="balance-badge">৳ <strong id="user-balance">0.00</strong></div>
+      </div>
 
-    <div class="info-box-group">
-      <label class="box-label">Select Payment Method</label>
-      <div class="payment-methods-grid">
-        <div class="payment-card active" onclick="selectPaymentMethod('bKash', this)">
-          <img src="https://raw.githubusercontent.com/shakil426/icon/main/bkash.png" alt="bKash" onerror="this.src='https://ui-avatars.com/api/?name=bKash&background=e2136e&color=fff'">
-          <span>bKash</span>
+      <div class="info-box-group">
+        <label class="box-label">Select Payment Method</label>
+        <div class="payment-methods-grid">
+          <div class="payment-card active" onclick="selectPaymentMethod('bKash', this)">
+            <img src="https://raw.githubusercontent.com/shakil426/icon/main/bkash.png" alt="bKash" onerror="this.src='https://via.placeholder.com/30?text=bKash'">
+            <span>bKash</span>
+          </div>
+          <div class="payment-card" onclick="selectPaymentMethod('Nagad', this)">
+            <img src="https://raw.githubusercontent.com/shakil426/icon/main/nagad.png" alt="Nagad" onerror="this.src='https://via.placeholder.com/30?text=Nagad'">
+            <span>Nagad</span>
+          </div>
         </div>
-        <div class="payment-card" onclick="selectPaymentMethod('Nagad', this)">
-          <img src="https://raw.githubusercontent.com/shakil426/icon/main/nagad.png" alt="Nagad" onerror="this.src='https://ui-avatars.com/api/?name=Nagad&background=f7921e&color=fff'">
-          <span>Nagad</span>
+
+        <label class="box-label" style="margin-top:12px;">Account Number</label>
+        <div class="input-wrapper">
+          <input type="tel" id="withdraw-phone" class="ios-box" placeholder="017XXXXXXXX" oninput="validateWithdrawForm()">
+          <div class="input-indicator" id="phone-indicator">
+            <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+          </div>
+        </div>
+
+        <label class="box-label" style="margin-top:12px;">Withdraw Amount (Min 20 BDT)</label>
+        <div class="input-wrapper">
+          <input type="number" id="withdraw-amount" class="ios-box" placeholder="Enter amount" oninput="validateWithdrawForm()">
+          <div class="input-indicator" id="amount-indicator">
+            <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+          </div>
+        </div>
+
+        <div class="field-error-msg" id="withdraw-error-msg">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line></svg>
+          <span>Insufficient balance or invalid amount!</span>
+        </div>
+
+        <div class="action-container" style="margin-top:16px;">
+          <button class="btn-proceed" id="btn-withdraw-submit" disabled onclick="handleWithdrawSubmit()">
+            <span>Request Withdraw</span>
+          </button>
         </div>
       </div>
-    </div>
-
-    <div class="info-box-group" style="margin-top:12px;">
-      <label class="box-label">Account Number</label>
-      <div class="input-wrapper">
-        <input type="tel" id="withdraw-phone" class="ios-box" placeholder="017XXXXXXXX" oninput="validateWithdrawForm()">
-        <div class="input-indicator" id="phone-indicator">
-          <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
-        </div>
-      </div>
-    </div>
-
-    <div class="info-box-group" style="margin-top:12px;">
-      <label class="box-label">Withdraw Amount</label>
-      <div class="input-wrapper">
-        <input type="number" id="withdraw-amount" class="ios-box" placeholder="Enter amount" oninput="validateWithdrawForm()">
-        <div class="input-indicator" id="amount-indicator">
-          <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
-        </div>
-      </div>
-      <div class="field-error-msg" id="withdraw-error-msg">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line></svg>
-        <span>Insufficient balance or invalid amount!</span>
-      </div>
-    </div>
-
-    <div class="action-container" style="margin-top:18px;">
-      <button class="btn-proceed" id="btn-withdraw-submit" disabled onclick="handleWithdrawSubmit()">
-        <span>Request Withdraw</span>
-      </button>
     </div>
   </div>
 
@@ -212,42 +211,39 @@
 
   <!-- TAB 5: MY ACCOUNT -->
   <div id="tab-my-account" class="tab-content">
-    <div class="profile-header">
-      <img id="avatar" src="https://ui-avatars.com/api/?name=User&background=007aff&color=fff" class="avatar-large" alt="Profile Logo">
-      <h2 id="username" class="profile-name">User Name</h2>
-      <div class="id-wrapper">
-        <span id="user-id">ID: 000000</span>
-        <button class="copy-btn" id="id-copy-btn" onclick="copyUserId(this)">
+    <div class="user-profile-center-card">
+      <img id="avatar" src="https://telegram.org/img/t_logo.png" class="user-avatar-large" alt="Avatar">
+      <h2 id="username" class="user-name-large">Loading...</h2>
+      <div class="user-id-row">
+        <span>ID: <strong id="user-id">000000</strong></span>
+        <button class="copy-btn" id="id-copy-btn" onclick="copyUserId()">
           <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
         </button>
       </div>
-      <div class="balance-badge" style="margin-top:10px;">
-        <span>Current Balance: ৳ <strong id="user-balance">0.00</strong></span>
-      </div>
     </div>
 
-    <!-- Stats Dashboard (2 per row) -->
+    <!-- Dashboard Statistics (2 items per row) -->
     <div class="dashboard-grid">
-      <div class="dash-card">
-        <span class="dash-title">Total Submit</span>
-        <h3 id="dash-total-submit" class="dash-value">0</h3>
+      <div class="stat-card">
+        <span class="stat-label">টোটাল সাবমিট</span>
+        <span class="stat-value" id="stat-total">0</span>
       </div>
-      <div class="dash-card">
-        <span class="dash-title">Pending</span>
-        <h3 id="dash-pending" class="dash-value status-pending">0</h3>
+      <div class="stat-card">
+        <span class="stat-label text-pending">পেন্ডিং</span>
+        <span class="stat-value text-pending" id="stat-pending">0</span>
       </div>
-      <div class="dash-card">
-        <span class="dash-title">Completed</span>
-        <h3 id="dash-completed" class="dash-value status-completed">0</h3>
+      <div class="stat-card">
+        <span class="stat-label text-completed">কমপ্লিটেড</span>
+        <span class="stat-value text-completed" id="stat-completed">0</span>
       </div>
-      <div class="dash-card">
-        <span class="dash-title">Rejected</span>
-        <h3 id="dash-rejected" class="dash-value status-rejected">0</h3>
+      <div class="stat-card">
+        <span class="stat-label text-rejected">রিজেক্টেড</span>
+        <span class="stat-value text-rejected" id="stat-rejected">0</span>
       </div>
     </div>
   </div>
 
-  <!-- Bottom Navigation -->
+  <!-- Bottom Glassmorphism Navigation -->
   <div class="bottom-nav">
     <div class="nav-item active" onclick="switchMainTab('submit', this)">
       <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="2" fill="none"><path d="M12 5v14M5 12h14"></path></svg>
@@ -255,7 +251,7 @@
     </div>
     <div class="nav-item" onclick="switchMainTab('submit-history', this)">
       <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="2" fill="none"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline></svg>
-      <span>Submit History</span>
+      <span>Sub History</span>
     </div>
     <div class="nav-item" onclick="switchMainTab('withdraw', this)">
       <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="2" fill="none"><rect x="2" y="5" width="20" height="14" rx="2"></rect><line x1="2" y1="10" x2="22" y2="10"></line></svg>
@@ -263,7 +259,7 @@
     </div>
     <div class="nav-item" onclick="switchMainTab('withdraw-history', this)">
       <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="2" fill="none"><polyline points="12 8 12 12 14 14"></polyline><path d="M21 12a9 9 0 1 1-9-9c2.52 0 4.85.83 6.72 2.24"></path></svg>
-      <span>Withdraw History</span>
+      <span>With History</span>
     </div>
     <div class="nav-item" onclick="switchMainTab('my-account', this)">
       <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="2" fill="none"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
