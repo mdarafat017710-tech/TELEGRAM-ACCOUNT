@@ -1,69 +1,269 @@
+/* =========================================================
+   iOS Minimalist Theme & Bottom Navigation — style.css
+   ========================================================= */
+
+:root {
+  --bg-color: #f2f2f7;
+  --card-bg: #ffffff;
+  --search-bg: #e3e3e8;
+  --accent-blue: #007aff;  /* Pure iOS Blue */
+  --accent-green: #34c759; /* Pure Bright Green */
+  --accent-red: #ff3b30;   /* Pure Red */
+  --accent-yellow: #f59e0b;/* Pure Vivid Yellow */
+  --text-main: #000000;
+  --text-muted: #8e8e93;
+  --border-color: #e5e5ea;
+  --divider-color: #f0f0f3;
+  --font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display", "Helvetica Neue", Arial, sans-serif;
+  
+  /* Telegram Theme Variable Fallbacks */
+  --tg-theme-bg-color: var(--bg-color);
+  --tg-theme-secondary-bg-color: var(--card-bg);
+  --tg-theme-text-color: var(--text-main);
+  --tg-theme-hint-color: var(--text-muted);
+  --tg-theme-button-color: var(--accent-blue);
+  --tg-theme-button-text-color: #ffffff;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  font-family: var(--font-family);
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
 body {
- font-family: Arial, sans-serif;
- margin: 0;
- padding: 0;
- background-color: var(--tg-theme-bg-color);
- color: var(--tg-theme-text-color);
+  background-color: var(--bg-color);
+  color: var(--text-main);
+  padding: 15px 14px 90px; /* নিচে বটম নেভিগেশনের জন্য জায়গা রাখা হয়েছে */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-height: 100vh;
 }
 
 #app {
- max-width: 500px;
- margin: 0 auto;
- padding: 15px;
+  width: 100%;
+  max-width: 440px;
+  margin: 0 auto;
 }
 
+/* Header Section */
 header {
- display: flex;
- justify-content: space-between;
- align-items: center;
- background-color: var(--tg-theme-secondary-bg-color);
- padding: 10px;
- border-radius: 8px;
- margin-bottom: 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: var(--card-bg);
+  padding: 12px 16px;
+  border-radius: 14px;
+  border: 1px solid var(--border-color);
+  margin-bottom: 16px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.02);
 }
 
 #profile {
- display: flex;
- align-items: center;
- gap: 10px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
 }
 
 #avatar {
- width: 40px;
- height: 40px;
- border-radius: 50%;
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 1.5px solid var(--accent-blue);
 }
 
+/* Main Sections / Cards */
 main section {
- background-color: var(--tg-theme-secondary-bg-color);
- padding: 15px;
- border-radius: 8px;
- margin-bottom: 20px;
+  background-color: var(--card-bg);
+  padding: 16px;
+  border-radius: 14px;
+  border: 1px solid var(--border-color);
+  margin-bottom: 16px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.02);
 }
 
 h2 {
- margin-top: 0;
- font-size: 1.2rem;
- color: var(--tg-theme-hint-color);
+  margin-top: 0;
+  margin-bottom: 12px;
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--accent-blue);
 }
 
+/* Forms & Inputs */
 form {
- display: flex;
- flex-direction: column;
- gap: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
 }
 
-input, select, button {
- padding: 10px;
- border-radius: 6px;
- border: 1px solid var(--tg-theme-hint-color);
- background-color: var(--tg-theme-bg-color);
- color: var(--tg-theme-text-color);
+input, select {
+  width: 100%;
+  padding: 10px 12px;
+  border-radius: 10px;
+  border: 1px solid var(--border-color);
+  background-color: var(--search-bg);
+  color: var(--text-main);
+  font-size: 13px;
+  outline: none;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  user-select: text;
+  -webkit-user-select: text;
+}
+
+input:focus, select:focus {
+  border-color: var(--accent-blue);
+  background-color: #ffffff;
+  box-shadow: 0 0 6px rgba(0, 122, 255, 0.2);
 }
 
 button {
- background-color: var(--tg-theme-button-color);
- color: var(--tg-theme-button-text-color);
- cursor: pointer;
- font-weight: bold;
+  padding: 11px;
+  border-radius: 10px;
+  border: none;
+  background-color: var(--accent-blue);
+  color: #ffffff;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: transform 0.15s ease, opacity 0.2s ease;
+}
+
+button:active {
+  transform: scale(0.97);
+  opacity: 0.85;
+}
+
+/* iOS Style Payment / Withdraw Options (Bkash & Nagad) */
+.payment-options {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.payment-card {
+  background: var(--card-bg);
+  border: 1.5px solid var(--border-color);
+  border-radius: 12px;
+  padding: 12px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+}
+
+.payment-card:active, .payment-card.selected {
+  border-color: var(--accent-blue);
+  background: rgba(0, 122, 255, 0.05);
+}
+
+.payment-card img {
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  object-fit: contain;
+}
+
+.payment-card span {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--text-main);
+}
+
+/* Withdraw History Item Layout */
+.withdraw-history-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.history-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 0;
+  border-bottom: 0.5px solid var(--divider-color);
+}
+
+.history-item:last-child {
+  border-bottom: none;
+}
+
+.history-method {
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.history-date {
+  font-size: 11px;
+  color: var(--text-muted);
+}
+
+.history-amount {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--accent-green);
+}
+
+/* iOS Glass Bottom Navigation Bar */
+.bottom-nav {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 65px;
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-top: 0.5px solid var(--border-color);
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  z-index: 9999;
+  padding-bottom: 10px;
+}
+
+.nav-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  color: var(--text-muted);
+  text-decoration: none;
+  font-size: 10px;
+  font-weight: 600;
+  cursor: pointer;
+  width: 25%;
+  transition: color 0.2s ease, transform 0.15s ease;
+}
+
+.nav-item svg {
+  width: 22px;
+  height: 22px;
+  stroke: var(--text-muted);
+  fill: none;
+  stroke-width: 2;
+  transition: stroke 0.2s ease;
+}
+
+.nav-item.active {
+  color: var(--accent-blue);
+}
+
+.nav-item.active svg {
+  stroke: var(--accent-blue);
+}
+
+.nav-item:active {
+  transform: scale(0.9);
 }
