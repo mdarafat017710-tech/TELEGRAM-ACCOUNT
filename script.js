@@ -24,7 +24,7 @@ let userBalance = 0.00;
 let existingEmails = [];
 let selectedPayment = 'bKash';
 let currentStep = 1;
-let formData = { email: "", password: "", status: "Security Processing", statusClass: "status-red", recovery: "" };
+let formData = { email: "", password: "", recovery: "" };
 
 document.getElementById('username').innerText = firstName;
 document.getElementById('user-id').innerText = `ID: ${userId}`;
@@ -37,7 +37,11 @@ function showToast(msg) {
   setTimeout(() => toast.classList.remove('show'), 2000);
 }
 
-// Global Email Duplication Data Fetching
+window.copyUserId = function() {
+  navigator.clipboard.writeText(userId);
+  showToast("ID Copied successfully!");
+};
+
 async function loadExistingEmails() {
   const querySnapshot = await getDocs(collection(db, "allGmailHistory"));
   existingEmails = [];
@@ -49,33 +53,55 @@ async function loadExistingEmails() {
 }
 loadExistingEmails();
 
-// Realtime User Data & History
+// Realtime Email History & Balance
 onSnapshot(query(collection(db, "allGmailHistory"), where("userId", "==", userId)), (snapshot) => {
-  let approvedCount = 0;
-  const list = document.getElementById('history-gmail-list');
-  list.innerHTML = snapshot.empty ? '<p style="font-size:11px;color:#8e8e93;">No history found</p>' : '';
+  let completedCount = 0;
+  const list = document.getElementById('gmail-history-container');
+  list.innerHTML = snapshot.empty ? '<p style="font-size:12px;color:#8e8e93;text-align:center;">No history found</p>' : '';
   
   snapshot.forEach((doc) => {
     const data = doc.data();
-    if (data.status === "Approved") approvedCount++;
-    list.innerHTML += `<div class="field-item"><span>${data.email}</span><span class="status-${(data.status||'pending').toLowerCase()}">${data.status || 'Pending'}</span></div>`;
+    const status = data.status || 'Pending';
+    if (status === "Completed") completedCount++;
+
+    const dateStr = data.timestamp ? new Date(data.timestamp.seconds * 1000).toLocaleDateString("bn-BD") : "N/A";
+    const statusClass = `status-${status.toLowerCase()}`;
+
+    list.innerHTML += `
+      <div class="account-card">
+        <div class="field-item"><span>Email:</span> <b>${data.email}</b></div>
+        <div class="field-item"><span>Password:</span> <b>${data.password}</b></div>
+        <div class="field-item"><span>Recovery:</span> <b>${data.recovery}</b></div>
+        <div class="field-item"><span>Date:</span> <b>${dateStr}</b></div>
+        <div class="field-item"><span>Status:</span> <b class="${statusClass}">${status}</b></div>
+      </div>`;
   });
 
-  userBalance = approvedCount * 10;
+  userBalance = completedCount * 10;
   document.getElementById('user-balance').innerText = userBalance.toFixed(2);
 });
 
 // Realtime Withdraw History
 onSnapshot(query(collection(db, "withdrawHistory"), where("userId", "==", userId)), (snapshot) => {
-  const list = document.getElementById('history-withdraw-list');
-  list.innerHTML = snapshot.empty ? '<p style="font-size:11px;color:#8e8e93;">No withdraw history</p>' : '';
+  const list = document.getElementById('withdraw-history-container');
+  list.innerHTML = snapshot.empty ? '<p style="font-size:12px;color:#8e8e93;text-align:center;">No withdraw history</p>' : '';
   snapshot.forEach((doc) => {
     const data = doc.data();
-    list.innerHTML += `<div class="field-item"><span>${data.method} (${data.phone})</span><span>৳${data.amount} [${data.status}]</span></div>`;
+    const status = data.status || 'Pending';
+    const dateStr = data.timestamp ? new Date(data.timestamp.seconds * 1000).toLocaleDateString("bn-BD") : "N/A";
+    const statusClass = `status-${status.toLowerCase()}`;
+
+    list.innerHTML += `
+      <div class="account-card">
+        <div class="field-item"><span>Amount:</span> <b>৳${data.amount}</b></div>
+        <div class="field-item"><span>Payment Method:</span> <b>${data.method} (${data.phone})</b></div>
+        <div class="field-item"><span>Date:</span> <b>${dateStr}</b></div>
+        <div class="field-item"><span>Status:</span> <b class="${statusClass}">${status}</b></div>
+      </div>`;
   });
 });
 
-// Gmail Validation with Green Check Indicator & Duplication Check
+// Input Box Validation with Shadow & Tick Indicator
 window.validateGmailField = function(field, step) {
   const input = document.getElementById(`input-${field}`);
   const indicator = document.getElementById(`${field}-indicator`);
@@ -114,25 +140,19 @@ window.validateStandardField = function(field, minLen, step) {
 window.nextStep = function(step) {
   if (step === 1) formData.email = document.getElementById('input-email').value.trim();
   if (step === 2) formData.password = document.getElementById('input-password').value.trim();
-  if (step === 4) formData.recovery = document.getElementById('input-recovery').value.trim();
+  if (step === 3) formData.recovery = document.getElementById('input-recovery').value.trim();
 
   document.getElementById(`step-${currentStep}`).classList.remove('active');
   currentStep = step + 1;
   document.getElementById(`step-${currentStep}`).classList.add('active');
 
-  if (currentStep === 5) renderConfirmation();
-};
-
-window.skipRecovery = function() {
-  formData.recovery = "Skipped";
-  nextStep(4);
+  if (currentStep === 4) renderConfirmation();
 };
 
 function renderConfirmation() {
   document.getElementById('confirmation-card-content').innerHTML = `
     <div class="field-item"><span>Email:</span> <b>${formData.email}</b></div>
     <div class="field-item"><span>Password:</span> <b>${formData.password}</b></div>
-    <div class="field-item"><span>Status:</span> <b class="${formData.statusClass}">${formData.status}</b></div>
     <div class="field-item"><span>Recovery:</span> <b>${formData.recovery}</b></div>
     <button class="btn-proceed" style="margin-top:10px;" onclick="submitFinalData()">Confirm & Save</button>
   `;
@@ -142,16 +162,15 @@ window.submitFinalData = async function() {
   try {
     await addDoc(collection(db, "allGmailHistory"), {
       userId: userId, email: formData.email, password: formData.password,
-      status: formData.status, recovery: formData.recovery, timestamp: serverTimestamp()
+      recovery: formData.recovery, status: "Pending", timestamp: serverTimestamp()
     });
-    showToast("Saved successfully!");
+    showToast("Submitted successfully!");
     location.reload();
   } catch (e) {
     showToast("Submission failed!");
   }
 };
 
-// Payment Method Selection & Form Validation with Checkmark Indicator
 window.selectPaymentMethod = function(method) {
   selectedPayment = method;
   document.querySelectorAll('.payment-card').forEach(c => c.classList.remove('active'));
@@ -216,15 +235,4 @@ window.switchMainTab = function(tab, elem) {
   document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
   document.getElementById(`tab-${tab}`).classList.add('active');
   elem.classList.add('active');
-};
-
-window.toggleDropdown = function() {
-  document.getElementById('dropdown-menu').classList.toggle('show');
-};
-
-window.selectStatus = function(text, cls) {
-  formData.status = text; formData.statusClass = cls;
-  document.getElementById('selected-status-text').innerText = text;
-  document.getElementById('selected-status-text').className = cls;
-  window.toggleDropdown();
 };
