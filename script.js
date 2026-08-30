@@ -37,21 +37,49 @@ function showToast(msg) {
   setTimeout(() => toast.classList.remove('show'), 2000);
 }
 
-window.copyUserId = function() {
+// User ID and Generic Content Copy
+window.copyUserId = function(btn) {
   navigator.clipboard.writeText(userId);
   showToast("ID Copied successfully!");
 };
 
 async function loadExistingEmails() {
-  const querySnapshot = await getDocs(collection(db, "allGmailHistory"));
-  existingEmails = [];
-  querySnapshot.forEach((doc) => {
-    const data = doc.data();
-    if (data.email) existingEmails.push(data.email.toLowerCase().trim());
-    if (data.recovery) existingEmails.push(data.recovery.toLowerCase().trim());
-  });
+  try {
+    const querySnapshot = await getDocs(collection(db, "allGmailHistory"));
+    existingEmails = [];
+    querySnapshot.forEach((doc) => {
+      const data = doc.data();
+      if (data.email) existingEmails.push(data.email.toLowerCase().trim());
+      if (data.recovery) existingEmails.push(data.recovery.toLowerCase().trim());
+    });
+  } catch (error) {
+    console.error("Error loading emails:", error);
+  }
 }
 loadExistingEmails();
+
+// Search Filter Feature (Search across Submit and Withdraw Histories)
+window.filterContent = function() {
+  const input = document.getElementById('searchInput').value.toLowerCase();
+  const activeTab = document.querySelector('.tab-content.active');
+  if (!activeTab) return;
+
+  const cards = activeTab.querySelectorAll('.account-card');
+  cards.forEach(card => {
+    const text = card.textContent.toLowerCase();
+    card.style.display = text.includes(input) ? "block" : "none";
+  });
+};
+
+// Story Card Selector Feature
+document.querySelectorAll('.story-card').forEach(story => {
+  story.addEventListener('click', () => {
+    document.querySelectorAll('.story-card').forEach(s => s.classList.remove('active'));
+    story.classList.add('active');
+    const title = story.querySelector('span').innerText;
+    showToast(`${title} clicked`);
+  });
+});
 
 // Realtime Email History & Balance
 onSnapshot(query(collection(db, "allGmailHistory"), where("userId", "==", userId)), (snapshot) => {
@@ -68,7 +96,7 @@ onSnapshot(query(collection(db, "allGmailHistory"), where("userId", "==", userId
     const statusClass = `status-${status.toLowerCase()}`;
 
     list.innerHTML += `
-      <div class="account-card">
+      <div class="account-card studio-card">
         <div class="field-item"><span>Email:</span> <b>${data.email}</b></div>
         <div class="field-item"><span>Password:</span> <b>${data.password}</b></div>
         <div class="field-item"><span>Recovery:</span> <b>${data.recovery}</b></div>
@@ -92,7 +120,7 @@ onSnapshot(query(collection(db, "withdrawHistory"), where("userId", "==", userId
     const statusClass = `status-${status.toLowerCase()}`;
 
     list.innerHTML += `
-      <div class="account-card">
+      <div class="account-card studio-card">
         <div class="field-item"><span>Amount:</span> <b>৳${data.amount}</b></div>
         <div class="field-item"><span>Payment Method:</span> <b>${data.method} (${data.phone})</b></div>
         <div class="field-item"><span>Date:</span> <b>${dateStr}</b></div>
@@ -235,4 +263,11 @@ window.switchMainTab = function(tab, elem) {
   document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
   document.getElementById(`tab-${tab}`).classList.add('active');
   elem.classList.add('active');
+
+  // Clear search field when switching tabs
+  const searchInput = document.getElementById('searchInput');
+  if (searchInput) {
+    searchInput.value = '';
+    window.filterContent();
+  }
 };
