@@ -11,8 +11,9 @@
 
   <!-- Toast Notification Popup -->
   <div id="copy-toast">
-    <div class="toast-icon-wrapper">
-      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+    <div class="toast-icon-wrapper" id="toast-icon-bg">
+      <svg id="toast-svg-check" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+      <svg id="toast-svg-close" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round" style="display:none;"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
     </div>
     <span id="toast-msg">Copied successfully!</span>
   </div>
@@ -48,20 +49,35 @@
           </div>
           <div class="field-error-msg" id="email-error-msg">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
-            <span>Email already submitted!</span>
+            <span>Your email already submitted!</span>
           </div>
         </div>
         <div class="action-container">
           <button class="btn-proceed" id="btn-1" disabled onclick="nextStep(1)">
-            <span>Proceed</span>
+            <span class="btn-text">Proceed</span>
+            <svg class="ios-spinner btn-spinner" viewBox="0 0 24 24">
+              <line x1="12" y1="3" x2="12" y2="6" stroke="#ffffff" stroke-width="2.5" stroke-linecap="round"/>
+              <line x1="18.36" y1="5.64" x2="16.24" y2="7.76" stroke="#ffffff" stroke-width="2.5" stroke-linecap="round"/>
+              <line x1="21" y1="12" x2="18" y2="12" stroke="#ffffff" stroke-width="2.5" stroke-linecap="round"/>
+              <line x1="18.36" y1="18.36" x2="16.24" y2="16.24" stroke="#ffffff" stroke-width="2.5" stroke-linecap="round"/>
+              <line x1="12" y1="21" x2="12" y2="18" stroke="#ffffff" stroke-width="2.5" stroke-linecap="round"/>
+              <line x1="5.64" y1="18.36" x2="7.76" y2="16.24" stroke="#ffffff" stroke-width="2.5" stroke-linecap="round"/>
+              <line x1="3" y1="12" x2="6" y2="12" stroke="#ffffff" stroke-width="2.5" stroke-linecap="round"/>
+              <line x1="5.64" y1="5.64" x2="7.76" y2="7.76" stroke="#ffffff" stroke-width="2.5" stroke-linecap="round"/>
+            </svg>
           </button>
         </div>
       </div>
 
       <!-- Step 2: Password -->
       <div id="step-2" class="step-container">
-        <div class="info-box-group">
+        <div class="step-header-nav">
+          <button class="back-arrow-btn" onclick="prevStep(1)">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+          </button>
           <label class="box-label">Your Account Password</label>
+        </div>
+        <div class="info-box-group">
           <div class="input-wrapper">
             <input type="text" id="input-password" class="ios-box" placeholder="Enter account password" oninput="validateStandardField('password', 6, 2)">
             <div class="input-indicator" id="password-indicator">
@@ -71,15 +87,30 @@
         </div>
         <div class="action-container">
           <button class="btn-proceed" id="btn-2" disabled onclick="nextStep(2)">
-            <span>Proceed</span>
+            <span class="btn-text">Proceed</span>
+            <svg class="ios-spinner btn-spinner" viewBox="0 0 24 24">
+              <line x1="12" y1="3" x2="12" y2="6" stroke="#ffffff" stroke-width="2.5" stroke-linecap="round"/>
+              <line x1="18.36" y1="5.64" x2="16.24" y2="7.76" stroke="#ffffff" stroke-width="2.5" stroke-linecap="round"/>
+              <line x1="21" y1="12" x2="18" y2="12" stroke="#ffffff" stroke-width="2.5" stroke-linecap="round"/>
+              <line x1="18.36" y1="18.36" x2="16.24" y2="16.24" stroke="#ffffff" stroke-width="2.5" stroke-linecap="round"/>
+              <line x1="12" y1="21" x2="12" y2="18" stroke="#ffffff" stroke-width="2.5" stroke-linecap="round"/>
+              <line x1="5.64" y1="18.36" x2="7.76" y2="16.24" stroke="#ffffff" stroke-width="2.5" stroke-linecap="round"/>
+              <line x1="3" y1="12" x2="6" y2="12" stroke="#ffffff" stroke-width="2.5" stroke-linecap="round"/>
+              <line x1="5.64" y1="5.64" x2="7.76" y2="7.76" stroke="#ffffff" stroke-width="2.5" stroke-linecap="round"/>
+            </svg>
           </button>
         </div>
       </div>
 
       <!-- Step 3: Recovery Email -->
       <div id="step-3" class="step-container">
-        <div class="info-box-group">
+        <div class="step-header-nav">
+          <button class="back-arrow-btn" onclick="prevStep(2)">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+          </button>
           <label class="box-label">Recovery Email</label>
+        </div>
+        <div class="info-box-group">
           <div class="input-wrapper">
             <input type="email" id="input-recovery" class="ios-box" placeholder="Enter recovery email" oninput="validateGmailField('recovery', 3)">
             <div class="input-indicator" id="recovery-indicator">
@@ -88,12 +119,22 @@
           </div>
           <div class="field-error-msg" id="recovery-error-msg">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
-            <span>Recovery email already submitted!</span>
+            <span>Your email already submitted!</span>
           </div>
         </div>
         <div class="action-container">
           <button class="btn-proceed" id="btn-3" disabled onclick="nextStep(3)">
-            <span>Proceed</span>
+            <span class="btn-text">Proceed</span>
+            <svg class="ios-spinner btn-spinner" viewBox="0 0 24 24">
+              <line x1="12" y1="3" x2="12" y2="6" stroke="#ffffff" stroke-width="2.5" stroke-linecap="round"/>
+              <line x1="18.36" y1="5.64" x2="16.24" y2="7.76" stroke="#ffffff" stroke-width="2.5" stroke-linecap="round"/>
+              <line x1="21" y1="12" x2="18" y2="12" stroke="#ffffff" stroke-width="2.5" stroke-linecap="round"/>
+              <line x1="18.36" y1="18.36" x2="16.24" y2="16.24" stroke="#ffffff" stroke-width="2.5" stroke-linecap="round"/>
+              <line x1="12" y1="21" x2="12" y2="18" stroke="#ffffff" stroke-width="2.5" stroke-linecap="round"/>
+              <line x1="5.64" y1="18.36" x2="7.76" y2="16.24" stroke="#ffffff" stroke-width="2.5" stroke-linecap="round"/>
+              <line x1="3" y1="12" x2="6" y2="12" stroke="#ffffff" stroke-width="2.5" stroke-linecap="round"/>
+              <line x1="5.64" y1="5.64" x2="7.76" y2="7.76" stroke="#ffffff" stroke-width="2.5" stroke-linecap="round"/>
+            </svg>
           </button>
         </div>
       </div>
@@ -145,7 +186,6 @@
         </button>
       </div>
 
-      <!-- Available Balance Row with Refresh Button -->
       <div class="account-balance-row">
         <span class="account-balance-text">Available Balance: <strong id="account-balance-val">0</strong></span>
         <button class="refresh-btn" id="refresh-balance-btn" onclick="refreshUserBalance()">
@@ -154,7 +194,6 @@
       </div>
     </div>
 
-    <!-- Dashboard Statistics (1 Line each box) -->
     <div class="dashboard-grid">
       <div class="stat-card">
         <span class="stat-line text-total">Total Submit: <strong id="stat-total">0</strong></span>
