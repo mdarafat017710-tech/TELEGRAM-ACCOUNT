@@ -34,7 +34,7 @@ body {
 
 .toast-icon-wrapper {
   background: var(--accent-green); width: 18px; height: 18px; border-radius: 50%;
-  display: flex; align-items: center; justify-content: center;
+  display: flex; align-items: center; justify-content: center; transition: background 0.2s;
 }
 
 .top-nav { width: 100%; max-width: 420px; text-align: center; margin-bottom: 15px; }
@@ -45,6 +45,12 @@ body {
 
 .step-container { display: none; flex-direction: column; gap: 12px; }
 .step-container.active { display: flex; }
+
+.step-header-nav { display: flex; align-items: center; gap: 8px; }
+.back-arrow-btn {
+  background: transparent; border: none; color: var(--accent-blue);
+  cursor: pointer; display: flex; align-items: center; justify-content: center; padding: 2px;
+}
 
 .info-box-group { display: flex; flex-direction: column; gap: 6px; width: 100%; }
 .box-label { font-size: 12px; font-weight: 600; }
@@ -170,7 +176,7 @@ body {
   animation: iosRotate 0.8s linear infinite;
 }
 
-/* Dashboard Statistics Grid (Compact & Single-Line Text) */
+/* Dashboard Statistics Grid */
 .dashboard-grid {
   display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; width: 100%;
 }
@@ -198,8 +204,32 @@ body {
 
 .balance-badge { background: rgba(0, 122, 255, 0.1); color: var(--accent-blue); padding: 5px 12px; border-radius: 20px; font-size: 13px; font-weight: 700; }
 
-.btn-proceed { background: var(--accent-blue); color: #fff; border: none; width: 100%; padding: 12px; border-radius: 12px; font-weight: 700; cursor: pointer; }
+.btn-proceed { 
+  background: var(--accent-blue); color: #fff; border: none; width: 100%; padding: 12px; 
+  border-radius: 12px; font-weight: 700; cursor: pointer; display: flex; align-items: center; 
+  justify-content: center; gap: 8px; min-height: 44px;
+}
 .btn-proceed:disabled { background: #c6c6c8; color: #8e8e93; cursor: not-allowed; }
+
+/* Custom Action Buttons */
+.btn-confirm-submit {
+  background: var(--accent-green) !important; color: #ffffff !important;
+  border: none; width: 100%; padding: 12px; border-radius: 12px; font-weight: 700;
+  cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px;
+  min-height: 44px; font-size: 14px;
+}
+
+.btn-cancel-submit {
+  background: var(--accent-red) !important; color: #ffffff !important;
+  border: none; width: 100%; padding: 12px; border-radius: 12px; font-weight: 700;
+  cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px;
+  min-height: 44px; font-size: 14px;
+}
+
+.check-icon-circle {
+  width: 18px; height: 18px; background: #ffffff; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+}
 
 /* Account Card Structure */
 .account-card { background: var(--card-bg); border-radius: 14px; border: 1px solid var(--border-color); padding: 6px 12px; margin-bottom: 10px; }
