@@ -26,7 +26,8 @@ let totalEarned = 0;
 let totalWithdrawn = 0;
 let userBalance = 0;
 
-let existingEmails = [];
+// Active submitted emails map (Only Pending or Completed block re-submission)
+let activeEmailsMap = {}; 
 let selectedPayment = 'bKash';
 let formData = { email: "", password: "", recovery: "" };
 
@@ -136,18 +137,23 @@ function escapeJs(str) {
   return String(str || '').replace(/\\/g, '\\\\').replace(/'/g, "\\'");
 }
 
+// Fetch DB Emails. Only block if status is Pending or Completed. Allows Rejected ones to be resubmitted.
 async function loadExistingEmails() {
   const querySnapshot = await getDocs(collection(db, "allGmailHistory"));
-  existingEmails = [];
+  activeEmailsMap = {};
   querySnapshot.forEach((doc) => {
     const data = doc.data();
-    if (data.email) existingEmails.push(data.email.toLowerCase().trim());
-    if (data.recovery) existingEmails.push(data.recovery.toLowerCase().trim());
+    const status = data.status || 'Pending';
+    // Ignore Rejected status so user can submit it again
+    if (status !== 'Rejected') {
+      if (data.email) activeEmailsMap[data.email.toLowerCase().trim()] = status;
+      if (data.recovery) activeEmailsMap[data.recovery.toLowerCase().trim()] = status;
+    }
   });
 }
 loadExistingEmails();
 
-// Integer Only Balance (No decimals/points)
+// Integer Only Balance
 function updateOverallBalance() {
   userBalance = Math.max(0, Math.floor(totalEarned - totalWithdrawn));
   document.getElementById('user-balance').innerText = userBalance;
@@ -201,7 +207,6 @@ onSnapshot(query(collection(db, "allGmailHistory"), where("userId", "==", userId
     rawGmailHistory.push(data);
   });
 
-  // Update Dashboard Stats (Single Line)
   document.getElementById('stat-total').innerText = totalCount;
   document.getElementById('stat-pending').innerText = pendingCount;
   document.getElementById('stat-completed').innerText = completedCount;
@@ -212,7 +217,7 @@ onSnapshot(query(collection(db, "allGmailHistory"), where("userId", "==", userId
   renderGmailHistory();
 });
 
-// Realtime Withdraw History & Balance Auto-Deduction
+// Realtime Withdraw History
 onSnapshot(query(collection(db, "withdrawHistory"), where("userId", "==", userId)), (snapshot) => {
   let sumWithdrawn = 0;
   rawWithdrawHistory = [];
@@ -240,7 +245,7 @@ function renderGmailHistory() {
   });
 
   if (filtered.length === 0) {
-    list.innerHTML = '<p style="font-size:12px;color:#8e8e93;text-align:center;padding:20px;">No account history found</p>';
+    list.innerHTML = '<p style="font-size:12px;color:#8e8e93;text-align:center;padding:20px;">No task history found</p>';
     return;
   }
 
@@ -290,6 +295,7 @@ function renderGmailHistory() {
   list.innerHTML = html;
 }
 
+// Render Withdraw History with Method Logo Icon
 function renderWithdrawHistory() {
   const list = document.getElementById('withdraw-history-container');
   const q = withdrawSearchQuery.toLowerCase().trim();
@@ -312,6 +318,15 @@ function renderWithdrawHistory() {
     const statusClass = `status-${status.toLowerCase()}`;
     const dateStr = formatDate(data.timestamp);
 
+    // Determine Payment Logo
+    let logoUrl = "";
+    if (data.method === 'bKash') logoUrl = "https://i.ibb.co.com/bR1wnvmg/images.jpg";
+    else if (data.method === 'Nagad') logoUrl = "https://i.ibb.co.com/YF0cQypT/images-1.png";
+
+    const methodDisplay = logoUrl 
+      ? `<div style="display:flex;align-items:center;gap:6px;"><img src="${logoUrl}" class="history-pay-logo"><span>${escapeHtml(data.method)}</span></div>`
+      : `<span>${escapeHtml(data.method)}</span>`;
+
     html += `
       <div class="account-card">
         <div class="field-item">
@@ -323,7 +338,7 @@ function renderWithdrawHistory() {
         <div class="field-item">
           <span class="field-left">Payment Method</span>
           <div class="field-right-group">
-            <span class="field-right">${escapeHtml(data.method)}</span>
+            ${methodDisplay}
           </div>
         </div>
         <div class="field-item">
@@ -413,6 +428,7 @@ window.startGmailSubmission = function() {
   document.getElementById('gmail-submit-form').style.display = 'block';
 };
 
+// Check if email is already active in DB (only Pending or Completed block entry)
 window.validateGmailField = function(fieldType, step) {
   const input = document.getElementById(`input-${fieldType}`);
   const indicator = document.getElementById(`${fieldType}-indicator`);
@@ -421,15 +437,16 @@ window.validateGmailField = function(fieldType, step) {
   const val = input.value.trim().toLowerCase();
 
   const isGmail = val.endsWith('@gmail.com') && val.length > 10;
-  const isDuplicate = existingEmails.includes(val);
+  // Duplicate if it's currently Pending or Completed
+  const isDuplicateActive = activeEmailsMap[val] !== undefined;
 
-  if (isGmail && !isDuplicate) {
+  if (isGmail && !isDuplicateActive) {
     input.classList.remove('invalid');
     input.classList.add('valid');
     indicator.classList.add('show');
     errorMsg.classList.remove('show');
     btn.disabled = false;
-  } else if (isDuplicate) {
+  } else if (isDuplicateActive) {
     input.classList.remove('valid');
     input.classList.add('invalid');
     indicator.classList.remove('show');
@@ -467,7 +484,7 @@ window.nextStep = function(step) {
     renderConfirmationStep();
   }
 
-  document.querySelectorAll('#tab-submit .step-container').forEach(el => el.classList.remove('active'));
+  document.querySelectorAll('#tab-task .step-container').forEach(el => el.classList.remove('active'));
   document.getElementById(`step-${step + 1}`).classList.add('active');
 };
 
@@ -508,7 +525,7 @@ window.submitFinalAccount = async function() {
       timestamp: serverTimestamp()
     });
 
-    showToast("Account submitted!");
+    showToast("Task submitted!");
     
     // Reset Form
     document.getElementById('input-email').value = '';
@@ -517,7 +534,7 @@ window.submitFinalAccount = async function() {
     document.querySelectorAll('.ios-box').forEach(i => i.classList.remove('valid', 'invalid'));
     document.querySelectorAll('.input-indicator').forEach(i => i.classList.remove('show'));
 
-    document.querySelectorAll('#tab-submit .step-container').forEach(el => el.classList.remove('active'));
+    document.querySelectorAll('#tab-task .step-container').forEach(el => el.classList.remove('active'));
     document.getElementById('step-1').classList.add('active');
     document.getElementById('gmail-submit-form').style.display = 'none';
     document.getElementById('gmail-submit-trigger').style.display = 'block';
@@ -530,7 +547,7 @@ window.submitFinalAccount = async function() {
   }
 };
 
-/* Withdraw Flow */
+/* Withdraw Flow & Separated Error Validations */
 window.selectPaymentMethod = function(method, elem) {
   selectedPayment = method;
   document.querySelectorAll('.payment-card').forEach(c => c.classList.remove('active'));
@@ -543,13 +560,29 @@ window.validateWithdrawForm = function() {
   const phoneIndicator = document.getElementById('phone-indicator');
   const amountIndicator = document.getElementById('amount-indicator');
   const errorMsg = document.getElementById('withdraw-error-msg');
+  const errorText = document.getElementById('withdraw-error-text');
   const btn = document.getElementById('btn-withdraw-submit');
 
   if (!phoneInput || !amountInput || !btn) return;
 
   const phoneValid = phoneInput.value.trim().length >= 11;
-  const amount = Math.floor(Number(amountInput.value) || 0);
-  const amountValid = amount >= 20 && amount <= userBalance;
+  const rawAmount = amountInput.value.trim();
+  const amount = Math.floor(Number(rawAmount) || 0);
+
+  let hasAmountError = false;
+  let errorMessage = "";
+
+  if (rawAmount !== "") {
+    if (amount < 20) {
+      hasAmountError = true;
+      errorMessage = "Minimum withdraw 20 BDT";
+    } else if (amount > userBalance) {
+      hasAmountError = true;
+      errorMessage = "Insufficient balance";
+    }
+  }
+
+  const amountValid = rawAmount !== "" && !hasAmountError;
 
   if (phoneValid) {
     phoneInput.classList.add('valid'); phoneIndicator.classList.add('show');
@@ -558,22 +591,26 @@ window.validateWithdrawForm = function() {
   }
 
   if (amountValid) {
-    amountInput.classList.add('valid'); amountIndicator.classList.add('show');
+    amountInput.classList.add('valid');
+    amountInput.classList.remove('invalid');
+    amountIndicator.classList.add('show');
+  } else if (hasAmountError) {
+    amountInput.classList.remove('valid');
+    amountInput.classList.add('invalid');
+    amountIndicator.classList.remove('show');
   } else {
-    amountInput.classList.remove('valid'); amountIndicator.classList.remove('show');
+    amountInput.classList.remove('valid', 'invalid');
+    amountIndicator.classList.remove('show');
   }
 
-  if (phoneValid && amountValid) {
-    btn.disabled = false;
-    errorMsg.classList.remove('show');
+  if (hasAmountError) {
+    errorText.innerText = errorMessage;
+    errorMsg.classList.add('show');
   } else {
-    btn.disabled = true;
-    if (amount > 0 && (amount < 20 || amount > userBalance)) {
-      errorMsg.classList.add('show');
-    } else {
-      errorMsg.classList.remove('show');
-    }
+    errorMsg.classList.remove('show');
   }
+
+  btn.disabled = !(phoneValid && amountValid);
 };
 
 window.handleWithdrawSubmit = async function() {
@@ -612,7 +649,7 @@ window.switchMainTab = function(tab, elem) {
   elem.classList.add('active');
 
   const titleMap = {
-    'submit': 'Submit Account',
+    'task': 'Task',
     'submit-history': 'History',
     'my-account': 'My Account',
     'withdraw': 'Withdraw',
