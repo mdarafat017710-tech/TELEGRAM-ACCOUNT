@@ -23,16 +23,14 @@
   </div>
 
   <!-- TAB 1: TASK -->
-  <div id="tab-submit" class="tab-content active">
-    <!-- Task Trigger Card -->
-    <div id="gmail-submit-trigger" class="account-card" style="text-align: center; padding: 20px 14px;">
-      <div style="display:flex; align-items:center; justify-content:center; gap:8px; margin-bottom:10px;">
-        <img src="https://i.ibb.co.com/Z6xm2JRN/Google-G-logo-svg.png" alt="Google" style="width:28px; height:28px; object-fit:contain;">
-        <h3 style="font-size:16px; font-weight:700;">Gmail Task</h3>
-      </div>
-      <p style="font-size:12px; color:var(--text-muted); margin-bottom: 15px;">Complete this task to earn <strong>10 BDT</strong> per account.</p>
+  <div id="tab-task" class="tab-content active">
+    <!-- Initial Button Trigger -->
+    <div id="gmail-submit-trigger" class="account-card" style="text-align: center; padding: 22px 14px;">
+      <img src="https://i.ibb.co.com/Z6xm2JRN/Google-G-logo-svg.png" alt="Gmail Logo" class="task-logo-img">
+      <h3 style="font-size:16px; font-weight:700; margin-bottom: 4px;">Gmail Task</h3>
+      <p style="font-size:13px; color:var(--accent-blue); font-weight:700; margin-bottom: 15px;">Reward: 10 ৳</p>
       <button class="btn-proceed" onclick="startGmailSubmission()">
-        <span>Gmail Task - 10 BDT</span>
+        <span>Start Task</span>
       </button>
     </div>
 
@@ -49,7 +47,7 @@
             </div>
           </div>
           <div class="field-error-msg" id="email-error-msg">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
             <span>Email already submitted!</span>
           </div>
         </div>
@@ -89,7 +87,7 @@
             </div>
           </div>
           <div class="field-error-msg" id="recovery-error-msg">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
             <span>Recovery email already submitted!</span>
           </div>
         </div>
@@ -147,7 +145,7 @@
         </button>
       </div>
 
-      <!-- Available Balance Row -->
+      <!-- Available Balance Row with Refresh Button -->
       <div class="account-balance-row">
         <span class="account-balance-text">Available Balance: <strong id="account-balance-val">0</strong></span>
         <button class="refresh-btn" id="refresh-balance-btn" onclick="refreshUserBalance()">
@@ -156,7 +154,7 @@
       </div>
     </div>
 
-    <!-- Dashboard Statistics -->
+    <!-- Dashboard Statistics (1 Line each box) -->
     <div class="dashboard-grid">
       <div class="stat-card">
         <span class="stat-line text-total">Total Submit: <strong id="stat-total">0</strong></span>
@@ -210,15 +208,9 @@
           </div>
         </div>
 
-        <!-- Separate Error Messages -->
-        <div class="field-error-msg" id="withdraw-min-error-msg">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
-          <span>Minimum withdraw 20 BDT</span>
-        </div>
-
-        <div class="field-error-msg" id="withdraw-balance-error-msg">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
-          <span>Insufficient balance</span>
+        <div class="field-error-msg" id="withdraw-error-msg">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
+          <span id="withdraw-error-text">Minimum withdraw 20 BDT</span>
         </div>
 
         <div class="action-container" style="margin-top:16px;">
@@ -257,9 +249,9 @@
     <div id="withdraw-history-container"></div>
   </div>
 
-  <!-- Bottom Nav Bar -->
+  <!-- Bottom Navigation Bar -->
   <div class="bottom-nav">
-    <div class="nav-item active" onclick="switchMainTab('submit', this)">
+    <div class="nav-item active" onclick="switchMainTab('task', this)">
       <svg viewBox="0 0 24 24" width="22" height="22" stroke="currentColor" stroke-width="2.2" fill="none"><path d="M12 5v14M5 12h14"></path></svg>
       <span>Task</span>
     </div>
