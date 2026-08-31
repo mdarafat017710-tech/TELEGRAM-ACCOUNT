@@ -81,6 +81,16 @@ body {
 }
 .field-error-msg.show { display: flex; }
 
+/* Task Card Logo */
+.task-logo-img {
+  width: 45px; height: 45px; object-fit: contain; margin-bottom: 8px;
+}
+
+/* History Payment Logo */
+.history-pay-logo {
+  width: 18px; height: 18px; border-radius: 50%; object-fit: cover; flex-shrink: 0;
+}
+
 /* iOS Search Box Style */
 .search-container {
   width: 100%; max-width: 420px; display: flex; align-items: center;
@@ -214,7 +224,7 @@ body {
 .status-completed { color: var(--accent-green); }
 .status-rejected { color: var(--accent-red); }
 
-/* Bottom Nav Layout (Slightly Larger Buttons) */
+/* Bottom Nav Layout */
 .bottom-nav {
   position: fixed; bottom: 0; left: 0; right: 0; height: 62px; background: rgba(255,255,255,0.96);
   backdrop-filter: blur(12px); border-top: 0.5px solid var(--border-color);
