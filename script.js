@@ -18,15 +18,12 @@ if (tg) tg.expand();
 
 const user = tg?.initDataUnsafe?.user;
 const userId = user?.id ? user.id.toString() : "guest_user";
-
-// Full Name in Telegram
 const telegramFullName = user ? [user.first_name, user.last_name].filter(Boolean).join(" ") : "User";
 
 let totalEarned = 0;
 let totalWithdrawn = 0;
 let userBalance = 0;
 
-// Active submitted emails map (Only Pending or Completed block re-submission)
 let activeEmailsMap = {}; 
 let selectedPayment = 'bKash';
 let formData = { email: "", password: "", recovery: "" };
@@ -43,14 +40,28 @@ document.getElementById('username').innerText = telegramFullName;
 document.getElementById('user-id').innerText = userId;
 if (user?.photo_url) document.getElementById('avatar').src = user.photo_url;
 
-function showToast(msg) {
+function showToast(msg, isError = false) {
   const toast = document.getElementById('copy-toast');
+  const toastIconBg = document.getElementById('toast-icon-bg');
+  const svgCheck = document.getElementById('toast-svg-check');
+  const svgClose = document.getElementById('toast-svg-close');
+  
   document.getElementById('toast-msg').innerText = msg;
+
+  if (isError) {
+    toastIconBg.style.background = 'var(--accent-red)';
+    svgCheck.style.display = 'none';
+    svgClose.style.display = 'block';
+  } else {
+    toastIconBg.style.background = 'var(--accent-green)';
+    svgCheck.style.display = 'block';
+    svgClose.style.display = 'none';
+  }
+
   toast.classList.add('show');
   setTimeout(() => toast.classList.remove('show'), 2000);
 }
 
-// Sound Synthesis for Refresh Action
 function playRefreshSound() {
   try {
     const ctx = new (window.AudioContext || window.webkitAudioContext)();
@@ -68,7 +79,6 @@ function playRefreshSound() {
   } catch (e) {}
 }
 
-// Copy Helper Function
 window.copyToClipboard = function(text, btnElement) {
   if (!text) return;
   const doFeedback = () => {
@@ -109,17 +119,13 @@ window.copyUserId = function() {
   window.copyToClipboard(userId, btn);
 };
 
-// Date Formatter: DD-MM-YYYY
 function formatDate(timestamp) {
   if (!timestamp) return "N/A";
   let date;
-  if (timestamp.seconds) {
-    date = new Date(timestamp.seconds * 1000);
-  } else if (timestamp instanceof Date) {
-    date = timestamp;
-  } else {
-    date = new Date(timestamp);
-  }
+  if (timestamp.seconds) date = new Date(timestamp.seconds * 1000);
+  else if (timestamp instanceof Date) date = timestamp;
+  else date = new Date(timestamp);
+  
   if (isNaN(date.getTime())) return "N/A";
   const day = String(date.getDate()).padStart(2, '0');
   const month = String(date.getMonth() + 1).padStart(2, '0');
@@ -137,23 +143,22 @@ function escapeJs(str) {
   return String(str || '').replace(/\\/g, '\\\\').replace(/'/g, "\\'");
 }
 
-// Fetch DB Emails. Only block if status is Pending or Completed. Allows Rejected ones to be resubmitted.
 async function loadExistingEmails() {
-  const querySnapshot = await getDocs(collection(db, "allGmailHistory"));
-  activeEmailsMap = {};
-  querySnapshot.forEach((doc) => {
-    const data = doc.data();
-    const status = data.status || 'Pending';
-    // Ignore Rejected status so user can submit it again
-    if (status !== 'Rejected') {
-      if (data.email) activeEmailsMap[data.email.toLowerCase().trim()] = status;
-      if (data.recovery) activeEmailsMap[data.recovery.toLowerCase().trim()] = status;
-    }
-  });
+  try {
+    const querySnapshot = await getDocs(collection(db, "allGmailHistory"));
+    activeEmailsMap = {};
+    querySnapshot.forEach((doc) => {
+      const data = doc.data();
+      const status = data.status || 'Pending';
+      if (status !== 'Rejected') {
+        if (data.email) activeEmailsMap[data.email.toLowerCase().trim()] = status;
+        if (data.recovery) activeEmailsMap[data.recovery.toLowerCase().trim()] = status;
+      }
+    });
+  } catch(e) {}
 }
 loadExistingEmails();
 
-// Integer Only Balance
 function updateOverallBalance() {
   userBalance = Math.max(0, Math.floor(totalEarned - totalWithdrawn));
   document.getElementById('user-balance').innerText = userBalance;
@@ -162,7 +167,6 @@ function updateOverallBalance() {
   validateWithdrawForm();
 }
 
-// Refresh Balance Action with Sound & Animation
 window.refreshUserBalance = function() {
   const btn = document.getElementById('refresh-balance-btn');
   if (!btn || btn.classList.contains('refreshing')) return;
@@ -170,23 +174,18 @@ window.refreshUserBalance = function() {
   btn.classList.add('refreshing');
   playRefreshSound();
 
-  // Show Spinner
   btn.innerHTML = `<svg class="ios-spinner" viewBox="0 0 24 24"><line x1="12" y1="3" x2="12" y2="6" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/><line x1="18.36" y1="5.64" x2="16.24" y2="7.76" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/><line x1="21" y1="12" x2="18" y2="12" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/><line x1="18.36" y1="18.36" x2="16.24" y2="16.24" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/><line x1="12" y1="21" x2="12" y2="18" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/><line x1="5.64" y1="18.36" x2="7.76" y2="16.24" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/><line x1="3" y1="12" x2="6" y2="12" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/><line x1="5.64" y1="5.64" x2="7.76" y2="7.76" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/></svg>`;
 
   setTimeout(() => {
     updateOverallBalance();
-    // Show Checkmark
     btn.innerHTML = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--accent-green)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>`;
-    
     setTimeout(() => {
       btn.classList.remove('refreshing');
-      // Reset Icon
       btn.innerHTML = `<svg class="refresh-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"></polyline><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"></path></svg>`;
     }, 800);
   }, 600);
 };
 
-// Realtime Email History & Balance & Dashboard Stats
 onSnapshot(query(collection(db, "allGmailHistory"), where("userId", "==", userId)), (snapshot) => {
   let completedCount = 0;
   let pendingCount = 0;
@@ -217,7 +216,6 @@ onSnapshot(query(collection(db, "allGmailHistory"), where("userId", "==", userId
   renderGmailHistory();
 });
 
-// Realtime Withdraw History
 onSnapshot(query(collection(db, "withdrawHistory"), where("userId", "==", userId)), (snapshot) => {
   let sumWithdrawn = 0;
   rawWithdrawHistory = [];
@@ -295,7 +293,6 @@ function renderGmailHistory() {
   list.innerHTML = html;
 }
 
-// Render Withdraw History with Method Logo Icon
 function renderWithdrawHistory() {
   const list = document.getElementById('withdraw-history-container');
   const q = withdrawSearchQuery.toLowerCase().trim();
@@ -318,7 +315,6 @@ function renderWithdrawHistory() {
     const statusClass = `status-${status.toLowerCase()}`;
     const dateStr = formatDate(data.timestamp);
 
-    // Determine Payment Logo
     let logoUrl = "";
     if (data.method === 'bKash') logoUrl = "https://i.ibb.co.com/bR1wnvmg/images.jpg";
     else if (data.method === 'Nagad') logoUrl = "https://i.ibb.co.com/YF0cQypT/images-1.png";
@@ -365,7 +361,6 @@ function renderWithdrawHistory() {
   list.innerHTML = html;
 }
 
-/* Search Box Handlers */
 window.handleGmailSearchInput = function() {
   const val = document.getElementById('gmail-search-input').value;
   document.getElementById('gmail-clear-btn').style.display = val.length > 0 ? 'flex' : 'none';
@@ -422,13 +417,30 @@ window.handleWithdrawSearch = function() {
   }, 400);
 };
 
-/* Submit Account Logic */
+/* Reset Task Submission Form */
+function resetTaskForm() {
+  document.getElementById('input-email').value = '';
+  document.getElementById('input-password').value = '';
+  document.getElementById('input-recovery').value = '';
+  document.querySelectorAll('.ios-box').forEach(i => i.classList.remove('valid', 'invalid'));
+  document.querySelectorAll('.input-indicator').forEach(i => i.classList.remove('show'));
+  document.querySelectorAll('.field-error-msg').forEach(i => i.classList.remove('show'));
+
+  document.getElementById('btn-1').disabled = true;
+  document.getElementById('btn-2').disabled = true;
+  document.getElementById('btn-3').disabled = true;
+
+  document.querySelectorAll('#tab-task .step-container').forEach(el => el.classList.remove('active'));
+  document.getElementById('step-1').classList.add('active');
+  document.getElementById('gmail-submit-form').style.display = 'none';
+  document.getElementById('gmail-submit-trigger').style.display = 'block';
+}
+
 window.startGmailSubmission = function() {
   document.getElementById('gmail-submit-trigger').style.display = 'none';
   document.getElementById('gmail-submit-form').style.display = 'block';
 };
 
-// Check if email is already active in DB (only Pending or Completed block entry)
 window.validateGmailField = function(fieldType, step) {
   const input = document.getElementById(`input-${fieldType}`);
   const indicator = document.getElementById(`${fieldType}-indicator`);
@@ -436,24 +448,32 @@ window.validateGmailField = function(fieldType, step) {
   const btn = document.getElementById(`btn-${step}`);
   const val = input.value.trim().toLowerCase();
 
+  if (val.length === 0) {
+    input.classList.remove('valid', 'invalid');
+    indicator.classList.remove('show');
+    errorMsg.classList.remove('show');
+    btn.disabled = true;
+    return;
+  }
+
   const isGmail = val.endsWith('@gmail.com') && val.length > 10;
-  // Duplicate if it's currently Pending or Completed
   const isDuplicateActive = activeEmailsMap[val] !== undefined;
 
-  if (isGmail && !isDuplicateActive) {
-    input.classList.remove('invalid');
-    input.classList.add('valid');
-    indicator.classList.add('show');
-    errorMsg.classList.remove('show');
-    btn.disabled = false;
-  } else if (isDuplicateActive) {
+  if (isDuplicateActive) {
     input.classList.remove('valid');
     input.classList.add('invalid');
     indicator.classList.remove('show');
     errorMsg.classList.add('show');
     btn.disabled = true;
+  } else if (isGmail) {
+    input.classList.remove('invalid');
+    input.classList.add('valid');
+    indicator.classList.add('show');
+    errorMsg.classList.remove('show');
+    btn.disabled = false;
   } else {
-    input.classList.remove('valid', 'invalid');
+    input.classList.remove('valid');
+    input.classList.add('invalid');
     indicator.classList.remove('show');
     errorMsg.classList.remove('show');
     btn.disabled = true;
@@ -464,28 +484,57 @@ window.validateStandardField = function(fieldType, minLen, step) {
   const input = document.getElementById(`input-${fieldType}`);
   const indicator = document.getElementById(`${fieldType}-indicator`);
   const btn = document.getElementById(`btn-${step}`);
+  const val = input.value.trim();
 
-  if (input.value.trim().length >= minLen) {
+  if (val.length === 0) {
+    input.classList.remove('valid', 'invalid');
+    indicator.classList.remove('show');
+    btn.disabled = true;
+    return;
+  }
+
+  if (val.length >= minLen) {
+    input.classList.remove('invalid');
     input.classList.add('valid');
     indicator.classList.add('show');
     btn.disabled = false;
   } else {
     input.classList.remove('valid');
+    input.classList.add('invalid');
     indicator.classList.remove('show');
     btn.disabled = true;
   }
 };
 
 window.nextStep = function(step) {
-  if (step === 1) formData.email = document.getElementById('input-email').value.trim();
-  if (step === 2) formData.password = document.getElementById('input-password').value.trim();
-  if (step === 3) {
-    formData.recovery = document.getElementById('input-recovery').value.trim();
-    renderConfirmationStep();
-  }
+  const btn = document.getElementById(`btn-${step}`);
+  const btnText = btn.querySelector('.btn-text');
+  const btnSpinner = btn.querySelector('.btn-spinner');
 
+  if (btnText) btnText.style.display = 'none';
+  if (btnSpinner) btnSpinner.style.display = 'inline-block';
+  btn.disabled = true;
+
+  setTimeout(() => {
+    if (btnText) btnText.style.display = 'inline';
+    if (btnSpinner) btnSpinner.style.display = 'none';
+    btn.disabled = false;
+
+    if (step === 1) formData.email = document.getElementById('input-email').value.trim();
+    if (step === 2) formData.password = document.getElementById('input-password').value.trim();
+    if (step === 3) {
+      formData.recovery = document.getElementById('input-recovery').value.trim();
+      renderConfirmationStep();
+    }
+
+    document.querySelectorAll('#tab-task .step-container').forEach(el => el.classList.remove('active'));
+    document.getElementById(`step-${step + 1}`).classList.add('active');
+  }, 1000);
+};
+
+window.prevStep = function(targetStep) {
   document.querySelectorAll('#tab-task .step-container').forEach(el => el.classList.remove('active'));
-  document.getElementById(`step-${step + 1}`).classList.add('active');
+  document.getElementById(`step-${targetStep}`).classList.add('active');
 };
 
 function renderConfirmationStep() {
@@ -503,17 +552,45 @@ function renderConfirmationStep() {
       <span class="field-left">Recovery Email</span>
       <div class="field-right-group"><span class="field-right">${escapeHtml(formData.recovery)}</span></div>
     </div>
-    <div class="action-container" style="margin-top:15px; display:flex; gap:10px;">
-      <button class="btn-proceed" style="background:#e5e5ea; color:#000;" onclick="nextStep(3)">Back</button>
-      <button class="btn-proceed" id="btn-submit-final" onclick="submitFinalAccount()">Submit Account</button>
+    <div class="action-container" style="margin-top:15px; display:flex; flex-direction:column; gap:8px;">
+      <button class="btn-confirm-submit" id="btn-submit-final" onclick="submitFinalAccount()">
+        <div class="check-icon-circle">
+          <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="var(--accent-green)" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+        </div>
+        <span class="btn-text">Confirm Account</span>
+        <svg class="ios-spinner btn-spinner" viewBox="0 0 24 24">
+          <line x1="12" y1="3" x2="12" y2="6" stroke="#ffffff" stroke-width="2.5" stroke-linecap="round"/>
+          <line x1="18.36" y1="5.64" x2="16.24" y2="7.76" stroke="#ffffff" stroke-width="2.5" stroke-linecap="round"/>
+          <line x1="21" y1="12" x2="18" y2="12" stroke="#ffffff" stroke-width="2.5" stroke-linecap="round"/>
+          <line x1="18.36" y1="18.36" x2="16.24" y2="16.24" stroke="#ffffff" stroke-width="2.5" stroke-linecap="round"/>
+          <line x1="12" y1="21" x2="12" y2="18" stroke="#ffffff" stroke-width="2.5" stroke-linecap="round"/>
+          <line x1="5.64" y1="18.36" x2="7.76" y2="16.24" stroke="#ffffff" stroke-width="2.5" stroke-linecap="round"/>
+          <line x1="3" y1="12" x2="6" y2="12" stroke="#ffffff" stroke-width="2.5" stroke-linecap="round"/>
+          <line x1="5.64" y1="5.64" x2="7.76" y2="7.76" stroke="#ffffff" stroke-width="2.5" stroke-linecap="round"/>
+        </svg>
+      </button>
+      <button class="btn-cancel-submit" onclick="cancelAccountSubmission()">
+        <span>Cancel</span>
+      </button>
     </div>
   `;
 }
 
+window.cancelAccountSubmission = function() {
+  showToast("Account submit cancel", true);
+  resetTaskForm();
+};
+
 window.submitFinalAccount = async function() {
   const btn = document.getElementById('btn-submit-final');
+  const btnText = btn.querySelector('.btn-text');
+  const btnSpinner = btn.querySelector('.btn-spinner');
+  const checkIcon = btn.querySelector('.check-icon-circle');
+
+  if (btnText) btnText.style.display = 'none';
+  if (checkIcon) checkIcon.style.display = 'none';
+  if (btnSpinner) btnSpinner.style.display = 'inline-block';
   btn.disabled = true;
-  btn.innerText = "Submitting...";
 
   try {
     await addDoc(collection(db, "allGmailHistory"), {
@@ -525,29 +602,21 @@ window.submitFinalAccount = async function() {
       timestamp: serverTimestamp()
     });
 
-    showToast("Task submitted!");
-    
-    // Reset Form
-    document.getElementById('input-email').value = '';
-    document.getElementById('input-password').value = '';
-    document.getElementById('input-recovery').value = '';
-    document.querySelectorAll('.ios-box').forEach(i => i.classList.remove('valid', 'invalid'));
-    document.querySelectorAll('.input-indicator').forEach(i => i.classList.remove('show'));
+    setTimeout(() => {
+      showToast("Account Submit Successful");
+      resetTaskForm();
+      loadExistingEmails();
+    }, 1000);
 
-    document.querySelectorAll('#tab-task .step-container').forEach(el => el.classList.remove('active'));
-    document.getElementById('step-1').classList.add('active');
-    document.getElementById('gmail-submit-form').style.display = 'none';
-    document.getElementById('gmail-submit-trigger').style.display = 'block';
-
-    loadExistingEmails();
   } catch (e) {
-    showToast("Submission failed!");
+    showToast("Submission failed!", true);
+    if (btnText) btnText.style.display = 'inline';
+    if (checkIcon) checkIcon.style.display = 'flex';
+    if (btnSpinner) btnSpinner.style.display = 'none';
     btn.disabled = false;
-    btn.innerText = "Submit Account";
   }
 };
 
-/* Withdraw Flow & Separated Error Validations */
 window.selectPaymentMethod = function(method, elem) {
   selectedPayment = method;
   document.querySelectorAll('.payment-card').forEach(c => c.classList.remove('active'));
@@ -618,7 +687,7 @@ window.handleWithdrawSubmit = async function() {
   const amount = Math.floor(Number(document.getElementById('withdraw-amount').value) || 0);
 
   if (amount > userBalance) {
-    showToast("Insufficient balance!");
+    showToast("Insufficient balance!", true);
     return;
   }
 
@@ -637,7 +706,7 @@ window.handleWithdrawSubmit = async function() {
     document.getElementById('withdraw-amount').value = '';
     validateWithdrawForm();
   } catch (e) {
-    showToast("Withdraw request failed!");
+    showToast("Withdraw request failed!", true);
   }
 };
 
@@ -656,4 +725,8 @@ window.switchMainTab = function(tab, elem) {
     'withdraw-history': 'History'
   };
   document.getElementById('main-title').innerText = titleMap[tab] || 'Account';
+
+  if (tab === 'task') {
+    resetTaskForm();
+  }
 };
